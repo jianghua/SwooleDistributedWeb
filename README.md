@@ -38,7 +38,7 @@ swoole api/web 开发框架，基于SwooleDistributed（原有功能100%支持�
 php start_swoole_server.php start  
 
 #安装
-可以参考  安装.md
+可以参考  安装.md、注意事项.md
 
 #截图
 ![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/login.jpg)
