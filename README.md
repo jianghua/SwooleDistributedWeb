@@ -1,5 +1,5 @@
 # SwooleDistributedWeb v0.1
-swoole web 开发框架，基于SwooleDistributed（原有功能100%支持），水平有限，欢迎指正。
+swoole api/web 开发框架，基于SwooleDistributed（原有功能100%支持），水平有限，欢迎指正。
 
 # 文档
 1. SwooleDistributedWeb 文档整理中
