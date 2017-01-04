@@ -70,8 +70,8 @@ class Form
 	        else
 	        {
 	            $option = $v['option'];
-	            $self = $v['self'];
-	            $label_class = $v['label_class'];
+	            $self = $v['self'] ?? false;
+	            $label_class = $v['label_class'] ?? '';
 	            unset($v['option'],$v['self'],$v['label_class']);
 	            $forms[$k] = self::$func($k,$option,$value,$self,$v,$label_class);
 // 	            if($func=='radio' and isset($v['empty']))

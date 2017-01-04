@@ -2,10 +2,11 @@
 swoole api/web 开发框架，基于SwooleDistributed（原有功能100%支持），水平有限，欢迎指正。
 
 # 文档
-1. SwooleDistributedWeb 文档整理中
-2. SwooleDistributed 文档
+1. SwooleDistributedWeb  
+ https://jianghua.gitbooks.io/swooledistributedweb/content/
+2. SwooleDistributed 文档  
  https://tmtbe.gitbooks.io/swooledistributed/content/
-3. Swoole 文档
+3. Swoole 文档  
  http://wiki.swoole.com/
 
 # 特性  

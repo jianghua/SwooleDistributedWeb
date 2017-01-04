@@ -28,7 +28,17 @@ class BaseModel extends Model
     /**
      * 表单
      * 
-     * 格式：
+     * 
+        key=>[ //key一般是表中的字段，cascade_select除外
+            'label' => '', //
+            'tips' => '',
+            'type' => 'input', //表单类型，详见form types
+            'value' => '', //默认值
+            'placeholder' => '',
+            'class' => '', //表单样式
+            'validates' =>[], //验证规则，详见validates
+            .... //也可以定义其他，会自动加到表单中
+        ]
      * 
      */
     public $_form = [];
