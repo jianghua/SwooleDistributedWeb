@@ -1,5 +1,6 @@
 # SwooleDistributedWeb v0.1
-swoole api/web 开发框架，基于SwooleDistributed（原有功能100%支持），水平有限，欢迎指正。
+swoole api/web 开发框架，基于SwooleDistributed（原有功能100%支持），水平有限，欢迎指正。  
+内置demo，包含用户注册、登录、修改信息
 
 # 文档
 1. SwooleDistributedWeb  
@@ -38,3 +39,8 @@ php start_swoole_server.php start
 
 #安装
 可以参考  安装.md
+
+#截图
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/login.jpg)
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/reg.jpg)
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/profile.jpg)
