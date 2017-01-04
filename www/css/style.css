@@ -1,0 +1,38 @@
+.input_error {
+	float:left;
+	height:40px;
+	width: 500px;
+	line-height:40px;
+	border:1px solid #FF0000;
+	border-radius:5px;
+	padding:0px 10px;
+	color:#333;
+	font-size:16px;
+}
+
+.input_focus {
+	float:left;
+	height:40px;
+	line-height:40px;
+	border: #C1C1C1 1px solid;
+	font-size: 16px;
+	padding:0px 10px;
+	padding: auto;
+	color: #444;
+}
+
+.input_show {
+	border: #C1C1C1 1px solid;
+	font-size: 16px;
+	padding: auto;
+	background-position: 0 -72px;
+	color: #444
+}
+
+.input_correct {
+	border: #C1C1C1 1px solid;
+	font-size: 16px;
+	padding: auto;
+	background-position: 0 -72px;
+	color: #444
+}

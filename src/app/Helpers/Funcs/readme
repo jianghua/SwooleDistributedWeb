@@ -1,0 +1,1 @@
+如果增加新的文件，需要修改根目录下的composer.json，然后执行composer update
