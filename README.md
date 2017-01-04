@@ -41,6 +41,6 @@ php start_swoole_server.php start
 可以参考  安装.md
 
 #截图
-![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/login.png)
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/login.jpg)
 ![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/reg.png)
-![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/profile.png)
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/master/screenshots/profile.jpg)
