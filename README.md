@@ -16,14 +16,14 @@ swoole web 开发框架，基于SwooleDistributed（原有功能100%支持），
 5. 支持协程嵌套，支持协程内异常处理（和正常逻辑用法一样）  
 6. 额外提供了protobuf完整RPC实例，轻松使用protobuf  
 7. 天然分布式的支持，一台机器不够零配置，零代码修改完成高效分布式系统的搭建  
-
-以上都是流弊SwooleDistributed的特性，SwooleDistributedWeb特性如下：
-1. 封装常用的web功能，支持cookie、session、cache、form、validate、验证码、文件上传、分页等
-2. 自动生成表单，自动生成表单前台验证js，后台自动验证表单；只需在model中配置即可使用
-3. 数据库操作封装增删改查，更加方便编写
-4. session/cache 支持redis（默认）、mysql、文件（分布式不建议使用）
-5. 使用plates模板引擎
-6. 可businessConfig.php中指定域名、默认控制器、默认方法、文件上传目录、上传大小；内置uc、ckeditor
+  
+以上都是流弊SwooleDistributed的特性，SwooleDistributedWeb特性如下：  
+1. 封装常用的web功能，支持cookie、session、cache、form、validate、验证码、文件上传、分页等  
+2. 自动生成表单，自动生成表单前台验证js，后台自动验证表单；只需在model中配置即可使用  
+3. 数据库操作封装增删改查，更加方便编写  
+4. session/cache 支持redis（默认）、mysql、文件（分布式不建议使用）  
+5. 使用plates模板引擎  
+6. 可businessConfig.php中指定域名、默认控制器、默认方法、文件上传目录、上传大小；内置uc、ckeditor  
 
 # 安装须知
 1. php 7.0  5.6的用户需要自己修改源码，将php7的部分语法重写。强烈推荐php7.X搭配最新的swoole1.X系列。
