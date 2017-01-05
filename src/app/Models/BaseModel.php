@@ -28,8 +28,7 @@ class BaseModel extends Model
     /**
      * 表单
      * 
-     * 
-        key=>[ //key一般是表中的字段，cascade_select除外
+     * key=>[ //key一般是表中的字段，cascade_select除外
             'label' => '', //
             'tips' => '',
             'type' => 'input', //表单类型，详见form types

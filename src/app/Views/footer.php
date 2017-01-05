@@ -4,3 +4,4 @@
 		<a href="#">加入我们</a>
 	</div>
 </div>
+<script type="text/javascript" src="<?=$this->url('js/common.js')?>"></script>

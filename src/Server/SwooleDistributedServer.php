@@ -11,12 +11,13 @@ use Server\DataBase\Miner;
 use Server\DataBase\MysqlAsynPool;
 use Server\DataBase\RedisAsynPool;
 use Server\DataBase\RedisCoroutine;
+use Server\Test\TestModule;
 use Server\Cache\CacheFactory;
 
 define("SERVER_DIR", __DIR__);
-define("SRC_DIR", __DIR__. '/../');
 define("APP_DIR", __DIR__ . "/../app");
 define("WWW_DIR", __DIR__ . "/../../www");
+define("SRC_DIR", __DIR__. '/../');
 
 /**
  * Created by PhpStorm.
@@ -313,7 +314,7 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
         $set = $this->config->get('server.set', []);
         $set = array_merge($set, $this->probuf_set);
         //协议最大长度，改为上传文件大小
-        $set['package_max_length'] = get_instance()->config->get('upload_maxsize')+ 1024;
+        $set['package_max_length'] = get_instance()->config->get('upload_maxsize')+ 1024*1024;
         $set = array_merge($set, $this->overrideSetConfig);
         $this->worker_num = $set['worker_num'];
         $this->task_num = $set['task_worker_num'];
@@ -373,6 +374,8 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
         if ($fd != null) {
             $this->server->send($fd, $this->encode($send_data));
         } else {
+            //如果没有dispatch那么MSG_TYPE_SEND_BATCH这个消息不需要发出，因为本机已经处理过可以发送的uid了
+            if ($type == SwooleMarco::MSG_TYPE_SEND_BATCH) return;
             if ($this->isTaskWorker()) {
                 $this->onSwooleTask($this->server, 0, 0, $send_data);
             } else {
@@ -593,6 +596,9 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
                 $generatorContext = new GeneratorContext();
                 $generatorContext->setController(null, 'SwooleDistributedServer', 'onSwooleWorkerStart');
                 $this->coroutine->start($generator, $generatorContext);
+            }
+            if (SwooleServer::$testUnity) {
+                new TestModule(SwooleServer::$testUnityDir, $this->coroutine);
             }
             $this->initLock->lock_read();
         }

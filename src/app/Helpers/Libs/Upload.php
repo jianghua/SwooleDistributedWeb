@@ -172,13 +172,13 @@ class Upload
         }
         if ($filetype === false)
         {
-            $this->error_msg = "File mime '$mime' unknown!";
+            $this->error_msg = "未知的文件扩展 '$mime'！";
             $this->error_code = 1;
             return false;
         }
         elseif (!in_array($filetype, $this->allow))
         {
-            $this->error_msg = "File Type '$filetype' not allow upload!";
+            $this->error_msg = " '$filetype' 类型的文件不允许上传！";
             $this->error_code = 2;
             return false;
         }
@@ -195,7 +195,7 @@ class Upload
         }
         elseif ($this->overwrite === false and is_file($path . '/' . $filename . '.' . $filetype))
         {
-            $this->error_msg = "File '$path/$filename.$filetype' existed!";
+            $this->error_msg = "'$path/$filename.$filetype' 文件已存在！";
             $this->error_code = 3;
             return false;
         }
@@ -208,7 +208,7 @@ class Upload
         $filesize = filesize($this->files[$name]['tmp_name']);
         if ($this->max_size > 0 and $filesize > $this->max_size)
         {
-            $this->error_msg = "File size go beyond the max_size!";
+            $this->error_msg = "图片大小不超过".Lib::byteFormat($this->max_size)."，请重传";
             $this->error_code = 4;
             return false;
         }

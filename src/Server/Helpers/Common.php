@@ -80,3 +80,12 @@ function get_www($path='')
     }
     return get_instance()->config->get('http.domain', $normal). $path;
 }
+function isMac()
+{
+    $str = PHP_OS;
+    if ($str == 'Darwin') {
+        return true;
+    } else {
+        return false;
+    }
+}
