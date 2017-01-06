@@ -2,6 +2,7 @@
 namespace app\Controllers;
 
 use app\Helpers\Libs\RandomKey;
+use app\Helpers\Libs\Filter;
 /**
  * 用户控制器
  * @author weihan
@@ -202,6 +203,27 @@ class User extends BaseController
     public function logout(){
         $this->_clearUserCookies();
         $this->redirect('/');
+    }
+    
+    /**
+     * 过滤器
+     * ?id=1&arr[]=a&arr[]=b&email=test@test.com&wrong_email=test@test
+     *
+     * @author weihan
+     * @datetime 2017年1月6日下午12:31:52
+     */
+    public function filter() {
+        $id = Filter::filter($this->get('id'), Filter::INT);
+        var_dump($id);
+        $arr = Filter::filter($this->get('arr'), Filter::STRING);
+        var_dump($arr);
+        $email = Filter::filter($this->get('email'), [Filter::CTYPE, 'email']);
+        var_dump($email);
+        $wrong_email = Filter::filter($this->get('wrong_email'), [Filter::CTYPE, 'email']);
+        var_dump($wrong_email);
+        $regx = Filter::filter($this->get('regx'), [Filter::REGX, '/\d+/']);
+        var_dump($regx);
+        $this->output();
     }
     
     /**

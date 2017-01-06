@@ -1,6 +1,7 @@
 <?php
 namespace app\Helpers\Libs;
 use Server\CoreBase\XssClean;
+use Server\CoreBase\SwooleException;
 /**
  * 文件上传类
  * 限制尺寸，压缩，生成缩略图，限制格式
@@ -72,7 +73,7 @@ class Upload
         $config['base_url'] = get_www($_upload_dir);
         if (empty($config['base_dir']) or empty($config['base_url']))
         {
-            throw new \Exception(__CLASS__.' require base_dir and base_url.');
+            throw new SwooleException(__CLASS__.' require base_dir and base_url.');
         }
         $this->base_dir = $config['base_dir'];
         if (Tool::endchar($this->base_dir) != '/')
@@ -126,6 +127,7 @@ class Upload
 
         //文件存储的路径
         $base_dir = empty($this->sub_dir) ? $this->base_dir : $this->base_dir . $this->sub_dir . '/';
+        $base_url = empty($this->sub_dir) ? $this->base_url : $this->base_url. '/' . $this->sub_dir;
 
         //切分目录
         if ($this->shard_type == 'randomkey')
@@ -228,7 +230,7 @@ class Upload
                     $this->thumb_width,
                     $this->thumb_height,
                     $this->thumb_qulitity);
-                $return['thumb'] =  "{$this->base_url}/{$this->sub_dir}/{$sub_dir}/{$thumb_file}";
+                $return['thumb'] =  "{$base_url}/{$sub_dir}/{$thumb_file}";
             }
             //压缩图片
             if ($this->max_width and in_array($filetype, array('gif', 'jpg', 'jpeg', 'bmp', 'png')))
@@ -239,7 +241,7 @@ class Upload
                     $this->max_height,
                     $this->max_qulitity);
             }
-            $return['url'] = "{$this->base_url}/{$this->sub_dir}/{$sub_dir}/{$filename}";
+            $return['url'] = "{$base_url}/{$sub_dir}/{$filename}";
             $return['size'] = $filesize;
             $return['type'] = $filetype;
             return $return;

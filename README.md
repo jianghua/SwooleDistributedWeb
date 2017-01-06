@@ -23,7 +23,7 @@ swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水�
 7. 天然分布式的支持，一台机器不够零配置，零代码修改完成高效分布式系统的搭建  
   
 以上都是流弊SwooleDistributed的特性，SwooleDistributedWeb特性如下：  
-1. 封装常用的web功能，支持cookie、session、cache、form、validate、验证码、文件上传、分页等  
+1. 封装常用的web功能，支持cookie、session、cache、form、validate、filter、验证码、文件上传、分页等  
 2. 自动生成表单，自动生成表单前台验证js，后台自动验证表单；只需在model中配置即可使用  
 3. 数据库操作封装增删改查，更加方便编写  
 4. session/cache 支持redis（默认）、mysql、文件（分布式不建议使用）  
