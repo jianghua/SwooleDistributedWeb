@@ -9,6 +9,7 @@ swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水�
 1. SwooleDistributedWeb  
  https://www.gitbook.com/book/jianghua/swooledistributedweb/details
 2. SwooleDistributed 文档  
+ http://182.92.224.125/  
  https://www.gitbook.com/book/tmtbe/swooledistributed/details
 3. Swoole 文档  
  http://wiki.swoole.com/
