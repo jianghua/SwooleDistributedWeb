@@ -182,13 +182,20 @@ class TestModule
                         yield $classInstance->tearDown();
                         continue;
                     }
+                    //合并参数
+                    $dataProviderValue = [];
+                    if (count($dataProviderValues) > 0) {
+                        $dataProviderValue = array_shift($dataProviderValues);
+                        $dataProviderKey = array_shift($dataProviderValueKeys);
+                        print_r("│   │  ├──$dataProviderKey->");
+                    }
 
                     $parmasArray = [];
                     if (array_key_exists('depends', $methodInfo)) {//有依赖
                         if (is_array($methodInfo['depends'])) {//多个依赖
                             $error = false;
-                            foreach ($methodInfo['depends'] as $dependMethod) {
-                                $result = $classData[$dependMethod]['result']??null;
+                            foreach ($methodInfo['depends'] as $methodName) {
+                                $result = $classData[$methodName]['result']??null;
                                 if ($result == null) {//依赖获取失败
                                     $error = true;
                                     break;
@@ -200,7 +207,8 @@ class TestModule
                                 continue;
                             }
                         } else {
-                            $result = $classData[$methodInfo['depends']]['result']??null;
+                            $methodName = $methodInfo['depends'];
+                            $result = $classData[$methodName]['result']??null;
                             if ($result == null) {// 依赖获取失败
                                 $this->printFail('依赖获取失败');
                                 continue;
@@ -208,13 +216,9 @@ class TestModule
                             $parmasArray[] = $result;
                         }
                     }
-                    //合并参数
-                    if (count($dataProviderValues) > 0) {
-                        $dataProviderValue = array_shift($dataProviderValues);
-                        $dataProviderKey = array_shift($dataProviderValueKeys);
-                        $parmasArray = array_merge($dataProviderValue, $parmasArray);
-                        print_r("│   │  ├──$dataProviderKey->");
-                    }
+
+                    $parmasArray = array_merge($dataProviderValue, $parmasArray);
+
                     try {
                         $result = yield call_user_func_array([$classInstance, $method], $parmasArray);
                         $classData[$method]['result'] = $result;

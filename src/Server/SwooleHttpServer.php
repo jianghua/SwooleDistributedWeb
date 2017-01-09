@@ -121,10 +121,10 @@ abstract class SwooleHttpServer extends SwooleServer
 
     /**
      * http服务器发来消息
-     * @param $request
-     * @param $response
+     * @param \swoole_http_request $request
+     * @param \swoole_http_response $response
      */
-    public function onSwooleRequest(\swoole_http_request $request, \swoole_http_response $response)
+    public function onSwooleRequest($request, $response)
     {
         //设置响应头中的server
         $response->header('Server', get_instance()->config->get('server.set.server_name'));

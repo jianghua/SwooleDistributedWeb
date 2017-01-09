@@ -26,16 +26,15 @@ class TestController extends Controller
     /**
      * tcp的测试
      */
-    public function test()
+    public function tcp_testTcp()
     {
-        $this->bindUid($this->fd, 1000);
         $this->send($this->client_data->data);
     }
 
     /**
      * mysql 事务协程测试
      */
-    public function http_mysql_begin_coroutine_test()
+    public function mysql_begin_coroutine_test()
     {
         $id = yield $this->mysql_pool->coroutineBegin($this);
         $update_result = yield $this->mysql_pool->dbQueryBuilder->update('user_info')->set('sex', '0')->where('uid', 36)->coroutineSend($id);
@@ -51,7 +50,7 @@ class TestController extends Controller
     /**
      * 绑定uid
      */
-    public function bind_uid()
+    public function tcp_bind_uid()
     {
         $this->bindUid($this->fd, $this->client_data->data);
         $this->destroy();
@@ -61,7 +60,7 @@ class TestController extends Controller
      * 效率测试
      * @throws \Server\CoreBase\SwooleException
      */
-    public function efficiency_test()
+    public function tcp_efficiency_test()
     {
         $data = $this->client_data->data;
         $this->sendToUid(mt_rand(1, 100), $data);
@@ -71,7 +70,7 @@ class TestController extends Controller
      * 效率测试
      * @throws \Server\CoreBase\SwooleException
      */
-    public function efficiency_test2()
+    public function tcp_efficiency_test2()
     {
         $data = $this->client_data->data;
         $this->send($data);
@@ -81,24 +80,59 @@ class TestController extends Controller
      * mysql效率测试
      * @throws \Server\CoreBase\SwooleException
      */
-    public function mysql_efficiency()
+    public function tcp_mysql_efficiency()
     {
         yield $this->mysql_pool->dbQueryBuilder->select('*')->from('account')->where('uid', 10004)->coroutineSend();
         $this->send($this->client_data->data);
     }
 
     /**
+     * 获取mysql语句
+     */
+    public function mysqlStatement()
+    {
+        $value = $this->mysql_pool->dbQueryBuilder->insertInto('account')->intoColumns(['uid', 'static'])->intoValues([[36, 0], [37, 0]])->getStatement(true);
+        $this->http_output->end($value);
+    }
+    /**
      * http测试
      */
-    public function http_test()
+    public function test()
     {
         $this->http_output->end('helloworld', false);
     }
 
     /**
+     * http redis 测试
+     */
+    public function redis()
+    {
+        $value = $this->redis_pool->getCoroutine()->get('test');
+        yield $value;
+        $value1 = $this->redis_pool->getCoroutine()->get('test1');
+        yield $value1;
+        $value2 = $this->redis_pool->getCoroutine()->get('test2');
+        yield $value2;
+        $value3 = $this->redis_pool->getCoroutine()->get('test3');
+        yield $value3;
+        $this->http_output->end(1, false);
+    }
+
+    /**
+     * http 同步redis 测试
+     */
+    public function aredis()
+    {
+        $value = get_instance()->getRedis()->get('test');
+        $value1 = get_instance()->getRedis()->get('test1');
+        $value2 = get_instance()->getRedis()->get('test2');
+        $value3 = get_instance()->getRedis()->get('test3');
+        $this->http_output->end(1, false);
+    }
+    /**
      * html测试
      */
-    public function http_html_test()
+    public function html_test()
     {
         $template = $this->loader->view('server::error_404');
         $this->http_output->end($template->render(['controller' => 'TestController\html_test', 'message' => '页面不存在！']));
@@ -107,7 +141,7 @@ class TestController extends Controller
     /**
      * html测试
      */
-    public function http_html_file_test()
+    public function html_file_test()
     {
         $this->http_output->endFile(SERVER_DIR, 'Views/test.html');
     }
@@ -116,7 +150,7 @@ class TestController extends Controller
     /**
      * 协程的httpclient测试
      */
-    public function http_test_httpClient()
+    public function test_httpClient()
     {
         $httpClient = yield $this->client->coroutineGetHttpClient('http://localhost:8081');
         $result = yield $httpClient->coroutineGet("/TestController/test_request", ['id' => 123]);
