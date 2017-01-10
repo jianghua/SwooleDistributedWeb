@@ -288,11 +288,12 @@ class Form
             if ($type == 'multi_upload'){
                 foreach ($input as $_p=>$_v){
                     //以name开头，并且数字结尾
-                    if ($_v && strpos($_p, $name) !== false && is_numeric(str_replace($name, '', $_p))) {
+                    if (strpos($_p, $name) !== false && is_numeric(str_replace($name, '', $_p))) {
                         $input[$name][] = $_v;
                         unset($input[$_p]);
                     }
                 }
+                $input[$name] = array_filter($input[$name]) ? : '';      //过滤掉重复的
             }
             //级联选择
             if ($type == 'cascade_select'){
@@ -316,6 +317,7 @@ class Form
         	//为空的情况，并且允许为空，不再往下判断
         	if(!isset($f['required']) and empty($value))
         	{
+        	    $form_val[$name] = $value;
         	    continue;
         	}
         	//检测字符串最大长度
@@ -681,17 +683,23 @@ class Form
         $max_nums = $file_type = $attrArray['upload']['max_nums'] ?? 1;
          
         $form = '';
-        for ($i=1; $i<=$max_nums; $i++){
-            $_value = $ret['value'][$i-1] ?? '';
+        for ($i=0; $i<=$max_nums; $i++){
+            $_value = $ret['value'][$i] ?? '';
     	   $form .= "<input type='hidden' name='{$name}{$i}' id='{$name}{$i}' value='{$_value}'>";
         }
         $input_hidden_str = "$('#{$name}'+{$file_name}_num).val(data.url);";
-         
+        //已上传数量
+        $num = max(0, count($ret['value']));
+        
         $form .= '<script src="'.url('js/jquery.ajaxfileupload.js').'" type="text/javascript"></script>';
         $form .= "<script type=\"text/javascript\">
             var {$file_name}_max_nums = {$max_nums};
-            var {$file_name}_num = 1;
+            var {$file_name}_num = {$num};
             function {$file_name}AjaxFileUpload(){
+                if ({$file_name}_num >= {$file_name}_max_nums){
+                    alert('最多上传{$max_nums}张！');
+                    return; 
+                }
                 $('#{$file_name}_photo_show').append('<div id=\"{$file_name}_loading\" class=\"delete\"><div><img src=\"".url('/images/loading.gif')."\"></div><a id=\"'+{$file_name}_num+'\" class=\"hide\"></a></div>');
                 $.ajaxFileUpload({
                     url: '".url($upload_uri)."?r='+Math.random(), //用于文件上传的服务器端请求地址
@@ -704,10 +712,6 @@ class Form
                         $('#{$file_name}_loading').remove();
                         data = jQuery.parseJSON(data);
                         if (data.status == 1){
-                            if ({$file_name}_num > {$file_name}_max_nums){
-                                alert('最多上传{$max_nums}！');
-                                return; 
-                            }
                             {$input_hidden_str}
                             $('#{$file_name}_photo_show').append('<div class=\"delete\"><div><img src=\"'+data.url+'\"></div><a id=\"'+{$file_name}_num+'\" class=\"hide\"></a></div>');
                             {$attrArray['upload']['succ_js']}
@@ -750,7 +754,7 @@ class Form
     if ($ret['value']){
         foreach ($ret['value'] as $_k=>$_img){
             if ($_img){
-                $form .= '<div class="delete"><div><img src="'.$_img.'"></div><a id="'.($_k+1).'" class="hide"></a></div>';
+                $form .= '<div class="delete"><div><img src="'.$_img.'"></div><a id="'.($_k).'" class="hide"></a></div>';
             }
         }
     }

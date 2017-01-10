@@ -605,8 +605,8 @@ function strLength($str, $charset='utf-8'){
  * @author weihan
  * @datetime 2016年12月19日下午3:08:56
  */
-function avatar($userid, $size='middel') {
-    return get_instance()->config['uc.UC_API']. "/avatar.php?uid=$userid&size=$size";
+function avatar($userid, $size='middel', $timestamp='') {
+    return get_instance()->config['uc.UC_API']. "/avatar.php?uid=$userid&size=$size&f=$timestamp";
 }
 
 /**
