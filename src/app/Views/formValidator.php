@@ -3,7 +3,7 @@
  * 根据form生成固定格式的表单js验证
  */
 ?>
-<script type="text/javascript" src="<?=$this->url($this->asset('/js/formValidator.js'))?>"></script>
+<script type="text/javascript" src="<?=$this->url('/js/formValidator.js')?>"></script>
 <script type="text/javascript">
 <!--
 $(function() {

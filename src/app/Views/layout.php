@@ -6,10 +6,10 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 	<meta name="keywords" content="">
 	<meta name="description" content="">
-	<link rel="stylesheet" type="text/css" href="<?=$this->url($this->asset('/css/globle.css'))?>" />
-	<link rel="stylesheet" type="text/css" href="<?=$this->url($this->asset('/css/css.css'))?>" />
+	<link rel="stylesheet" type="text/css" href="<?=$this->url('/css/globle.css')?>" />
+	<link rel="stylesheet" type="text/css" href="<?=$this->url('/css/css.css')?>" />
 
-	<script type="text/javascript" src="<?=$this->url($this->asset('/js/jquery.min.js'))?>"></script>
+	<script type="text/javascript" src="<?=$this->url('/js/jquery.min.js')?>"></script>
 	<script type="text/javascript">
 		var base_url = '<?=$this->get_www()?>';
 	</script>

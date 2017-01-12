@@ -1,5 +1,5 @@
 <?php $this->layout('app::layout', ['title'=>'个人信息', 'userid'=>$userid, 'userinfo'=>$userinfo]) ?>
-<link rel="stylesheet" type="text/css" href="<?=$this->url($this->asset('/css/reg.css'))?>" />
+<link rel="stylesheet" type="text/css" href="<?=$this->url('/css/reg.css')?>" />
 <?php $this->insert('app::formValidator', ['form'=>$form])?>
 <script type="text/javascript">
 </script>

@@ -116,7 +116,6 @@ abstract class SwooleHttpServer extends SwooleServer
         $this->templateEngine->addFolder('app', __DIR__ . '/../app/Views');
         $this->templateEngine->registerFunction('get_www', 'get_www');
         $this->templateEngine->registerFunction('url', 'url');
-        $this->templateEngine->loadExtension(new \League\Plates\Extension\Asset(WWW_DIR, false));
     }
 
     /**
@@ -165,7 +164,7 @@ abstract class SwooleHttpServer extends SwooleServer
             }
             //先根据path找下www目录
             $www_path = WWW_DIR . $this->route->getPath();
-            $result = httpEndFile($www_path, $response);
+            $result = httpEndFile($www_path, $request, $response);
             if (!$result) {
                 $response->header('HTTP/1.1', '404 Not Found');
                 if (!isset($this->cache404)) {//内存缓存404页面

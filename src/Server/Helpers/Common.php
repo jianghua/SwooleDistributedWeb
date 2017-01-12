@@ -43,16 +43,25 @@ function shell_read()
  * @param $response
  * @return mixed
  */
-function httpEndFile($path, $response)
+function httpEndFile($path, $request, $response)
 {
+    $path = urldecode($path);
     if (!file_exists($path)) {
         return false;
+    }
+    $lastModified = gmdate('D, d M Y H:i:s', filemtime($path)) . ' GMT';
+    //缓存
+    if (isset($request->header['if-modified-since']) && $request->header['if-modified-since'] == $lastModified) {
+        $response->status(304);
+        $response->end();
+        return true;
     }
     $extension = get_extension($path);
     $normalHeaders = get_instance()->config->get("mimes.normal", ['application/octet-stream']);
     $headers = get_instance()->config->get("mimes.$extension", $normalHeaders);
     $response->header('Content-Type', $headers);
     $response->header('Server', get_instance()->config->get('server.set.server_name'));
+    $response->header('Last-Modified', $lastModified);
     $response->sendfile($path);
     return true;
 }
@@ -71,6 +80,7 @@ function get_extension($file)
 /**
  * 获取绝对地址
  * @param $path
+ * @return string
  */
 function get_www($path='')
 {
