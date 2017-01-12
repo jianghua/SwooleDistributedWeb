@@ -1,6 +1,7 @@
 # SwooleDistributedWeb v0.1.2
 多图上传bug修复
 swooledistributed 离线文档更新
+swooledistributed 更新为1.7.3
 # SwooleDistributedWeb v0.1.1
 SwooleDistributed v1.6升级为v1.7，增加单元测试模块  
 bug修复

@@ -41,6 +41,8 @@ class SwooleDispatchClient extends SwooleServer
     public function __construct()
     {
         $this->name = self::SERVER_NAME;
+        //关闭协程
+        $this->needCoroutine = false;
         parent::__construct();
     }
 
@@ -89,6 +91,7 @@ class SwooleDispatchClient extends SwooleServer
     public function setServerSet()
     {
         $set = $this->config['dispatch_server']['set'];
+        $set = array_merge($set, $this->probuf_set);
         return $set;
     }
 

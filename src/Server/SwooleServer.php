@@ -22,7 +22,7 @@ use Server\Cache\ICache;
  */
 abstract class SwooleServer extends Child
 {
-    const version = "1.7.2";
+    const version = "1.7.3";
     const versionWeb = "0.1.2";       //SwooleDistributedWeb版本
     /**
      * Daemonize.
@@ -102,6 +102,12 @@ abstract class SwooleServer extends Child
     public $socket_type;
 
     /**
+     * 服务器到现在的毫秒数
+     * @var int
+     */
+    public $tickTime;
+
+    /**
      * 封包器
      * @var IPack
      */
@@ -176,8 +182,15 @@ abstract class SwooleServer extends Child
         'package_max_length' => 2000000,  //协议最大长度)
     ];
 
+    /**
+     * 是否需要协程支持(默认开启)
+     * @var bool
+     */
+    protected $needCoroutine = true;
+
     public function __construct()
     {
+        $this->onErrorHandel = [$this, 'onErrorHandel'];
         self::$_worker = $this;
         // 加载配置
         $this->config = new Config(__DIR__ . '/../config');
@@ -624,7 +637,7 @@ abstract class SwooleServer extends Child
             apc_clear_cache();
         }
         file_put_contents(self::$pidFile, ',' . $serv->worker_pid, FILE_APPEND);
-        if (!$serv->taskworker) {//worker进程启动协程调度器
+        if (!$serv->taskworker && $this->needCoroutine) {//worker进程启动协程调度器
             $this->coroutine = new Coroutine();
             self::setProcessTitle('SWD-Worker');
         } else {
@@ -674,15 +687,14 @@ abstract class SwooleServer extends Child
             $method_name = $this->config->get('tcp.method_prefix', '') . $this->route->getMethodName();
             $controller_instance->setClientData($uid, $fd, $client_data, $controller_name, $method_name);
             try {
-                if (method_exists($controller_instance, $method_name)) {
-                    $generator = call_user_func([$controller_instance, $method_name], $this->route->getParams());
-                    if ($generator instanceof \Generator) {
-                        $generatorContext = new GeneratorContext();
-                        $generatorContext->setController($controller_instance, $controller_name, $method_name);
-                        $this->coroutine->start($generator, $generatorContext);
-                    }
-                } else {
-                    throw new \Exception('method not exists');
+                if (!method_exists($controller_instance, $method_name)) {
+                    $method_name = 'defaultMethod';
+                }
+                $generator = call_user_func([$controller_instance, $method_name], $this->route->getParams());
+                if ($generator instanceof \Generator) {
+                    $generatorContext = new GeneratorContext();
+                    $generatorContext->setController($controller_instance, $controller_name, $method_name);
+                    $this->coroutine->start($generator, $generatorContext);
                 }
             } catch (\Exception $e) {
                 call_user_func([$controller_instance, 'onExceptionHandle'], $e);
@@ -944,4 +956,19 @@ abstract class SwooleServer extends Child
     {
         $this->server->close($fd);
     }
+
+
+    /**
+     * 错误处理函数
+     * @param $msg
+     * @param $log
+     */
+    public function onErrorHandel($msg, $log)
+    {
+        if ($this->config->get('server.debug')){
+            print_r($msg . "\n");
+            print_r($log . "\n");
+        }
+    }
+
 }
