@@ -17,6 +17,7 @@ use Server\CoreBase\XssClean;
  */
 class BaseController extends SController
 {
+    protected $gzip = true;
     public $cookie_userinfo = 'userinfo';
     protected $auth_str;
     /**
@@ -46,7 +47,7 @@ class BaseController extends SController
             }
             return $this->http_input->getAllPostGet();
         }
-        $val = $this->http_input->get_post($index, $xss_clean);
+        $val = $this->http_input->getPost($index, $xss_clean);
         if ($val === '' && $default){
             $val = $default;
         }
@@ -175,8 +176,8 @@ class BaseController extends SController
         
         $url = url($uri, $params);
         
-        $this->http_output->set_header('location', $url);
-        $this->http_output->set_status_header(302);
+        $this->http_output->setHeader('location', $url);
+        $this->http_output->setStatusHeader(302);
         $this->http_output->end();
     }
     
@@ -190,18 +191,18 @@ class BaseController extends SController
     protected function output($data='', $is_ajax=false) {
         
         if ($is_ajax){
-            $this->http_output->set_header('Content-Type', 'application/json;charset=utf-8');
+            $this->http_output->setHeader('Content-Type', 'application/json;charset=utf-8');
             $data = json_encode($data);
         }else{
             if (is_array($data)){
                 $data = var_export($data, true);
             }
         }
-        $this->http_output->end($data);
+        $this->http_output->end($data, $this->gzip);
     }
     
     protected function ajaxOutput($data) {
-        $this->output($data, true);
+        $this->output($data, true, $this->gzip);
     }
     
     /**
@@ -422,9 +423,9 @@ class BaseController extends SController
         }else {
             $ip = $this->request->server['remote_addr'];
         }
-        /* if (! Validate::ip($ip)){
+        if (! Validate::ip($ip)){
             $ip = 'unvalid';
-        } */
+        }
         return $ip;
     }
     
@@ -595,7 +596,7 @@ class BaseController extends SController
      * @author weihan
      * @datetime 2016年12月21日上午11:01:51
      */
-    protected function http_post($api_domain, $api_uri, $params=[]) {
+    protected function httpPost($api_domain, $api_uri, $params=[]) {
         $cookie_userinfo = $this->getCookie($this->cookie_userinfo);
         $cookie_userinfo = str_replace(' ', '+', $cookie_userinfo);
         $params['auth'] = $cookie_userinfo;

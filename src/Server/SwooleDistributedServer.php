@@ -142,9 +142,8 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
     public function clearState()
     {
         if ($this->config['redis']['enable']){
-            $whoami = exec('whoami');
             //只有root才输出，其他用户一般没有权限读取/dev/stdin
-            if ($whoami == 'root'){
+            if (posix_getuid() == 0){
                 print("是否清除Redis上的用户状态信息(y/n)？");
                 $clear_redis = shell_read();
                 if (strtolower($clear_redis) == 'y') {
@@ -520,9 +519,9 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
     public function onSwooleWorkerStart($serv, $workerId)
     {
         parent::onSwooleWorkerStart($serv, $workerId);
-	if ($this->config['redis']['enable']){
-        	$this->redis_pool = new RedisAsynPool();
-	}
+    	if ($this->config['redis']['enable']){
+            	$this->redis_pool = new RedisAsynPool();
+    	}
         $this->mysql_pool = new MysqlAsynPool();
         if (!$serv->taskworker) {
             //异步redis连接池

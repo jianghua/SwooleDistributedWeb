@@ -1,6 +1,8 @@
+# SwooleDistributedWeb v0.1.3
+去掉模板中的asset，命名规范化  
+swooledistributed 离线文档更新(2017-01-13 16:27)
 # SwooleDistributedWeb v0.1.2
-多图上传bug修复  
-swooledistributed 离线文档更新(2017-01-12 14:31)  
+多图上传bug修复   
 swooledistributed 更新为1.7.4
 # SwooleDistributedWeb v0.1.1
 SwooleDistributed v1.6升级为v1.7，增加单元测试模块  
