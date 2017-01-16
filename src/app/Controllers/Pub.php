@@ -48,7 +48,7 @@ class Pub extends BaseController
         if (!empty($this->get('background')) && trim(urldecode($this->get('background'))) && preg_match('/(^#[a-z0-9){6}$)/im', trim(urldecode($this->get('background'))))) 
             $checkcode->background = trim(urldecode($this->get('background')));
         
-        $this->http_output->set_header("content-type", "image/png");        
+        $this->http_output->setHeader("content-type", "image/png");        
         $checkcode->doimage();
         $checkcode = $checkcode->get_code();
         $this->setSession('checkcode', $checkcode, 120);
