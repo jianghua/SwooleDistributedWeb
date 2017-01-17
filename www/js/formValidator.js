@@ -66,7 +66,7 @@ $.formValidator =
 	bindSubmit : function(settings)
 	{
 		if (settings.ajaxCountValid > 0 && settings.submitAfterAjaxPrompt != "") {
-			alert(settings.submitAfterAjaxPrompt);	
+//			alert(settings.submitAfterAjaxPrompt);	
 			return false;
 		}
 		return $.formValidator.pageIsValid(settings.validatorGroup);
@@ -267,8 +267,9 @@ $.formValidator =
 		var validvalue = $(elem).val();
 		returnObj.setting = setting;
 		//defaultPassed还未处理
-		if(validValueOld!= validvalue || validValueOld == validvalue && elem.onceValided == undefined)
+		if(elem.firstAjax==undefined||validValueOld!= validvalue || validValueOld == validvalue && elem.onceValided == undefined)
 		{
+			elem.firstAjax=true;
 			$.formValidator.ajaxValid(returnObj);
 		}
 		else

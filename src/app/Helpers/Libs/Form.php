@@ -115,17 +115,17 @@ class Form
 	    {
 	        //表单验证部分，
 	        if (isset($v['validates']) && $validates = $v['validates']){
-    	        $validates_str = ".formValidator({
+    	        $validates_str_pre = ".formValidator({
         	                    empty: true
         	                })";
-    	        $min = $max = '';
+    	        $min = $max = $validates_str= '';
     	        $tipID = isset($validates['tipID']) && $validates['tipID'] ? "tipID:'{$validates['tipID']}'," : '';
     	        foreach ($validates as $validate=>$rule){
     	            // 为空的情况 -required
     	            if($validate == 'required')
     	            {
     	                if (!empty($rule)){
-    	                    $validates_str = ".formValidator({
+    	                    $validates_str_pre = ".formValidator({
     	                    {$tipID}
     	                    empty: false,
     	                    onEmpty: \"{$rule}\",
@@ -213,19 +213,19 @@ class Form
     	        }
     	        
     	        if ($min || $max) {
-    	            $validates_str .= ".inputValidator({";
+    	            $validates_str_pre .= ".inputValidator({";
     	            $has_min = false;
     	            if ($min){
     	                $has_min = true;
-    	                $validates_str .= "min: {$min},onErrorMin: '{$min_msg}'";
+    	                $validates_str_pre .= "min: {$min},onErrorMin: '{$min_msg}'";
     	            }
     	            if ($max){
-    	                $has_min && $validates_str .= ',';
-    	                $validates_str .= "max: {$max},onErrorMax: '{$max_msg}'";
+    	                $has_min && $validates_str_pre .= ',';
+    	                $validates_str_pre .= "max: {$max},onErrorMax: '{$max_msg}'";
     	            }
-	                $validates_str .= "})";
+	                $validates_str_pre .= "})";
     	        }
-    	        
+    	        $validates_str = $validates_str_pre. $validates_str;
     	        if ($validates_str){
     	            $forms[$k] = "$(\"#{$k}\"){$validates_str};";
     	        }

@@ -1,5 +1,6 @@
 # SwooleDistributedWeb v0.1.3
 去掉模板中的asset，命名规范化  
+修复formValidator的bug  
 swooledistributed 离线文档更新(2017-01-13 16:27)
 # SwooleDistributedWeb v0.1.2
 多图上传bug修复   
