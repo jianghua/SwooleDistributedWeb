@@ -86,6 +86,8 @@ class Form
 	        $forms[$k]['tips_container'] = "<span id=\"{$k}Tip\" class=\"tip\"></span>";
 	        //表单类型
 	        $forms[$k]['type'] = $func;
+	        //表单值
+	        $forms[$k]['value'] = $forms[$k]['value'] ?? $value;
 	    }
 	    return $forms;
 	}
@@ -293,7 +295,8 @@ class Form
                         unset($input[$_p]);
                     }
                 }
-                $input[$name] = array_filter($input[$name]) ? : '';      //过滤掉重复的
+                //过滤掉重复的，并且重置键
+                $input[$name] = array_values(array_filter($input[$name])) ? : '';
             }
             //级联选择
             if ($type == 'cascade_select'){
@@ -689,7 +692,7 @@ class Form
         }
         $input_hidden_str = "$('#{$name}'+{$file_name}_num).val(data.url);";
         //已上传数量
-        $num = max(0, count($ret['value']));
+        $num = max(0, max(array_keys($ret['value']))+1);
         
         $form .= '<script src="'.url('js/jquery.ajaxfileupload.js').'" type="text/javascript"></script>';
         $form .= "<script type=\"text/javascript\">
@@ -899,6 +902,7 @@ class Form
             //默认值
             if (isset($data[$_name])){
                 $configs['data-value'] = $data[$_name];
+                $ret['value'][$_name] = $data[$_name];
             }
             
             unset($configs['validates']);
