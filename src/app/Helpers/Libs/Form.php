@@ -666,11 +666,14 @@ class Form
      * @param $attrArray html的属性 例如  class="x1"
      * @return unknown_type
      */
-    static function multi_upload($name, $value = '', $attrArray = null, $data=[])
+    static function multi_upload($name, $value = [], $attrArray = null, $data=[])
     {
-        $ret['value'] = $value ?? '';
+        $ret['value'] = $value ?? [];
         if ($ret['value']){
             $ret['value'] = json_decode($ret['value'], true);
+        }
+        if (!is_array($ret['value'])){
+            $ret['value'] = [$ret['value']];
         }
          
         $file_name = $name. 'File';
