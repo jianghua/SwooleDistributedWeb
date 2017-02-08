@@ -22,7 +22,7 @@ use Server\Cache\ICache;
  */
 abstract class SwooleServer extends Child
 {
-    const version = "1.7.4";
+    const version = "1.7.5";
     const versionWeb = "0.1.3";       //SwooleDistributedWeb版本
     /**
      * Daemonize.
@@ -190,6 +190,7 @@ abstract class SwooleServer extends Child
 
     public function __construct()
     {
+        $this->afterConstruct();
         $this->onErrorHandel = [$this, 'onErrorHandel'];
         self::$_worker = $this;
         // 加载配置

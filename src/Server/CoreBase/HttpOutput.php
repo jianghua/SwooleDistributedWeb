@@ -96,9 +96,9 @@ class HttpOutput
      * 发送
      * @param string $output
      * @param bool $gzip
-     * @param bool $destory
+     * @param bool $destroy
      */
-    public function end($output = '', $gzip = true, $destory = true)
+    public function end($output = '', $gzip = true, $destroy = true)
     {
         $output ?? '';  //屏蔽null
         
@@ -118,7 +118,7 @@ class HttpOutput
         $this->response->header('Cache-Control', 'no-cache');
         $this->response->header('Expires', '-1');
         $this->response->end($output);
-        if ($destory) {
+        if ($destroy) {
             $this->controller->destroy();
         }
         return;
@@ -128,13 +128,13 @@ class HttpOutput
      * 输出文件（会自动销毁）
      * @param $root_file
      * @param $file_name
-     * @param bool $destory
+     * @param bool $destroy
      * @return mixed
      */
-    public function endFile($root_file, $file_name, $destory = true)
+    public function endFile($root_file, $file_name, $destroy = true)
     {
         $result = httpEndFile($root_file . '/' . $file_name, $this->request, $this->response);
-        if ($destory) {
+        if ($destroy) {
             $this->controller->destroy();
         }
         return $result;
