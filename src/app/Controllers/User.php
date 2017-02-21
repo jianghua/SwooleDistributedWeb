@@ -226,6 +226,15 @@ class User extends BaseController
         $this->output();
     }
     
+    public function sessionSet() {
+        $this->setSession('sess_test', '1');
+        $this->output();
+    }
+    public function sessionGet() {
+        echo yield $this->getSession('sess_test');
+        $this->output();
+    }
+    
     /**
      * 设置用户cookie
      * @param string $username

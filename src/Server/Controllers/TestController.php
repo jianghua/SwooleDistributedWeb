@@ -2,6 +2,7 @@
 namespace Server\Controllers;
 
 use Server\CoreBase\Controller;
+use Server\CoreBase\SelectCoroutine;
 use Server\Models\TestModel;
 use Server\Tasks\TestTask;
 
@@ -157,6 +158,44 @@ class TestController extends Controller
         $this->http_output->end($result);
     }
 
+    /**
+     * select方法测试
+     * @return \Generator
+     */
+    public function test_select()
+    {
+        yield $this->redis_pool->getCoroutine()->set('test', 1);
+        $c1 = $this->redis_pool->getCoroutine()->get('test');
+        $c2 = $this->redis_pool->getCoroutine()->get('test1');
+        $result = yield SelectCoroutine::Select(function ($result) {
+            if ($result != null) {
+                return true;
+            }
+            return false;
+        }, $c2, $c1);
+        $this->http_output->end($result);
+    }
+
+    public function startInterruptedTask()
+    {
+        $testTask = $this->loader->task('TestTask');
+        $task_id = $testTask->testInterrupted();
+        $testTask->startTask(null);
+        $this->http_output->end("task_id = $task_id");
+    }
+
+    public function interruptedTask()
+    {
+        $task_id = $this->http_input->getPost('task_id');
+        get_instance()->interruptedTask($task_id);
+        $this->http_output->end("ok");
+    }
+
+    public function getAllTask()
+    {
+        $messages = get_instance()->getServerAllTaskMessage();
+        $this->http_output->end(json_encode($messages));
+    }
     /**
      * @return boolean
      */

@@ -22,7 +22,7 @@ use Server\Cache\ICache;
  */
 abstract class SwooleServer extends Child
 {
-    const version = "1.7.5";
+    const version = "1.7.7";
     const versionWeb = "0.1.3";       //SwooleDistributedWeb版本
     /**
      * Daemonize.
@@ -638,8 +638,10 @@ abstract class SwooleServer extends Child
             apc_clear_cache();
         }
         file_put_contents(self::$pidFile, ',' . $serv->worker_pid, FILE_APPEND);
-        if (!$serv->taskworker && $this->needCoroutine) {//worker进程启动协程调度器
-            $this->coroutine = new Coroutine();
+        if (!$serv->taskworker) {//worker进程
+            if ($this->needCoroutine) {//启动协程调度器
+                $this->coroutine = new Coroutine();
+            }
             self::setProcessTitle('SWD-Worker');
         } else {
             self::setProcessTitle('SWD-Tasker');

@@ -1,8 +1,8 @@
 # SwooleDistributedWeb v0.1.3
-swooledistributed 更新为1.7.5  
+swooledistributed 更新为1.7.6  
 去掉模板中的asset，命名规范化  
 修复formValidator的bug  
-swooledistributed 离线文档更新(2017-01-13 16:27)
+swooledistributed 离线文档更新(2017-02-21 16:27)
 # SwooleDistributedWeb v0.1.2
 多图上传bug修复   
 swooledistributed 更新为1.7.4
@@ -17,7 +17,7 @@ swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水�
 1. SwooleDistributedWeb  
  https://www.gitbook.com/book/jianghua/swooledistributedweb/details
 2. SwooleDistributed 文档  
- http://182.92.224.125/  
+ http://docs.sder.xin  
  https://www.gitbook.com/book/tmtbe/swooledistributed/details
 3. Swoole 文档  
  http://wiki.swoole.com/
