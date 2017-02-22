@@ -101,5 +101,4 @@ class Task extends TaskProxy
     {
         return get_instance()->getMysql();
     }
-
 }

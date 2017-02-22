@@ -101,9 +101,11 @@ class HttpOutput
     public function end($output = '', $gzip = true, $destroy = true)
     {
         $output ?? '';  //屏蔽null
-        
-        $_data = ob_get_clean();
-        $output = $_data. $output;
+        //debug模式，把信息直接打印到浏览器
+        if (get_instance()->config->get('server.debug')){
+            $_data = ob_get_clean();
+            $output = $_data. $output;
+        }
         //低版本swoole的gzip方法存在效率问题
         if ($gzip) {
             $this->response->gzip(1);

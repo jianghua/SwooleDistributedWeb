@@ -141,7 +141,10 @@ abstract class SwooleHttpServer extends SwooleServer
             //非public方法，不调用
             if (method_exists($controller_instance, $method_name) && is_callable([$controller_instance, $method_name])) {
                 try {
-                    ob_start();
+                    //debug模式，把信息直接打印到浏览器
+                    if ($this->config->get('server.debug')){
+                        ob_start();
+                    }
                     $is_continue = $controller_instance->setRequestResponse($request, $response, $controller_name, $method_name);
                     if ($is_continue === false){
                         return ;
