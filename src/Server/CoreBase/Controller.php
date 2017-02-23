@@ -128,6 +128,8 @@ class Controller extends CoreBase
      */
     public function initialization()
     {
+    	$context = ['request_id' => crc32($this->controller_name . $this->method_name . time())];
+        $this->setContext($context);
         return true;
     }
 

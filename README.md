@@ -1,5 +1,5 @@
 # SwooleDistributedWeb v0.1.3
-swooledistributed 更新为1.7.6  
+swooledistributed 更新为1.7.8  
 去掉模板中的asset，命名规范化  
 修复formValidator的bug  
 swooledistributed 离线文档更新(2017-02-21 16:27)

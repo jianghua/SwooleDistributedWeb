@@ -32,6 +32,13 @@ class TestController extends Controller
         $this->send($this->client_data->data);
     }
 
+    public function testContext()
+    {
+        $this->getContext()['test'] = 1;
+        print_r($this->getContext());
+        $this->testModel = $this->loader->model('TestModel', $this);
+        $this->testModel->contextTest();
+    }
     /**
      * mysql 事务协程测试
      */
