@@ -69,7 +69,7 @@ class Form
 	        }
 	        else
 	        {
-	            $option = $v['option'];
+	            $option = $v['option'] ?? [];
 	            $self = $v['self'] ?? false;
 	            $label_class = $v['label_class'] ?? '';
 	            unset($v['option'],$v['self'],$v['label_class']);
@@ -621,6 +621,7 @@ class Form
     	    case 'image': $upload_uri = 'ajax/image';break;
     	    default: $upload_uri = 'ajax/image';
     	}
+    	$upload_maxsize= get_instance()->config->get('upload_maxsize');
     	
     	$form = "<input type='hidden' name='$name' id='$name' value='$value'>";
     	$form .= '<script src="'.url('js/jquery.ajaxfileupload.js').'" type="text/javascript"></script>';
@@ -631,6 +632,8 @@ class Form
                         url: '".url($upload_uri)."?r='+Math.random(), //用于文件上传的服务器端请求地址
                         secureuri: false, //是否需要安全协议，一般设置为false
                         fileElementId: '{$file_name}', //文件上传域的ID
+                        maxFileSize: {$upload_maxsize},
+                        maxFileSizeErr: '文件太大',
                         data: {name: '{$file_name}', height: {$height}, width: {$width}},
                         dataType: 'text', //返回值类型 
                         success: function (data, status)  //服务器成功响应处理函数
@@ -696,6 +699,7 @@ class Form
         $input_hidden_str = "$('#{$name}'+{$file_name}_num).val(data.url);";
         //已上传数量
         $num = max(0, max(array_keys($ret['value']))+1);
+        $upload_maxsize= get_instance()->config->get('upload_maxsize');
         
         $form .= '<script src="'.url('js/jquery.ajaxfileupload.js').'" type="text/javascript"></script>';
         $form .= "<script type=\"text/javascript\">
@@ -711,6 +715,8 @@ class Form
                     url: '".url($upload_uri)."?r='+Math.random(), //用于文件上传的服务器端请求地址
                     secureuri: false, //是否需要安全协议，一般设置为false
                     fileElementId: '{$file_name}', //文件上传域的ID
+                    maxFileSize: {$upload_maxsize},
+                    maxFileSizeErr: '文件太大',
                     data: {name: '{$file_name}', height: {$height}, width: {$width}},
                     dataType: 'text', //返回值类型 
                     success: function (data, status)  //服务器成功响应处理函数
@@ -830,7 +836,7 @@ class Form
      * @param $attrArray
      * @return string
      */
-	static function hidden($name,$value='',$attrArray=null, $data=[])
+	static function hidden($name,$attrArray=null, $value='',$data=[])
 	{
 	    $attrStr = self::input_attr($attrArray);
 		return "<input type='hidden' name='{$name}' id='{$name}' value='{$value}' {$attrStr} />";

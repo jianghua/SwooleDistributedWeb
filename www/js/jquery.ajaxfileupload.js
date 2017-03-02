@@ -51,6 +51,27 @@ jQuery.extend({
 
         return io
     },
+    checkMaxFileSize: function(maxFileSize, fileElementId)
+    {
+    	//no limit 
+    	if (typeof(maxFileSize) == 'undefined' || maxFileSize == 0)
+    	{
+    		return true;
+    	}
+    	var fileSize = 0;         
+    	var element = $('#' + fileElementId)[0];
+    	if(window.ActiveXObject && !element.files) 
+    	{
+    		var filePath = element.value;     
+    		var fileSystem = new ActiveXObject("Scripting.FileSystemObject");        
+    		var file = fileSystem.GetFile (filePath);     
+    		fileSize = file.Size; 
+    	}else
+    	{
+    		fileSize = element.files[0].size;     
+    	}
+    	return maxFileSize > fileSize; 
+    },
     createUploadForm: function(id, fileElementId)
     {
         //create form
@@ -86,7 +107,14 @@ jQuery.extend({
     ajaxFileUpload: function(s) {
         // TODO introduce global settings, allowing the client to modify them for all requests, not only timeout
         s = jQuery.extend({}, jQuery.ajaxSettings, s);
-        var id = new Date().getTime()
+        var id = new Date().getTime();
+        //chek file size
+        var is_pass = jQuery.checkMaxFileSize(s.maxFileSize, s.fileElementId);
+        if (! is_pass){
+        	var msg = s.maxFileSizeErr ? s.maxFileSizeErr : 'File max size is '+s.maxFileSize+' B';
+        	jQuery.handleError(s, msg, 'error');
+        	return ;
+        }
         var form = jQuery.createUploadForm(id, s.fileElementId);
         if ( s.data ) form = jQuery.addOtherRequestsToForm(form,s.data);
         var io = jQuery.createUploadIframe(id, s.secureuri);
