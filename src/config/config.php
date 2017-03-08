@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: tmtbe
+ * User: zhangjincheng
  * Date: 16-7-14
  * Time: 下午1:58
  */
@@ -29,7 +29,7 @@ $config['tcp']['port'] = 9093;
 /**
  * 服务器设置
  */
-$config['server']['debug'] = 1;     //debug模式
+$config['server']['debug'] = 0;     //debug模式
 $config['server']['dispatch_port'] = 9991;
 $config['server']['send_use_task_num'] = 20;
 $config['server']['log_path'] = '/../logs/';

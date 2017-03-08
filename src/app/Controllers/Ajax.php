@@ -12,10 +12,8 @@ use app\Helpers\Libs\RandomKey;
  */
 class Ajax extends BaseController
 {
-    public function initialization(){
-        if (! parent::initialization()){
-            return false;
-        }
+    protected function initialization($controller_name, $method_name){
+        parent::initialization($controller_name, $method_name);
     }
     
     /**

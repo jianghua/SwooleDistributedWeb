@@ -22,10 +22,8 @@ class User extends BaseController
      * @author weihan
      * @datetime 2016年11月21日下午3:29:34
      */
-    public function initialization(){
-        if (! parent::initialization()){
-            return false;
-        }
+    protected function initialization($controller_name, $method_name){
+        parent::initialization($controller_name, $method_name);
         
         $this->model = $this->model('UserModel');
         $this->userid = $this->getUserid();

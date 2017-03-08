@@ -1,5 +1,14 @@
 # SwooleDistributedWeb v0.2.0
 swooledistributed 更新为v2.0.0-beta
+1.协程优化，速度更快，功能更强大
+2.httpClient，client连接池，REST和RPC的支持
+3.timerTask优化
+4.协程熔断器，可以超时降级和熔断恢复
+5.包结构调整优化，分离协程，连接池模块，模块解耦
+6.全链路监控，开放Context上下文
+7.推荐使用对象池模式，优化内存分配和GC
+8.提供分布式锁功能，简单易用，更多分布式工具逐步更新
+
 文件上传组件，增加大小JS验证  
 去掉模板中的asset，命名规范化  
 修复formValidator的bug  

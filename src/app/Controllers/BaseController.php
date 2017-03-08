@@ -17,17 +17,21 @@ use Server\CoreBase\XssClean;
  */
 class BaseController extends SController
 {
+    public $controller_name;
+    public $method_name;
+    
     protected $gzip = true;
     public $cookie_userinfo = 'userinfo';
     protected $auth_str;
     /**
      * 不能有yield
      * 初始化每次执行方法之前都会执行initialization
-     * 初始化需要返回true/false，返回true表示代码继续往下执行，返回false表示中断执行，可能需要页面跳转
      */
-    public function initialization()
+    protected function initialization($controller_name, $method_name)
     {
-        return true;
+        $this->controller_name = $controller_name;
+        $this->method_name = $method_name;
+        parent::initialization($controller_name, $method_name);
     }
     
     /**

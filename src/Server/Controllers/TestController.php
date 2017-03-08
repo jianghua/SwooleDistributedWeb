@@ -1,17 +1,18 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: zhangjincheng
+ * Date: 16-7-15
+ * Time: 下午3:51
+ */
 namespace Server\Controllers;
 
 use Server\CoreBase\Controller;
 use Server\CoreBase\SelectCoroutine;
+use Server\Memory\Lock;
 use Server\Models\TestModel;
 use Server\Tasks\TestTask;
 
-/**
- * Created by PhpStorm.
- * User: tmtbe
- * Date: 16-7-15
- * Time: 下午3:51
- */
 class TestController extends Controller
 {
     /**
@@ -107,7 +108,15 @@ class TestController extends Controller
      */
     public function test()
     {
-        $this->http_output->end('helloworld', false);
+        $max = $this->http_input->get('max');
+        if (empty($max)) {
+            $max = 100;
+        }
+        $sum = 0;
+        for ($i = 0; $i < $max; $i++) {
+            $sum += $i;
+        }
+        $this->http_output->end($sum);
     }
 
     /**
@@ -115,15 +124,8 @@ class TestController extends Controller
      */
     public function redis()
     {
-        $value = $this->redis_pool->getCoroutine()->get('test');
-        yield $value;
-        $value1 = $this->redis_pool->getCoroutine()->get('test1');
-        yield $value1;
-        $value2 = $this->redis_pool->getCoroutine()->get('test2');
-        yield $value2;
-        $value3 = $this->redis_pool->getCoroutine()->get('test3');
-        yield $value3;
-        $this->http_output->end(1, false);
+        $value = yield $this->redis_pool->getCoroutine()->get('test');
+        $this->http_output->end(1);
     }
 
     /**
@@ -132,10 +134,7 @@ class TestController extends Controller
     public function aredis()
     {
         $value = get_instance()->getRedis()->get('test');
-        $value1 = get_instance()->getRedis()->get('test1');
-        $value2 = get_instance()->getRedis()->get('test2');
-        $value3 = get_instance()->getRedis()->get('test3');
-        $this->http_output->end(1, false);
+        $this->http_output->end(1);
     }
     /**
      * html测试
@@ -154,16 +153,6 @@ class TestController extends Controller
         $this->http_output->endFile(SERVER_DIR, 'Views/test.html');
     }
 
-
-    /**
-     * 协程的httpclient测试
-     */
-    public function test_httpClient()
-    {
-        $httpClient = yield $this->client->coroutineGetHttpClient('http://localhost:8081');
-        $result = yield $httpClient->coroutineGet("/TestController/test_request", ['id' => 123]);
-        $this->http_output->end($result);
-    }
 
     /**
      * select方法测试
@@ -211,4 +200,24 @@ class TestController extends Controller
         return $this->is_destroy;
     }
 
+    public function lock()
+    {
+        $lock = new Lock('test1');
+        $result = yield $lock->coroutineLock();
+        $this->http_output->end($result);
+    }
+
+    public function unlock()
+    {
+        $lock = new Lock('test1');
+        $result = yield $lock->coroutineUnlock();
+        $this->http_output->end($result);
+    }
+
+    public function destroylock()
+    {
+        $lock = new Lock('test1');
+        $lock->destroy();
+        $this->http_output->end(1);
+    }
 }

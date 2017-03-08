@@ -1,7 +1,7 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: tmtbe
+ * User: zhangjincheng
  * Date: 16-7-15
  * Time: 上午11:38
  */
@@ -23,9 +23,10 @@ function getTickTime()
     return \Server\SwooleDistributedServer::get_instance()->tickTime;
 }
 
-function getMillisecond() {
+function getMillisecond()
+{
     list($t1, $t2) = explode(' ', microtime());
-    return (float)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000);
+    return (float)sprintf('%.0f', (floatval($t1) + floatval($t2)) * 1000);
 }
 
 function shell_read()

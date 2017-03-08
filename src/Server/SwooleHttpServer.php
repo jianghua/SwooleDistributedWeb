@@ -2,7 +2,7 @@
 /**
  * 包含http服务器
  * Created by PhpStorm.
- * User: tmtbe
+ * User: zhangjincheng
  * Date: 16-7-29
  * Time: 上午9:42
  */
@@ -12,7 +12,7 @@ namespace Server;
 
 use League\Plates\Engine;
 use Server\CoreBase\ControllerFactory;
-use Server\CoreBase\GeneratorContext;
+use Server\Coroutine\Coroutine;
 
 abstract class SwooleHttpServer extends SwooleServer
 {
@@ -131,7 +131,7 @@ abstract class SwooleHttpServer extends SwooleServer
         $error_404 = false;
         $controller_instance = null;
         $this->route->handleClientRequest($request);
-        if (strpos($request->header['host'], ':') !== false){
+        if (strpos($request->header['host']??'', ':') !== false){
             list($host) = explode(':', $request->header['host']);
         }
         $controller_name = $this->route->getControllerName();
@@ -141,20 +141,12 @@ abstract class SwooleHttpServer extends SwooleServer
             //非public方法，不调用
             if (method_exists($controller_instance, $method_name) && is_callable([$controller_instance, $method_name])) {
                 try {
-                    //debug模式，把信息直接打印到浏览器
+		            //debug模式，把信息直接打印到浏览器
                     if ($this->config->get('server.debug')){
                         ob_start();
                     }
-                    $is_continue = $controller_instance->setRequestResponse($request, $response, $controller_name, $method_name);
-                    if ($is_continue === false){
-                        return ;
-                    }
-                    $generator = call_user_func([$controller_instance, $method_name], $this->route->getParams());
-                    if ($generator instanceof \Generator) {
-                        $generatorContext = new GeneratorContext();
-                        $generatorContext->setController($controller_instance, $controller_name, $method_name);
-                        $this->coroutine->start($generator, $generatorContext);
-                    }
+                    $controller_instance->setRequestResponse($request, $response, $controller_name, $method_name);
+                    Coroutine::startCoroutine([$controller_instance, $method_name], $this->route->getParams());
                     return;
                 } catch (\Exception $e) {
                     call_user_func([$controller_instance, 'onExceptionHandle'], $e);
@@ -191,6 +183,9 @@ abstract class SwooleHttpServer extends SwooleServer
     public function getHostRoot($host)
     {
         $root_path = $this->config['http']['root'][$host]['root']??'';
+        if (empty($root_path)) {
+            $root_path = $this->config['http']['root']['default']['root']??'';
+        }
         if (!empty($root_path)) {
             $root_path = WWW_DIR . "/$root_path/";
         } else {
