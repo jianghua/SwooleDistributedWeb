@@ -13,24 +13,15 @@ $config['redis']['enable'] = true;
 /**
  * 选择数据库环境
  */
-$config['redis']['active'] = 'test';
+$config['redis']['active'] = 'local';
+
 /**
  * 本地环境
  */
-$config['redis']['test']['ip'] = '127.0.0.1';
-$config['redis']['test']['port'] = 6379;
-$config['redis']['test']['select'] = 0;
-$config['redis']['test']['password'] = 'weihan';
-$config['redis']['asyn_max_count'] = 10;
-
-/**
- * 本地环境2
- */
-$config['redis']['test2']['ip'] = '192.168.21.10';
-$config['redis']['test2']['port'] = 6379;
-$config['redis']['test2']['select'] = 2;
-$config['redis']['test2']['password'] = '123456';
-$config['redis']['asyn_max_count'] = 10;
+$config['redis']['local']['ip'] = '127.0.0.1';
+$config['redis']['local']['port'] = 6379;
+$config['redis']['local']['select'] = 1;
+$config['redis']['local']['password'] = 'weihan';
 
 /**
  * 这个不要删除，dispatch使用的redis环境
@@ -40,6 +31,7 @@ $config['redis']['dispatch']['ip'] = 'unix:/var/run/redis/redis.sock';
 $config['redis']['dispatch']['port'] = 0;
 $config['redis']['dispatch']['select'] = 1;
 $config['redis']['dispatch']['password'] = '123456';
+
 $config['redis']['asyn_max_count'] = 10;
 
 /**

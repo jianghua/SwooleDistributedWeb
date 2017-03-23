@@ -1,5 +1,5 @@
 # SwooleDistributedWeb v0.2.0
-swooledistributed 更新为v2.0.0-beta  
+swooledistributed 更新为v2.0.0-beta更新  
 1.协程优化，速度更快，功能更强大  
 2.httpClient，client连接池，REST和RPC的支持  
 3.timerTask优化  

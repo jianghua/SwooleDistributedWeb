@@ -7,6 +7,7 @@
  */
 namespace Server\Controllers;
 
+use Server\Components\Consul\ConsulServices;
 use Server\CoreBase\Controller;
 use Server\CoreBase\SelectCoroutine;
 use Server\Memory\Lock;
@@ -33,12 +34,25 @@ class TestController extends Controller
         $this->send($this->client_data->data);
     }
 
+    public function tcp_add()
+    {
+        $max = $this->client_data->max;
+        if (empty($max)) {
+            $max = 100;
+        }
+        $sum = 0;
+        for ($i = 0; $i < $max; $i++) {
+            $sum += $i;
+        }
+        $this->send($max);
+    }
+
     public function testContext()
     {
         $this->getContext()['test'] = 1;
-        print_r($this->getContext());
         $this->testModel = $this->loader->model('TestModel', $this);
         $this->testModel->contextTest();
+        $this->http_output->end($this->getContext());
     }
     /**
      * mysql 事务协程测试
@@ -46,9 +60,9 @@ class TestController extends Controller
     public function mysql_begin_coroutine_test()
     {
         $id = yield $this->mysql_pool->coroutineBegin($this);
-        $update_result = yield $this->mysql_pool->dbQueryBuilder->update('user_info')->set('sex', '0')->where('uid', 36)->coroutineSend($id);
-        $result = yield $this->mysql_pool->dbQueryBuilder->select('*')->from('user_info')->where('uid', 36)->coroutineSend($id);
-        if ($result['result'][0]['channel'] == 888) {
+        $update_result = yield $this->mysql_pool->dbQueryBuilder->update('user_info')->set('sex', '1')->where('uid', 10000)->coroutineSend($id);
+        $result = yield $this->mysql_pool->dbQueryBuilder->select('*')->from('user_info')->where('uid', 10000)->coroutineSend($id);
+        if ($result['result'][0]['channel'] == 1000) {
             $this->http_output->end('commit');
             yield $this->mysql_pool->coroutineCommit($id);
         } else {
@@ -56,6 +70,7 @@ class TestController extends Controller
             yield $this->mysql_pool->coroutineRollback($id);
         }
     }
+
     /**
      * 绑定uid
      */
@@ -120,11 +135,20 @@ class TestController extends Controller
     }
 
     /**
+     * health
+     */
+    public function health()
+    {
+        $this->http_output->end('ok');
+    }
+
+    /**
      * http redis 测试
      */
     public function redis()
     {
-        $value = yield $this->redis_pool->getCoroutine()->get('test');
+        $testModel = $this->loader->model('TestModel', $this);
+        $result = yield $testModel->testRedis();
         $this->http_output->end(1);
     }
 
@@ -136,6 +160,7 @@ class TestController extends Controller
         $value = get_instance()->getRedis()->get('test');
         $this->http_output->end(1);
     }
+
     /**
      * html测试
      */
@@ -152,7 +177,6 @@ class TestController extends Controller
     {
         $this->http_output->endFile(SERVER_DIR, 'Views/test.html');
     }
-
 
     /**
      * select方法测试
@@ -174,7 +198,7 @@ class TestController extends Controller
 
     public function startInterruptedTask()
     {
-        $testTask = $this->loader->task('TestTask');
+        $testTask = $this->loader->task('TestTask', $this);
         $task_id = $testTask->testInterrupted();
         $testTask->startTask(null);
         $this->http_output->end("task_id = $task_id");
@@ -219,5 +243,28 @@ class TestController extends Controller
         $lock = new Lock('test1');
         $lock->destroy();
         $this->http_output->end(1);
+    }
+
+    public function testTask()
+    {
+        $testTask = $this->loader->task('TestTask', $this);
+        $testTask->testLong();
+        $result = yield $testTask->coroutineSend()->setTimeout(20000);
+        $this->http_output->end($result);
+    }
+
+    public function testConsul()
+    {
+        $rest = ConsulServices::getInstance()->getRESTService('MathService', $this->context);
+        $rest->setQuery(['one' => 1, 'two' => 2]);
+        $reuslt = yield $rest->add();
+        $this->http_output->end($reuslt['body']);
+    }
+
+    public function testConsul2()
+    {
+        $rest = ConsulServices::getInstance()->getRPCService('MathService', $this->context);
+        $reuslt = yield $rest->add(1, 2);
+        $this->http_output->end($reuslt);
     }
 }

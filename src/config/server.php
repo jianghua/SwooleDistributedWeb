@@ -75,13 +75,12 @@ $config['dispatch_server']['set'] = [
 //协程超时时间
 $config['coroution']['timerOut'] = 5000;
 
-//异步服务是否启动一个新进程（启动后异步效率会降低2倍，但维护连接池只有一个）
-$config['asyn_process_enable'] = false;
-
 //是否启动集群模式
 $config['use_dispatch'] = false;
 
 //是否启用自动reload
 $config['auto_reload_enable'] = true;
 
+//是否启用consul
+$config['consul_enable'] = false;
 return $config;
