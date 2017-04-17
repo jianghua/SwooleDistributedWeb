@@ -131,20 +131,49 @@ abstract class SwooleHttpServer extends SwooleServer
         $error_404 = false;
         $controller_instance = null;
         $this->route->handleClientRequest($request);
-        if (strpos($request->header['host']??'', ':') !== false){
-            list($host) = explode(':', $request->header['host']);
+        list($host) = explode(':', $request->header['host']??'');
+        $path = $this->route->getPath();
+        if($path=='/404'){
+            $response->header('HTTP/1.1', '404 Not Found');
+            if (!isset($this->cache404)) {//内存缓存404页面
+                $template = $this->loader->view('server::error_404');
+                $this->cache404 = $template->render();
+            }
+            $response->end($this->cache404);
+            return;
         }
-        $controller_name = $this->route->getControllerName();
-        $controller_instance = ControllerFactory::getInstance()->getController($controller_name);
-        if ($controller_instance != null) {
-		if ($this->route->getMethodName() == '_consul_health') {//健康检查
-	            $response->end('ok');
-	            $controller_instance->destroy();
-	            return;
-	        }
-            $method_name = $this->config->get('http.method_prefix', '') . $this->route->getMethodName();
-            //非public方法，不调用
-            if (method_exists($controller_instance, $method_name) && is_callable([$controller_instance, $method_name])) {
+        $extension = pathinfo($this->route->getPath(), PATHINFO_EXTENSION);
+        /* 主页如果是静态页面，把注释去掉
+         * if ($path=="/") {//寻找主页
+            $www_path = $this->getHostRoot($host) . $this->getHostIndex($host);
+            $result = httpEndFile($www_path, $request, $response);
+            if (!$result) {
+                $error_404 = true;
+            } else {
+                return;
+            }
+        }else  */
+        if(!empty($extension)){//有后缀
+            $www_path = $this->getHostRoot($host) . $this->route->getPath();
+            $result = httpEndFile($www_path, $request, $response);
+            if (!$result) {
+                $error_404 = true;
+            }
+        }
+        else {
+            $controller_name = $this->route->getControllerName();
+            $controller_instance = ControllerFactory::getInstance()->getController($controller_name);
+            if ($controller_instance != null) {
+                if($this->route->getMethodName()=='_consul_health'){//健康检查
+                    $response->end('ok');
+                    $controller_instance->destroy();
+                    return;
+                }
+                $method_name = $this->config->get('http.method_prefix', '') . $this->route->getMethodName();
+		        //非public方法，不调用
+                if (!method_exists($controller_instance, $method_name) || !is_callable([$controller_instance, $method_name])) {
+                    $method_name = 'defaultMethod';
+                }
                 try {
 		            //debug模式，把信息直接打印到浏览器
                     if ($this->config->get('server.debug')){
@@ -159,24 +188,16 @@ abstract class SwooleHttpServer extends SwooleServer
             } else {
                 $error_404 = true;
             }
-        } else {
-            $error_404 = true;
         }
         if ($error_404) {
             if ($controller_instance != null) {
                 $controller_instance->destroy();
             }
-            //先根据path找下www目录
-            $www_path = $this->getHostRoot($host) . $this->route->getPath();
-            $result = httpEndFile($www_path, $request, $response);
-            if (!$result) {
-                $response->header('HTTP/1.1', '404 Not Found');
-                if (!isset($this->cache404)) {//内存缓存404页面
-                    $template = $this->loader->view('server::error_404');
-                    $this->cache404 = $template->render();
-                }
-                $response->end($this->cache404);
-            }
+            //重定向到404
+            $response->status(302);
+            $location = $this->config->get('http.domain')."/".'404';
+            $response->header('Location',$location);
+            $response->end('');
         }
     }
 

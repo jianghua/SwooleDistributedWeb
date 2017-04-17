@@ -7,6 +7,7 @@
  */
 namespace Server\Controllers;
 
+use Server\Asyn\Redis\RedisLuaManager;
 use Server\Components\Consul\ConsulServices;
 use Server\CoreBase\Controller;
 use Server\CoreBase\SelectCoroutine;
@@ -25,6 +26,13 @@ class TestController extends Controller
      * @var TestModel
      */
     public $testModel;
+
+    public function mysql()
+    {
+        $model = $this->loader->model('TestModel', $this);
+        $result = yield $model->testMysql();
+        $this->http_output->end($result);
+    }
 
     /**
      * tcp的测试
@@ -134,6 +142,11 @@ class TestController extends Controller
         $this->http_output->end($sum);
     }
 
+    public function redirect()
+    {
+        $this->redirectController('TestController','test');
+    }
+
     /**
      * health
      */
@@ -196,22 +209,7 @@ class TestController extends Controller
         $this->http_output->end($result);
     }
 
-    public function startInterruptedTask()
-    {
-        $testTask = $this->loader->task('TestTask', $this);
-        $task_id = $testTask->testInterrupted();
-        $testTask->startTask(null);
-        $this->http_output->end("task_id = $task_id");
-    }
-
-    public function interruptedTask()
-    {
-        $task_id = $this->http_input->getPost('task_id');
-        get_instance()->interruptedTask($task_id);
-        $this->http_output->end("ok");
-    }
-
-    public function getAllTask()
+    public function http_getAllTask()
     {
         $messages = get_instance()->getServerAllTaskMessage();
         $this->http_output->end(json_encode($messages));
@@ -248,8 +246,8 @@ class TestController extends Controller
     public function testTask()
     {
         $testTask = $this->loader->task('TestTask', $this);
-        $testTask->testLong();
-        $result = yield $testTask->coroutineSend()->setTimeout(20000);
+        $testTask->testMysql();
+        $result = yield $testTask->coroutineSend();
         $this->http_output->end($result);
     }
 
@@ -266,5 +264,19 @@ class TestController extends Controller
         $rest = ConsulServices::getInstance()->getRPCService('MathService', $this->context);
         $reuslt = yield $rest->add(1, 2);
         $this->http_output->end($reuslt);
+    }
+
+
+    public function testRedisLua()
+    {
+        $value = yield $this->redis_pool->getCoroutine()->evalSha(getLuaSha1('sadd_from_count'),['testlua',100],2);
+        $this->http_output->end($value);
+    }
+
+    public function testTaskStop()
+    {
+        $task = $this->loader->task('TestTask',$this);
+        $task->testStop();
+        yield $task->coroutineSend();
     }
 }

@@ -44,19 +44,19 @@ class TestModel extends Model
         });
     }
 
-    public function test_exceptionII()
-    {
-        try {
-            yield $this->test_exception();
-        } catch (\Exception $e) {
-            print_r(1);
-        }
-    }
-
     public function test_exception()
     {
         $result = yield $this->redis_pool->coroutineSend('get', 'test');
         throw new SwooleException('test');
+    }
+
+    public function test_exceptionII()
+    {
+        try{
+            yield $this->test_exception();
+        }catch (\Exception $e){
+            print_r(1);
+        }
     }
 
     public function test_task()
@@ -82,8 +82,16 @@ class TestModel extends Model
 
     public function testMysql()
     {
-        $result = yield $this->mysql_pool->dbQueryBuilder->select('*')->from('task')
-            ->whereIn('type', [0, 1])->where('status', 1)->coroutineSend();
-        return $result;
+        try {
+            $value = yield $this->mysql_pool->dbQueryBuilder->insert('MysqlTest')
+                ->option('HIGH_PRIORITY')
+                ->set('firstname', 'White')
+                ->set('lastname', 'Cat')
+                ->set('age', '25')
+                ->set('townid', '10000')->coroutineSend();
+            return $value;
+        }catch (\Exception $e){
+            return 1;
+        }
     }
 }

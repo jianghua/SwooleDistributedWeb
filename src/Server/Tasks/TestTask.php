@@ -54,15 +54,13 @@ class TestTask extends Task
     }
 
     /**
-     * 测试中断
+     * 测试停止
      */
-    public function testInterrupted()
+    public function testStop()
     {
         while (true) {
-            if ($this->checkInterrupted()) {
-                print_r("task已中断\n");
-                break;
-            }
+            sleep(1);
+            var_dump(1);
         }
     }
 
@@ -86,8 +84,7 @@ class TestTask extends Task
 
     public function testMysql()
     {
-        $result = yield $this->mysql_pool->dbQueryBuilder->select('*')->from('task')
-            ->whereIn('type', [0, 1])->where('status', 1)->coroutineSend();
+        $result = yield $this->mysql_pool->dbQueryBuilder->select('*')->from('account')->coroutineSend();
         return $result;
     }
 }

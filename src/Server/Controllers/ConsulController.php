@@ -7,7 +7,6 @@
  */
 
 namespace Server\Controllers;
-
 use Server\Components\Consul\ConsulHelp;
 use Server\CoreBase\Controller;
 use Server\SwooleMarco;
@@ -21,12 +20,12 @@ use Server\SwooleMarco;
 class ConsulController extends Controller
 {
     /**
-     * 收到消息后广播给所有的woker，更新服务
+     * 收到消息后广播给所有的worker，更新服务
      */
     public function ServiceChange()
     {
         $data = $this->http_input->getRawContent();
-        get_instance()->sendToAllWorks(SwooleMarco::CONSUL_SERVICES_CHANGE, $data, ConsulHelp::class . "::getMessgae");
+        get_instance()->sendToAllWorks(SwooleMarco::CONSUL_SERVICES_CHANGE,$data,ConsulHelp::class."::getMessgae");
         $this->http_output->end('ok');
     }
 

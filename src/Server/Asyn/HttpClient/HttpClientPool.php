@@ -20,12 +20,13 @@ class HttpClientPool extends AsynPool
      */
     public $httpClient;
     public $baseUrl;
-    protected $httpClient_max_count;
+    protected $host;
     /**
      * 一直向服务器发请求，这里需要针对返回结果验证请求是否成功
      * @var array
      */
     private $command_backup;
+    protected $httpClient_max_count;
 
     public function __construct($config, $baseUrl)
     {
@@ -80,9 +81,9 @@ class HttpClientPool extends AsynPool
                     if (!empty($data['query'])) {
                         $path = $data['path'] . '?' . $data['query'];
                     }
-                    if (count($data['headers']) != 0) {
-                        $client->setHeaders($data['headers']);
-                    }
+                    $data['headers']['Host'] = $this->host;
+                    $client->setHeaders($data['headers']);
+
                     if (count($data['cookies']) != 0) {
                         $client->setCookies($data['cookies']);
                     }
@@ -100,8 +101,12 @@ class HttpClientPool extends AsynPool
                         $data['result']['body'] = $client->body;
                         $data['result']['statusCode'] = $client->statusCode;
                         $this->distribute($data);
-                        //回归连接
-                        $this->pushToPool($client);
+                        if(strtolower($client->headers['connection'])=='keep-alive') {//代表是keepalive可以直接回归
+                            //回归连接
+                            $this->pushToPool($client);
+                        }else{//需要延迟回归
+                            $client->delay = true;
+                        }
                     });
                     break;
                 case 'download':
@@ -140,9 +145,25 @@ class HttpClientPool extends AsynPool
             }
             swoole_async_dns_lookup($host, function ($host, $ip) use (&$data) {
                 $client = new \swoole_http_client($ip, $data['port'], $data['ssl']);
+                $this->host = $host;
                 $this->pushToPool($client);
+                $client->on('close', function ($cli){
+                    if(isset($cli->delay)) {
+                        $this->pushToPool($cli);
+                        unset($cli->delay);
+                    }
+                });
             });
         }
+    }
+
+    /**
+     * 销毁Client
+     * @param $client
+     */
+    protected function destoryClient($client)
+    {
+        $client->close();
     }
 
     /**
@@ -160,14 +181,5 @@ class HttpClientPool extends AsynPool
         $this->httpClient = null;
         $this->command_backup = null;
         return $migrate;
-    }
-
-    /**
-     * 销毁Client
-     * @param $client
-     */
-    protected function destoryClient($client)
-    {
-        $client->close();
     }
 }
