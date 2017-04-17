@@ -1,9 +1,9 @@
 # SwooleDistributedWeb v0.1.4
+swooledistributed 离线文档更新(2017-04-17 15:42)  
 swooledistributed 更新为1.7.9  
 文件上传组件，增加大小JS验证  
 去掉模板中的asset，命名规范化  
 修复formValidator的bug  
-swooledistributed 离线文档更新(2017-03-08 14:50)
 # SwooleDistributedWeb v0.1.2
 多图上传bug修复   
 swooledistributed 更新为1.7.4
