@@ -27,6 +27,13 @@ class TestController extends Controller
      */
     public $testModel;
 
+
+    public function ex()
+    {
+        throw new \Exception("1");
+        $value = yield $this->redis_pool->getCoroutine()->ping();
+
+    }
     public function mysql()
     {
         $model = $this->loader->model('TestModel', $this);
@@ -62,6 +69,7 @@ class TestController extends Controller
         $this->testModel->contextTest();
         $this->http_output->end($this->getContext());
     }
+
     /**
      * mysql 事务协程测试
      */
@@ -126,6 +134,7 @@ class TestController extends Controller
         $value = $this->mysql_pool->dbQueryBuilder->insertInto('account')->intoColumns(['uid', 'static'])->intoValues([[36, 0], [37, 0]])->getStatement(true);
         $this->http_output->end($value);
     }
+
     /**
      * http测试
      */
@@ -214,6 +223,7 @@ class TestController extends Controller
         $messages = get_instance()->getServerAllTaskMessage();
         $this->http_output->end(json_encode($messages));
     }
+
     /**
      * @return boolean
      */
@@ -265,7 +275,12 @@ class TestController extends Controller
         $reuslt = yield $rest->add(1, 2);
         $this->http_output->end($reuslt);
     }
-
+    public function testConsul3()
+    {
+        $rest = ConsulServices::getInstance()->getRPCService('MathService', $this->context);
+        $reuslt = yield $rest->call('add',[1, 2],true);
+        $this->http_output->end($reuslt);
+    }
 
     public function testRedisLua()
     {

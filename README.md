@@ -1,5 +1,5 @@
 # SwooleDistributedWeb v0.2.0
-swooledistributed 更新为v2.0.2正式版  
+swooledistributed 更新为v2.0.3  
 swooledistributed 离线文档更新(2017-03-23 14:00)  
 1.协程优化，速度更快，功能更强大  
 2.httpClient，client连接池，REST和RPC的支持  

@@ -24,7 +24,7 @@ use Server\Cache\ICache;
  */
 abstract class SwooleServer extends Child
 {
-    const version = "2.0.2";
+    const version = "2.0.3";
     const versionWeb = "0.2.0";       //SwooleDistributedWeb版本
     /**
      * Daemonize.
