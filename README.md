@@ -1,6 +1,6 @@
 # SwooleDistributedWeb v0.2.0
-swooledistributed 更新为v2.0.3  
-swooledistributed 离线文档更新(2017-03-23 14:00)  
+swooledistributed 更新为v2.0.4  
+swooledistributed2 文档暂无  
 1.协程优化，速度更快，功能更强大  
 2.httpClient，client连接池，REST和RPC的支持  
 3.timerTask优化  
@@ -9,6 +9,7 @@ swooledistributed 离线文档更新(2017-03-23 14:00)
 6.全链路监控，开放Context上下文  
 7.推荐使用对象池模式，优化内存分配和GC  
 8.提供分布式锁功能，简单易用，更多分布式工具逐步更新  
+9.未来发展方向：微服务框架  
 
 文件上传组件，增加大小JS验证  
 去掉模板中的asset，命名规范化  

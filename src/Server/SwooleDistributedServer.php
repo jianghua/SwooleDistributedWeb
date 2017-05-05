@@ -2,6 +2,7 @@
 namespace Server;
 
 use Server\Asyn\AsynPool;
+use Server\Asyn\HttpClient\HttpClientPool;
 use Server\Asyn\Mysql\Miner;
 use Server\Asyn\Mysql\MysqlAsynPool;
 use Server\Asyn\Redis\RedisAsynPool;
@@ -218,7 +219,7 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
         if ($this->config->get('use_dispatch')) {
             //创建dispatch端口用于连接dispatch
             $this->dispatch_port = $this->server->listen($this->config['tcp']['socket'], $this->config['server']['dispatch_port'], SWOOLE_SOCK_TCP);
-            $this->dispatch_port->set($this->setServerSet());
+            $this->dispatch_port->set($this->probuf_set);
             $this->dispatch_port->on('close', function ($serv, $fd) {
                 print_r("Remove a dispatcher.\n");
                 for ($i = 0; $i < $this->worker_num + $this->task_num; $i++) {
@@ -566,7 +567,7 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
         //进程锁保证只有一个进程会执行以下的代码,reload也不会执行
         if (!$this->isTaskWorker() && $this->initLock->trylock()) {
             //进程启动后进行开服的初始化
-            Coroutine::startCoroutine([$this, 'onOpenServiceInitialization']);
+            Coroutine::startCoroutine([$this,'onOpenServiceInitialization']);
             if (SwooleServer::$testUnity) {
                 new TestModule(SwooleServer::$testUnityDir);
             }
@@ -595,6 +596,7 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
         $this->asynPools = [
             'redisPool' => new RedisAsynPool($this->config, $this->config->get('redis.active')),
             'mysqlPool' => new MysqlAsynPool($this->config, $this->config->get('mysql.active')),
+            'consul' => new HttpClientPool($this->config,'http://127.0.0.1:8500')
         ];
     }
 
@@ -609,6 +611,11 @@ abstract class SwooleDistributedServer extends SwooleWebSocketServer
                 $this->delAllGroups();
                 print_r("[初始化] 清除redis上所有群信息。\n");
             }
+        }
+	if($this->config['consul_enable']){
+            //选举leader
+            $ConsulModel = $this->loader->model('ConsulModel',$this);
+            yield $ConsulModel->leader();
         }
     }
 

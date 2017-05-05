@@ -24,7 +24,7 @@ use Server\Cache\ICache;
  */
 abstract class SwooleServer extends Child
 {
-    const version = "2.0.3";
+    const version = "2.0.4";
     const versionWeb = "0.2.0";       //SwooleDistributedWeb版本
     /**
      * Daemonize.
@@ -620,13 +620,33 @@ abstract class SwooleServer extends Child
      * 数据包编码
      * @param $buffer
      * @return string
+     * @throws SwooleException
      */
     public function encode($buffer)
     {
-        $total_length = $this->package_length_type_length + strlen($buffer) - $this->package_body_offset;
-        return pack($this->package_length_type, $total_length) . $buffer;
+        if ($this->probuf_set['open_length_check']??0 == 1) {
+            $total_length = $this->package_length_type_length + strlen($buffer) - $this->package_body_offset;
+            return pack($this->package_length_type, $total_length) . $buffer;
+        } else if ($this->probuf_set['open_eof_check']??0 == 1) {
+            return $buffer . $this->probuf_set['package_eof'];
+        } else {
+            throw new SwooleException("tcpServer won't support set");
+        }
     }
-
+    /**
+     * @param $buffer
+     * @return string
+     */
+    public function unEncode($buffer)
+    {
+        if ($this->probuf_set['open_length_check']??0 == 1) {
+            $data = substr($buffer, $this->package_length_type_length);
+            return $data;
+        } else if ($this->probuf_set['open_eof_check']??0 == 1) {
+            $data = $buffer;
+            return $data;
+        }
+    }
     /**
      * onSwooleStart
      * @param $serv
@@ -683,7 +703,7 @@ abstract class SwooleServer extends Child
      */
     public function onSwooleReceive($serv, $fd, $from_id, $data)
     {
-        $data = substr($data, $this->package_length_type_length);
+        $data = $this->unEncode($data);
         //反序列化，出现异常断开连接
         try {
             $client_data = $this->pack->unPack($data);

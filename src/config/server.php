@@ -77,6 +77,8 @@ $config['coroution']['timerOut'] = 5000;
 
 //是否启动集群模式
 $config['use_dispatch'] = false;
+//dispatch间的心跳时间
+$config['dispatch_heart_time'] = 60;
 
 //是否启用自动reload
 $config['auto_reload_enable'] = true;
