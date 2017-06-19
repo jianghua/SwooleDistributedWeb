@@ -102,16 +102,3 @@ function getLuaSha1($name)
 {
     return \Server\Asyn\Redis\RedisLuaManager::getLuaSha1($name);
 }
-/**
- * 获取绝对地址
- * @param $path
- * @return string
- */
-function get_www($path='')
-{
-    $normal = 'http://localhost:' . get_instance()->config['http_server']['port'];
-    if ($path){
-        $path = ($path[0]=='/'?'':'/'). $path;
-    }
-    return get_instance()->config->get('http.domain', $normal). $path;
-}

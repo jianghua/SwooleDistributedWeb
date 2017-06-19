@@ -3,6 +3,7 @@ use app\Helpers\Libs\Validate;
 use Monolog\Logger;
 use Server\DataBase\Miner;
 use Server\CoreBase\XssClean;
+use app\Models\BaseModel;
 /**
  * 通用函数库
  */
@@ -659,4 +660,34 @@ function emailShow($email){
     $arr = explode('@', $email);
     $pos = intval(strlen($arr[0])/2);
     return substr($arr[0], 0, $pos). str_repeat('*', strlen($arr[0])-$pos). '@'. $arr[1];
+}
+
+/**
+ * 
+ * @param string $model_name
+ * @return BaseModel
+ *
+ * @author weihan
+ * @datetime 2017年5月12日上午10:34:04
+ */
+function model($model_name){
+    return get_instance()->loader->model($model_name, get_instance());
+}
+/**
+ * 获取绝对地址
+ * @param $path
+ * @return string
+ */
+function get_www($path='')
+{
+    static $domain;
+    if ($domain == null){
+        $domain = 'http://localhost:' . get_instance()->config['http_server']['port'];
+        $domain = get_instance()->config->get('http.domain', $domain);
+    }
+
+    if ($path){
+        $path = ($path[0]=='/'?'':'/'). $path;
+    }
+    return $domain. $path;
 }

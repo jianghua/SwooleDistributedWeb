@@ -632,4 +632,19 @@ class BaseController extends SController
     protected function referer() {
         return $this->request->header['referer'] ?? null;
     }
+    
+    /**
+     * 获取http host
+     *
+     * @author weihan
+     * @datetime 2017年5月17日下午4:20:48
+     */
+    protected function httpHost() {
+        if (isset($this->request->header['x-forwarded-host'])){
+            $host = $this->request->header['x-forwarded-host'];
+        }else {
+            $host = $this->request->header['host'];
+        }
+        return $host;
+    }
 }

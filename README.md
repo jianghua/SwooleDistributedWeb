@@ -1,6 +1,6 @@
 # SwooleDistributedWeb v0.2.0
-swooledistributed 更新为v2.0.4  
-swooledistributed2 文档暂无  
+swooledistributed 更新为v2.0.6  
+swooledistributed2 文档http://docs2.sder.xin  
 1.协程优化，速度更快，功能更强大  
 2.httpClient，client连接池，REST和RPC的支持  
 3.timerTask优化  
@@ -27,9 +27,8 @@ swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水�
 # 文档
 1. SwooleDistributedWeb  
  https://www.gitbook.com/book/jianghua/swooledistributedweb/details
-2. SwooleDistributed 文档  
- http://docs.sder.xin  
- https://www.gitbook.com/book/tmtbe/swooledistributed/details
+2. SwooleDistributed2 文档  
+ http://docs2.sder.xin  
 3. Swoole 文档  
  http://wiki.swoole.com/
 

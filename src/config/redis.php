@@ -24,6 +24,14 @@ $config['redis']['local']['select'] = 1;
 $config['redis']['local']['password'] = 'weihan';
 
 /**
+ * 本地环境2
+ */
+$config['redis']['local2']['ip'] = 'localhost';
+$config['redis']['local2']['port'] = 6379;
+$config['redis']['local2']['select'] = 2;
+$config['redis']['local2']['password'] = '123456';
+
+/**
  * 这个不要删除，dispatch使用的redis环境
  * dispatch使用的环境
  */

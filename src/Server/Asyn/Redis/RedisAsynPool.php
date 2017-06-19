@@ -406,13 +406,13 @@ class RedisAsynPool extends AsynPool
         //同步redis连接，给task使用
         $this->redis_client = new \Redis();
         if ($this->redis_client->connect($this->config['redis'][$this->active]['ip'], $this->config['redis'][$this->active]['port']) == false) {
-            $this->redis_client = null;
             throw new SwooleException($this->redis_client->getLastError());
+            $this->redis_client = null;
         }
         if ($this->config->has('redis.' . $this->active . '.password')) {//存在验证
             if ($this->redis_client->auth($this->config['redis'][$this->active]['password']) == false) {
-                $this->redis_client = null;
                 throw new SwooleException($this->redis_client->getLastError());
+                $this->redis_client = null;
             }
         }
         $this->redis_client->select($this->config['redis'][$this->active]['select']);

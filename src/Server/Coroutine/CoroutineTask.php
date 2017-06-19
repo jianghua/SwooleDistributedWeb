@@ -50,12 +50,12 @@ class CoroutineTask
     {
         while (true) {
             if ($this->isFinished()) {//已经出错了就直接return
-                break;
+                return;
             }
             $routine = &$this->routine;
             $flag = false;
             if (!$routine) {
-                break;
+                return;
             }
             $value = null;
             try {
@@ -75,7 +75,7 @@ class CoroutineTask
                         $value->destroy();
                     } else {//只有遇到异步的时候才中断循环
                         $value->setCoroutineTask($this);
-                        break;
+                        return;
                     }
                     //嵌套的协程返回
                     while (!$routine->valid() && !$this->stack->isEmpty()) {
@@ -198,6 +198,8 @@ class CoroutineTask
                 }
                 if ($this->generatorContext->getController() != null && method_exists($this->generatorContext->getController(), 'onExceptionHandle')) {
                     call_user_func([$this->generatorContext->getController(), 'onExceptionHandle'], $e);
+                }else{
+                    $routine->throw($e);
                 }
                 return;
             }

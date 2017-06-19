@@ -24,7 +24,7 @@ use Server\Cache\ICache;
  */
 abstract class SwooleServer extends Child
 {
-    const version = "2.0.4";
+    const version = "2.0.6";
     const versionWeb = "0.2.0";       //SwooleDistributedWeb版本
     /**
      * Daemonize.
@@ -212,9 +212,9 @@ abstract class SwooleServer extends Child
         // 加载配置
         $this->config = new Config(__DIR__ . '/../config');
         $this->probuf_set = $this->config->get('server.probuf_set', $this->probuf_set);
-        $this->package_length_type = $this->probuf_set['package_length_type'];
-        $this->package_length_type_length = strlen(pack($this->package_length_type, 1));
-        $this->package_body_offset = $this->probuf_set['package_body_offset'];
+        $this->package_length_type = $this->probuf_set['package_length_type']??'N';
+        $this->package_length_type_length = strlen(pack($this->package_length_type, 1))??0;
+        $this->package_body_offset = $this->probuf_set['package_body_offset']??0;
         $this->setConfig();
         $this->setLogHandler();
         register_shutdown_function(array($this, 'checkErrors'));
@@ -749,9 +749,9 @@ abstract class SwooleServer extends Child
     /**
      * onSwooleWorkerStop
      * @param $serv
-     * @param $fd
+     * @param $worker_id
      */
-    public function onSwooleWorkerStop($serv, $fd)
+    public function onSwooleWorkerStop($serv, $worker_id)
     {
 
     }
