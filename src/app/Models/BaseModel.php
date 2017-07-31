@@ -43,6 +43,16 @@ class BaseModel extends Model
     public $_form = [];
     
     /**
+     * 此表含有的字段
+     * 如果非空，则只使用配置的字段
+     * @var []
+     *
+     * @author weihan
+     * @datetime 2017年7月18日上午10:17:22
+     */
+    public $fields = [];
+    
+    /**
      * 获取表单需要展示的输入项
      * @param string $form_name
      *
@@ -239,6 +249,7 @@ class BaseModel extends Model
      * @datetime 2016年11月15日下午1:52:39
      */
     public function insert($data_arr) {
+        $data_arr = $this->filterFields($data_arr);
         //构造sql
         $this->mysql_pool->dbQueryBuilder
             ->insertInto($this->table())
@@ -260,6 +271,7 @@ class BaseModel extends Model
      * @datetime 2016年11月15日下午2:27:26
      */
     public function update($data_arr, $contidions_arr) {
+        $data_arr = $this->filterFields($data_arr);
         $this->mysql_pool->dbQueryBuilder->update($this->table());
         foreach ($data_arr as $_column=>$_value){
             $this->mysql_pool->dbQueryBuilder->set($_column, $_value);
@@ -309,5 +321,23 @@ class BaseModel extends Model
         }
         //不等待查询结果，直接返回，通过yield获取结果
         return $mySqlCoroutine;
+    }
+    
+    /**
+     * 过滤无用的字段
+     * @param [] $data_arr
+     *
+     * @author weihan
+     * @datetime 2017年7月18日上午10:25:38
+     */
+    public function filterFields($data_arr) {
+        if ($this->fields){
+            foreach ($data_arr as $k=>$v){
+                if (!in_array($k, $this->fields)){
+                    unset($data_arr[$k]);
+                }
+            }
+        }
+        return $data_arr;
     }
 }

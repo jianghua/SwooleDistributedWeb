@@ -1,4 +1,4 @@
-# SwooleDistributedWeb v0.2.0
+# SwooleDistributedWeb v0.2.1
 swooledistributed 更新为v2.0.6  
 swooledistributed2 文档http://docs2.sder.xin  
 1.协程优化，速度更快，功能更强大  

@@ -46,4 +46,27 @@ class Lib{
         }
         return sprintf("%1\$.{$decimals}f", $size) . $units[$theUnit];
     }
+    
+    
+    /**
+     * 当前域，不包括www.等二级域
+     * @return string|mixed
+     *
+     * @author weihan
+     * @datetime 2017年7月7日下午2:26:15
+     */
+    static function domain($has_prefix=false) {
+        $domain = get_instance()->config->get('http.domain');
+        $domain = parse_url($domain, PHP_URL_HOST);
+        //不是ip
+        if ($domain && ! filter_var($domain, FILTER_VALIDATE_IP)) {
+            $arr = explode('.', $domain);
+            if (count($arr) == 3){
+                $prefix = '';
+                if ($has_prefix) $prefix = '*.';
+                $domain = $prefix. $arr[1]. '.'.  $arr[2];
+            }
+        }
+        return $domain;
+    }
 }

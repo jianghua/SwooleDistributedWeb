@@ -32,21 +32,11 @@
         	
         	<!-- 级联select -->	
         	<?php elseif ($input['type'] == 'cascade_select'):?>
-        		<?php if($field == 'city_select'):?>	
+        		<?php foreach($input['selects'] as $select):?>	
         		<div class="select1">
-					<?=$input['province']?>
+					<?=$select?>
 				</div>
-				<div class="select1">
-					<?=$input['city']?>
-				</div>
-				<div class="select1">
-					<?=$input['county']?>
-				</div>
-				<?php elseif($field == 'realm_div_id'):?>	
-				<div class="select1">
-					<?=$input['realm']?>
-				</div>
-				<?php endif;?>
+				<?php endforeach;?>
 				<?=$input['js']?>
         		<?=$input['tips_container']?>
         		

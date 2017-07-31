@@ -7,6 +7,7 @@ use app\Helpers\Libs\RandomKey;
 use app\Helpers\Libs\Form;
 use app\Helpers\Libs\Validate;
 use Server\CoreBase\XssClean;
+use app\Helpers\Libs\Lib;
 
 /**
  * app中控制器基类
@@ -23,15 +24,17 @@ class BaseController extends SController
     protected $gzip = true;
     public $cookie_userinfo = 'userinfo';
     protected $auth_str;
+    public $data;
     /**
      * 不能有yield
      * 初始化每次执行方法之前都会执行initialization
      */
     protected function initialization($controller_name, $method_name)
     {
+        parent::initialization($controller_name, $method_name);
         $this->controller_name = $controller_name;
         $this->method_name = $method_name;
-        parent::initialization($controller_name, $method_name);
+        $this->data = ['title'=>'首页'];
     }
     
     /**
@@ -115,6 +118,7 @@ class BaseController extends SController
      * @datetime 2016年11月15日下午1:43:23
      */
     protected function model($model_name) {
+        $model_name = ucfirst($model_name);
         return $this->loader->model($model_name, $this);
     }
     
@@ -127,6 +131,7 @@ class BaseController extends SController
      * @datetime 2016年11月15日下午4:49:51
      */
     protected function view($template, $data=[]) {
+        $data = array_merge($this->data, $data);
         $template = $this->loader->view('app::'. $template);
         $this->http_output->end($template->render($data));
     }
@@ -160,6 +165,10 @@ class BaseController extends SController
         if ($expire){
             $expire += time();
         }
+        //cookie域设置
+        if (empty($domain)){
+            $domain = Lib::domain();
+        }
         $this->response->cookie($key, $value, $expire, $path, $domain, $secure, $httponly);
     }
     
@@ -177,12 +186,9 @@ class BaseController extends SController
             $c_name = strtolower(get_class_name(get_class($this)));
             $uri = "{$c_name}/{$uri}";
         }
-        
         $url = url($uri, $params);
         
-        $this->http_output->setHeader('location', $url);
-        $this->http_output->setStatusHeader(302);
-        $this->http_output->end();
+        parent::redirect($url);
     }
     
     /**

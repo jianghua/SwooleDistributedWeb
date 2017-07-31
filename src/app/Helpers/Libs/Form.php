@@ -925,7 +925,7 @@ class Form
             
             $selects_classname[] = $configs['class'];
             $attrStr = self::input_attr($configs);
-            $ret[$_name] = "<select id=\"{$_name}\" name=\"{$_name}\" {$attrStr}></select>";
+            $ret['selects'][$_name] = "<select id=\"{$_name}\" name=\"{$_name}\" {$attrStr}></select>";
         }
         
         $ret['js'] = '<script src="'.url('js/jquery.cxselect.min.js').'" type="text/javascript"></script>';
