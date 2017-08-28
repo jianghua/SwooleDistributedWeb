@@ -53,7 +53,7 @@ class Ajax extends BaseController
         if ($is_return){
             return $resonse;
         }
-        $this->output($resonse);
+        $this->output($resonse,true);
     }
     
     /**
