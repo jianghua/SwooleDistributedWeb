@@ -28,12 +28,12 @@ class Ajax extends BaseController
         if ($username){
             $userModel = $this->model('UserModel');
             $resonse = yield $userModel->isUsernameExist($username);
-            $resonse = $resonse ? 0 : 1;
+            $resonse = (int)$resonse ? 0 : 1;
         }
         if ($is_return){
             return $resonse;
         }
-        $this->output($resonse);
+        $this->output($resonse,true);
     }
     
     /**
