@@ -1,7 +1,7 @@
 <?php
 use app\Helpers\Libs\Validate;
 use Monolog\Logger;
-use Server\DataBase\Miner;
+use Server\Asyn\Mysql\Miner;
 use Server\CoreBase\XssClean;
 use app\Models\BaseModel;
 /**

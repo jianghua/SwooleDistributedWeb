@@ -7,7 +7,7 @@
 namespace app\Models;
 
 use Server\CoreBase\Model;
-use Server\DataBase\Miner;
+use Server\Asyn\Mysql\Miner;
 
 class BaseModel extends Model
 {
@@ -174,7 +174,7 @@ class BaseModel extends Model
         if ($order) {
             $_arr = array_filter(explode(',', $order));
             foreach ($_arr as $v){
-                $_arr2 = array_filter(explode(' ', $v, 2));
+                $_arr2 = array_filter(explode(' ', trim($v), 2));
                 $_column = trim($_arr2[0]);
                 $_order_by = isset($_arr2[1]) ? trim($_arr2[1]) : Miner::ORDER_BY_ASC;
                 $this->mysql_pool->dbQueryBuilder->orderBy($_column, $_order_by);
@@ -272,6 +272,9 @@ class BaseModel extends Model
      */
     public function update($data_arr, $contidions_arr) {
         $data_arr = $this->filterFields($data_arr);
+        if (empty($data_arr)){
+            return true;
+        }
         $this->mysql_pool->dbQueryBuilder->update($this->table());
         foreach ($data_arr as $_column=>$_value){
             $this->mysql_pool->dbQueryBuilder->set($_column, $_value);

@@ -7,7 +7,7 @@
 namespace Server\Cache;
 
 use Server\DataBase\MysqlAsynPool;
-use Server\DataBase\Miner;
+use Server\Asyn\Mysql\Miner;
 class MysqlCache implements ICache{
     /*缓存默认配置*/
     protected $setting = array(

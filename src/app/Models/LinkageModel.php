@@ -7,7 +7,7 @@
  */
 namespace app\Models;
 
-use Server\DataBase\Miner;
+use Server\Asyn\Mysql\Miner;
 class LinkageModel extends BaseModel
 {
     public $tbl_name = 'linkage';
