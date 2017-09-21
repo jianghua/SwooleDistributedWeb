@@ -12,31 +12,15 @@ namespace Server;
 
 use League\Plates\Engine;
 use Server\CoreBase\ControllerFactory;
-use Server\Coroutine\Coroutine;
 
 abstract class SwooleHttpServer extends SwooleServer
 {
-    /**
-     * http host
-     * @var string
-     */
-    public $http_socket_name;
-    /**
-     * http port
-     * @var integer
-     */
-    public $http_port;
-    /**
-     * http使能
-     * @var bool
-     */
-    public $http_enable;
     /**
      * 模板引擎
      * @var Engine
      */
     public $templateEngine;
-
+    protected $http_method_prefix;
     public function __construct()
     {
         parent::__construct();
@@ -49,27 +33,17 @@ abstract class SwooleHttpServer extends SwooleServer
     }
 
     /**
-     * 设置配置
-     */
-    public function setConfig()
-    {
-        parent::setConfig();
-        $this->http_enable = $this->config['http_server']['enable'];
-        $this->http_socket_name = $this->config['http_server']['socket'];
-        $this->http_port = $this->config['http_server']['port'];
-    }
-
-    /**
      * 启动
      */
     public function start()
     {
-        if (!$this->http_enable) {
+        if (!$this->portManager->http_enable) {
             parent::start();
             return;
         }
+        $first_config = $this->portManager->getFirstTypePort();
         //开启一个http服务器
-        $this->server = new \swoole_http_server($this->http_socket_name, $this->http_port);
+        $this->server = new \swoole_http_server($first_config['socket_name'], $first_config['socket_port']);
         $this->server->on('Start', [$this, 'onSwooleStart']);
         $this->server->on('WorkerStart', [$this, 'onSwooleWorkerStart']);
         $this->server->on('WorkerStop', [$this, 'onSwooleWorkerStop']);
@@ -80,17 +54,8 @@ abstract class SwooleHttpServer extends SwooleServer
         $this->server->on('ManagerStart', [$this, 'onSwooleManagerStart']);
         $this->server->on('ManagerStop', [$this, 'onSwooleManagerStop']);
         $this->server->on('request', [$this, 'onSwooleRequest']);
-        $set = $this->setServerSet();
-        $set['daemonize'] = self::$daemonize ? 1 : 0;
-        $this->server->set($set);
-        if ($this->tcp_enable) {
-            $this->port = $this->server->listen($this->socket_name, $this->port, $this->socket_type);
-            $this->port->set($set);
-            $this->port->on('connect', [$this, 'onSwooleConnect']);
-            $this->port->on('receive', [$this, 'onSwooleReceive']);
-            $this->port->on('close', [$this, 'onSwooleClose']);
-            $this->port->on('Packet', [$this, 'onSwoolePacket']);
-        }
+        $this->setServerSet($this->portManager->getProbufSet($first_config['socket_port']));
+        $this->portManager->buildPort($this, $first_config['socket_port']);
         $this->beforeSwooleStart();
         $this->server->start();
     }
@@ -104,6 +69,7 @@ abstract class SwooleHttpServer extends SwooleServer
     {
         parent::onSwooleWorkerStart($serv, $workerId);
         $this->setTemplateEngine();
+        $this->http_method_prefix = $this->config->get('http.method_prefix', '');
     }
 
     /**
@@ -112,27 +78,29 @@ abstract class SwooleHttpServer extends SwooleServer
     public function setTemplateEngine()
     {
         $this->templateEngine = new Engine();
-        $this->templateEngine->addFolder('server', __DIR__ . '/Views');
-        $this->templateEngine->addFolder('app', __DIR__ . '/../app/Views');
-        $this->templateEngine->registerFunction('get_www', 'get_www');
-        $this->templateEngine->registerFunction('url', 'url');
+        $this->templateEngine->addFolder('server', SERVER_DIR . '/Views');
+        $this->templateEngine->addFolder('app', APP_DIR . '/Views');
     }
 
     /**
      * http服务器发来消息
-     * @param \swoole_http_request $request
-     * @param \swoole_http_response $response
+     * @param $request
+     * @param $response
      */
     public function onSwooleRequest($request, $response)
     {
-        //设置响应头中的server
-        $response->header('Server', get_instance()->config->get('server.set.server_name'));
-        
+        if (Start::$testUnity) {
+            $server_port = $request->server_port;
+        } else {
+            $fdinfo = $this->server->connection_info($request->fd);
+            $server_port = $fdinfo['server_port'];
+        }
+        $route = $this->portManager->getRoute($server_port);
         $error_404 = false;
         $controller_instance = null;
-        $this->route->handleClientRequest($request);
+        $route->handleClientRequest($request);
         list($host) = explode(':', $request->header['host']??'');
-        $path = $this->route->getPath();
+        $path = $route->getPath();
         if($path=='/404'){
             $response->header('HTTP/1.1', '404 Not Found');
             if (!isset($this->cache404)) {//内存缓存404页面
@@ -142,9 +110,8 @@ abstract class SwooleHttpServer extends SwooleServer
             $response->end($this->cache404);
             return;
         }
-        $extension = pathinfo($this->route->getPath(), PATHINFO_EXTENSION);
-        /* 主页如果是静态页面，把注释去掉
-         * if ($path=="/") {//寻找主页
+        $extension = pathinfo($path, PATHINFO_EXTENSION);
+        if ($path=="/") {//寻找主页
             $www_path = $this->getHostRoot($host) . $this->getHostIndex($host);
             $result = httpEndFile($www_path, $request, $response);
             if (!$result) {
@@ -152,39 +119,25 @@ abstract class SwooleHttpServer extends SwooleServer
             } else {
                 return;
             }
-        }else  */
-        if(!empty($extension)){//有后缀
-            $www_path = $this->getHostRoot($host) . $this->route->getPath();
+        }else if(!empty($extension)){//有后缀
+            $www_path = $this->getHostRoot($host) . $path;
             $result = httpEndFile($www_path, $request, $response);
             if (!$result) {
                 $error_404 = true;
             }
         }
         else {
-            $controller_name = $this->route->getControllerName();
+            $controller_name = $route->getControllerName();
             $controller_instance = ControllerFactory::getInstance()->getController($controller_name);
             if ($controller_instance != null) {
-                if($this->route->getMethodName()=='_consul_health'){//健康检查
+                if ($route->getMethodName() == '_consul_health') {//健康检查
                     $response->end('ok');
                     $controller_instance->destroy();
                     return;
                 }
-                $method_name = $this->config->get('http.method_prefix', '') . $this->route->getMethodName();
-		        //非public方法，不调用
-                if (!method_exists($controller_instance, $method_name) || !is_callable([$controller_instance, $method_name])) {
-                    $method_name = 'defaultMethod';
-                }
-                try {
-		            //debug模式，把信息直接打印到浏览器
-                    if ($this->config->get('server.debug')){
-                        ob_start();
-                    }
-                    $controller_instance->setRequestResponse($request, $response, $controller_name, $method_name);
-                    Coroutine::startCoroutine([$controller_instance, $method_name], $this->route->getParams());
-                    return;
-                } catch (\Exception $e) {
-                    call_user_func([$controller_instance, 'onExceptionHandle'], $e);
-                }
+                $method_name = $this->http_method_prefix . $route->getMethodName();
+                $controller_instance->setRequestResponse($request, $response, $controller_name, $method_name, $route->getParams());
+                return;
             } else {
                 $error_404 = true;
             }
@@ -195,7 +148,7 @@ abstract class SwooleHttpServer extends SwooleServer
             }
             //重定向到404
             $response->status(302);
-            $location = $this->config->get('http.domain')."/".'404';
+            $location = 'http://'.$request->header['host']."/".'404';
             $response->header('Location',$location);
             $response->end('');
         }
@@ -227,7 +180,7 @@ abstract class SwooleHttpServer extends SwooleServer
      */
     public function getHostIndex($host)
     {
-        $index = $this->config['http']['root'][$host]['index']??'index.html';
+        $index = $this->config['http']['root'][$host]['index'] ?? $this->config['http']['root']['default']['index'] ?? 'index.html';
         return $index;
     }
 }

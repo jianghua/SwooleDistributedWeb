@@ -9,6 +9,8 @@
 namespace Server\Route;
 
 
+use Server\CoreBase\SwooleException;
+
 class NormalRoute implements IRoute
 {
     private $client_data;
@@ -22,11 +24,17 @@ class NormalRoute implements IRoute
      * 设置反序列化后的数据 Object
      * @param $data
      * @return \stdClass
+     * @throws SwooleException
      */
     public function handleClientData($data)
     {
         $this->client_data = $data;
-        return $this->client_data;
+        if (isset($this->client_data->controller_name) && isset($this->client_data->method_name)) {
+            return $this->client_data;
+        } else {
+            throw new SwooleException('route 数据缺少必要字段');
+        }
+
     }
 
     /**
@@ -37,8 +45,16 @@ class NormalRoute implements IRoute
     {
         $this->client_data->path = $request->server['path_info'];
         $route = explode('/', $request->server['path_info']);
-        $this->client_data->controller_name = $route[1]??null;
-        $this->client_data->method_name = $route[2]??null;
+        $count = count($route);
+        if ($count == 2) {
+            $this->client_data->controller_name = $route[$count - 1] ?? null;
+            $this->client_data->method_name = null;
+            return;
+        }
+        $this->client_data->method_name = $route[$count - 1] ?? null;
+        unset($route[$count - 1]);
+        unset($route[0]);
+        $this->client_data->controller_name = implode("\\", $route);
     }
 
     /**
@@ -67,5 +83,10 @@ class NormalRoute implements IRoute
     public function getParams()
     {
         return $this->client_data->params??null;
+    }
+
+    public function errorHandle($e, $fd)
+    {
+        //get_instance()->close($fd);
     }
 }

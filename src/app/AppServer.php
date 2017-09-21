@@ -1,13 +1,9 @@
 <?php
 namespace app;
 
-use Server\Asyn\HttpClient\HttpClientPool;
-use Server\Asyn\Redis\RedisAsynPool;
-use Server\Asyn\Redis\RedisRoute;
-use Server\Asyn\TcpClient\SdTcpRpcPool;
+use Server\CoreBase\HttpInput;
+use Server\CoreBase\Loader;
 use Server\SwooleDistributedServer;
-
-require_once 'common.php';
 
 /**
  * Created by PhpStorm.
@@ -17,6 +13,16 @@ require_once 'common.php';
  */
 class AppServer extends SwooleDistributedServer
 {
+    /**
+     * 可以在这里自定义Loader，但必须是ILoader接口
+     * AppServer constructor.
+     */
+    public function __construct()
+    {
+        $this->setLoader(new Loader());
+        parent::__construct();
+    }
+
     /**
      * 开服初始化(支持协程)
      * @return mixed
@@ -38,16 +44,30 @@ class AppServer extends SwooleDistributedServer
 
     /**
      * 这里可以进行额外的异步连接池，比如另一组redis/mysql连接
+     * @param $workerId
      * @return array
      */
-    public function initAsynPools()
+    public function initAsynPools($workerId)
     {
-        parent::initAsynPools();
-        //都是测试的，实际应用中可以删除
-        $this->addAsynPool('DingDingRest', new HttpClientPool($this->config, $this->config->get('dingding.url')));
-        $this->addAsynPool('RPC', new SdTcpRpcPool($this->config, 'test', "192.168.8.48:9093"));
-        $this->addAsynPool('redis_local2', new RedisAsynPool($this->config, "local2"));
-        //redis根据key进行自动路由
-        //RedisRoute::getInstance()->addRedisPoolRoute('testroute', 'redis_local2');
+        parent::initAsynPools($workerId);
+    }
+
+    /**
+     * 用户进程
+     */
+    public function startProcess()
+    {
+        parent::startProcess();
+        //ProcessManager::getInstance()->addProcess(MyProcess::class);
+    }
+
+    /**
+     * 可以在这验证WebSocket连接,return true代表可以握手，false代表拒绝
+     * @param HttpInput $httpInput
+     * @return bool
+     */
+    public function onWebSocketHandCheck(HttpInput $httpInput)
+    {
+        return true;
     }
 }

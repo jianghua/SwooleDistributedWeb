@@ -131,7 +131,7 @@ abstract class AsynPool implements IAsynPool
     }
 
     /**
-     * 准备一个httpClient
+     * 准备一个
      */
     public function prepareOne()
     {
@@ -151,7 +151,7 @@ abstract class AsynPool implements IAsynPool
             $this->destoryClient($client);
             return;
         }
-        $this->pool->push($client);
+        $this->pool->unshift($client);
         if (count($this->commands) > 0) {//有残留的任务
             $command = $this->commands->shift();
             $this->execute($command);

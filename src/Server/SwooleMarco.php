@@ -32,13 +32,9 @@ class SwooleMarco
      */
     const MSG_TYPE_SEND_ALL = 2;
     /**
-     * 发送给群
-     */
-    const MSG_TYPE_SEND_GROUP = 3;
-    /**
      * 踢uid下线
      */
-    const MSG_TYPE_KICK_UID = 4;
+    const MSG_TYPE_KICK_UID = 3;
     /**
      * 添加server
      */
@@ -66,6 +62,16 @@ class SwooleMarco
      * consul_session
      */
     const CONSUL_SERVICES_SESSION = 8700;
+
+    /**
+     * dispatcher 触发器
+     */
+    const DISPATCHER_NAME = 10000;
+
+    /**
+     * 进程间通讯
+     */
+    const PROCESS_RPC = 20000;
     /**
      * redis uid和全局usid映射表的hashkey
      * @var string

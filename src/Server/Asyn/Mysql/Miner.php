@@ -313,6 +313,16 @@ class Miner
     }
 
     /**
+     * @param $mysql_pool
+     * @return $this
+     */
+    public function setPool($mysql_pool)
+    {
+        $this->mysql_pool = $mysql_pool;
+        return $this;
+    }
+
+    /**
      * Add SQL_CALC_FOUND_ROWS execution option.
      *
      * @return Miner
@@ -1063,7 +1073,7 @@ class Miner
                     // column name and join against the same column from the previous
                     // table.
                     if (strpos($criterion, '=') === false) {
-                        $statement .= $this->getJoinCriteriaUsingPreviousTable($i, $join['table'], $criterion);
+                        $statement .= $this->getJoinCriteriaUsingPreviousTable($i, $join['alias'] ?? $join['table'], $criterion);
                     } else {
                         $statement .= $criterion;
                     }
@@ -1093,9 +1103,9 @@ class Miner
         // If the previous table is from a JOIN, use that. Otherwise, use the
         // FROM table.
         if (array_key_exists($previousJoinIndex, $this->join)) {
-            $previousTable = $this->join[$previousJoinIndex]['table'];
+            $previousTable = $this->join[$previousJoinIndex]['alias'] ?? $this->join[$previousJoinIndex]['table'];
         } elseif ($this->isSelect()) {
-            $previousTable = $this->getFrom();
+            $previousTable = $this->getFromAlias() ?? $this->getFrom();
         } elseif ($this->isUpdate()) {
             $previousTable = $this->getUpdate();
         } else {
@@ -1108,7 +1118,6 @@ class Miner
         }
 
         $joinCriteria .= $column . " " . self::EQUALS . " " . $table . "." . $column;
-
         return $joinCriteria;
     }
 
@@ -1820,7 +1829,7 @@ class Miner
      * 协程的方式
      * @param null $bind_id
      * @param null $sql
-     * @return array|bool|int|string
+     * @return MySqlCoroutine|MysqlSyncHelp
      */
     public function coroutineSend($bind_id = null, $sql = null)
     {
@@ -1830,7 +1839,7 @@ class Miner
         if (get_instance()->isTaskWorker()) {//如果是task进程自动转换为同步模式
             $this->mergeInto($this->mysql_pool->getSync());
             $this->clear();
-            $data = array();
+            $data = [];
             switch ($sql) {
                 case 'commit':
                     $this->mysql_pool->getSync()->pdoCommitTrans();
@@ -1844,7 +1853,7 @@ class Miner
                 default:
                     $data = $this->mysql_pool->getSync()->pdoQuery($sql);
             }
-            return $data;
+            return new MysqlSyncHelp($sql, $data);
         } else {
             $this->clear();
             return Pool::getInstance()->get(MySqlCoroutine::class)->init($this->mysql_pool, $bind_id, $sql);
@@ -2445,7 +2454,7 @@ class Miner
         $isSelect = false;
         if ($sql != null) {//代表手动执行的sql
             $str = strtolower(substr(trim($sql), 0, 6));
-            if ($str == 'select') {
+            if ($str == 'select' || strripos($sql, 'show') !== false) {
                 $isSelect = true;
             }
         }

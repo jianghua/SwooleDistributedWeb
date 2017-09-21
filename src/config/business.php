@@ -8,42 +8,58 @@
 /**
  * tcp访问时方法的前缀
  */
-$config['tcp']['method_prefix'] = 'tcp_';
+$config['tcp']['method_prefix'] = '';
 /**
  * http访问时方法的前缀
  */
-$config['http']['method_prefix'] = '';
+$config['http']['method_prefix'] = 'http_';
 /**
  * websocket访问时方法的前缀
  */
-$config['websocket']['method_prefix'] = 'websocket_';
+$config['websocket']['method_prefix'] = '';
 
-//http服务器绑定的真实的域名或者ip:port，一定要填对,否则获取不到文件的绝对路径
-$config['http']['domain'] = 'http://10.16.198.131/sdw';
-$config['http']['default_controller'] = 'User';  //默认控制器
-$config['http']['default_method'] = 'index';          //默认方法
+//强制关闭gzip
+$config['http']['gzip_off'] = false;
 
-//是否服务器启动时自动清除群组信息
-$config['autoClearGroup'] = true;
+//默认访问的页面
+$config['http']['index'] = 'index.html';
 
 /**
  * 设置域名和Root之间的映射关系
  */
 
 $config['http']['root'] = [
+    'default' =>
+        [
+            'root' => 'localhost',
+            'index' => 'index.html'
+        ]
+    ,
     'localhost' =>
-    [
-        'root' => 'localhost',
-        'index' => 'index.html'
-    ]
+        [
+            'root' => 'www',
+            'index' => 'Index.html'
+        ],
+    'sder.xin' =>
+        [
+            'root' => 'www',
+            'index' => 'Index.html'
+        ],
+    'www.sder.xin' =>
+        [
+            'root' => 'www',
+            'index' => 'Index.html'
+        ],
+    '182.92.224.125' =>
+        [
+            'root' => 'docs',
+            'index' => 'index.html'
+        ],
+    'docs.sder.xin' =>
+        [
+            'root' => 'docs',
+            'index' => 'index.html'
+        ]
 ];
-//编码
-$config['charset'] = 'utf-8';
-//上传目录，位于www目录下
-$config['upload_dir'] = 'upload';
-//上传文件大小
-$config['upload_maxsize'] = 5 * 1024 * 1024;
-//auth加解密的key
-$config['auth_key'] = '1234567890';
 
 return $config;

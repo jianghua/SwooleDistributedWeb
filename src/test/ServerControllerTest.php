@@ -57,7 +57,7 @@ class ServerControllerTest extends TestCase
     public function testHttpController()
     {
         $testRequest = new TestRequest('/TestController/test');
-        $testRequest->get = ['max' => 10];
+        $testRequest->get =['max'=>10];
         $testResponse = yield $this->coroutineRequestHttpController($testRequest);
         $this->assertEquals($testResponse->data, '45');
     }
@@ -68,11 +68,8 @@ class ServerControllerTest extends TestCase
      */
     public function testTcpController()
     {
-        if ($this->config['server']['pack_tool'] != 'JsonPack') {
-            $this->markTestSkipped('协议解包不是JsonPack');
-        }
         $data = ['controller_name' => 'TestController', 'method_name' => 'testTcp', 'data' => 'helloWorld'];
-        $reusult = yield $this->coroutineRequestTcpController($data);
+        $reusult = yield $this->coroutineRequestTcpController(9091, $data);
         $this->assertCount(1, $reusult);
     }
 }

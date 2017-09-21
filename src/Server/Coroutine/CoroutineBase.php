@@ -73,7 +73,7 @@ abstract class CoroutineBase implements ICoroutineBase
 
     public function getResult()
     {
-        if ($this->isFaile) {
+        if ($this->isFaile && $this->useFuse) {
             if (empty($this->downgrade)) {
                 //没有降级操作就直接快速失败
                 $this->fastFail();
@@ -90,17 +90,27 @@ abstract class CoroutineBase implements ICoroutineBase
         }
         $this->getCount++;
         if ($this->getCount > $this->MAX_TIMERS && $this->result == CoroutineNull::getInstance()) {
-            $this->isFaile = true;
             $this->onTimerOutHandle();
             if (!$this->noException) {
+                $this->isFaile = true;
                 $ex = new SwooleException("[CoroutineTask]: Time Out!, [Request]: $this->request");
+
                 $this->destroy();
                 throw $ex;
             } else {
-                $this->result = null;
+                $this->result = $this->noExceptionReturn;
             }
         }
         return $this->result;
+    }
+
+    /**
+     * dump
+     */
+    public function dump()
+    {
+        print_r("[dump] ".$this->request."\n");
+        return $this;
     }
 
     /**

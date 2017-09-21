@@ -5,9 +5,9 @@
     "hassankhan/config": "~0.10",
     "voku/anti-xss": "2.0.1",
     "league/plates": "3.*",
-    "protobuf-php/protobuf": "~0.1.2",
-    "protobuf-php/protobuf-plugin": "^0.1.2",
-    "graylog2/gelf-php": "~1.0"
+    "graylog2/gelf-php": "~1.0",
+    "php-amqplib/php-amqplib": "2.6.*",
+    "php-ds/php-ds": ">=1.2.0"
   },
   "autoload": {
     "psr-4": {
@@ -16,8 +16,7 @@
       "test\\": "src/test"
     },
     "files": [
-      "src/Server/Helpers/Common.php",
-      "src/app/Helpers/Funcs/Common.php"
+      "src/Server/helpers/Common.php"
     ]
   },
   "authors": [
@@ -34,6 +33,8 @@
     }
   },
   "name": "tmtbe/swooledistributed",
+  "type": "library",
+  "keywords": ["server", "swoole", "distributed"],
   "description": "In order to develop the api server",
   "license": "MIT"
 }

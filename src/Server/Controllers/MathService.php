@@ -23,7 +23,7 @@ class MathService extends Controller
      * @param $one
      * @param $two
      */
-    public function tcp_add($one, $two)
+    public function add($one,$two)
     {
         $this->send($one+$two);
     }
@@ -31,14 +31,14 @@ class MathService extends Controller
     /**
      * Http Add
      */
-    public function add()
+    public function http_add()
     {
         $one = $this->http_input->get('one');
         $two = $this->http_input->get('two');
         $this->http_output->end($one+$two);
     }
 
-    public function tcp_sum($sum)
+    public function sum($sum)
     {
         $sum_q = 0;
         for($i=0;$i<$sum;$i++){
@@ -47,7 +47,7 @@ class MathService extends Controller
         $this->send($sum_q);
     }
 
-    public function sum()
+    public function http_sum()
     {
         $sum = $this->http_input->get('sum');
         $sum_q = 0;

@@ -93,7 +93,10 @@ class HttpClientPool extends AsynPool
                     foreach ($data['addFiles'] as $addFile) {
                         $client->addFile(...$addFile);
                     }
-                    $client->execute($path, function ($client) use ($token) {
+                    $client->execute($path, function ($client) use ($token, $path, $data) {
+                        if ($client->statusCode < 0) {
+                            return;
+                        }
                         //分发消息
                         $data['token'] = $token;
                         unset($this->command_backup[$token]);
@@ -101,10 +104,10 @@ class HttpClientPool extends AsynPool
                         $data['result']['body'] = $client->body;
                         $data['result']['statusCode'] = $client->statusCode;
                         $this->distribute($data);
-                        if(strtolower($client->headers['connection']??'keep-alive')=='keep-alive') {//代表是keepalive可以直接回归
+                        if (strtolower($client->headers['connection'] ?? 'keep-alive') == 'keep-alive') {//代表是keepalive可以直接回归
                             //回归连接
                             $this->pushToPool($client);
-                        }else{//需要延迟回归
+                        } else {//需要延迟回归
                             $client->delay = true;
                         }
                     });
@@ -145,10 +148,11 @@ class HttpClientPool extends AsynPool
             }
             swoole_async_dns_lookup($host, function ($host, $ip) use (&$data) {
                 $client = new \swoole_http_client($ip, $data['port'], $data['ssl']);
+                $client->set(['timeout' => -1]);
                 $this->host = $host;
                 $this->pushToPool($client);
-                $client->on('close', function ($cli){
-                    if(isset($cli->delay)) {
+                $client->on('close', function ($cli) {
+                    if (isset($cli->delay)) {
                         $this->pushToPool($cli);
                         unset($cli->delay);
                     }

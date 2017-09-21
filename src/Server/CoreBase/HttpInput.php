@@ -90,11 +90,26 @@ class HttpInput
     }
 
     /**
+     * 获取所有的post
+     */
+    public function getAllPost()
+    {
+        return $this->request->post ?? [];
+    }
+
+    /**
+     * 获取所有的get
+     */
+    public function getAllGet()
+    {
+        return $this->request->get ?? [];
+    }
+    /**
      * 获取所有的post和get
      */
     public function getAllPostGet()
     {
-        return $this->request->post??$this->request->get??[];
+        return array_merge($this->request->post ?? [], $this->request->get ?? []);
     }
 
     /**
@@ -200,5 +215,22 @@ class HttpInput
     public function getPathInfo()
     {
         return $this->request->server['path_info'];
+    }
+
+    /**
+     * 文件上传信息
+     * Array
+     * (
+     *   [name] => facepalm.jpg
+     *   [type] => image/jpeg
+     *   [tmp_name] => /tmp/swoole.upfile.n3FmFr
+     *   [error] => 0
+     *   [size] => 15476
+     * )
+     * @return mixed
+     */
+    public function getFiles()
+    {
+        return $this->request->files;
     }
 }

@@ -13,7 +13,7 @@ use Monolog\Logger;
 use Noodlehaus\Config;
 use Server\Asyn\Mysql\MysqlAsynPool;
 use Server\Asyn\Redis\RedisRoute;
-use Server\Pack\IPack;
+use Server\Memory\Pool;
 
 class CoreBase extends Child
 {
@@ -40,10 +40,6 @@ class CoreBase extends Child
      */
     public $config;
     /**
-     * @var IPack
-     */
-    public $pack;
-    /**
      * @var RedisRoute
      */
     public $redis_pool;
@@ -60,6 +56,7 @@ class CoreBase extends Child
      */
     protected $isEfficiencyMonitorEnable = false;
 
+    protected $dbQueryBuilders = [];
     /**
      * Task constructor.
      */
@@ -70,11 +67,19 @@ class CoreBase extends Child
             $this->logger = get_instance()->log;
             $this->server = get_instance()->server;
             $this->config = get_instance()->config;
-            $this->pack = get_instance()->pack;
             $this->redis_pool = RedisRoute::getInstance();
-            $this->mysql_pool = get_instance()->mysql_pool;
-            $this->isEfficiencyMonitorEnable = $this->config->get("log.{$this->config['log']['active']}.efficiency_monitor_enable",false);
+            $this->mysql_pool = get_instance()->getAsynPool('mysqlPool');
+            $this->isEfficiencyMonitorEnable = $this->config->get("log.{$this->config['log']['active']}.efficiency_monitor_enable", false);
         }
+    }
+
+    /**
+     * 安装MysqlPool
+     * @param MysqlAsynPool $mysqlPool
+     */
+    protected function installMysqlPool(MysqlAsynPool $mysqlPool)
+    {
+        $this->dbQueryBuilders[] = $mysqlPool->installDbBuilder();
     }
 
     /**
@@ -84,6 +89,11 @@ class CoreBase extends Child
     {
         parent::destroy();
         $this->is_destroy = true;
+        foreach ($this->dbQueryBuilders as $dbQueryBuilder) {
+            $dbQueryBuilder->clear();
+            Pool::getInstance()->push($dbQueryBuilder);
+        }
+        $this->dbQueryBuilders = [];
     }
 
     /**

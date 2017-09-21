@@ -24,6 +24,7 @@ class RedisCoroutine extends CoroutineBase
     {
         parent::__construct();
     }
+
     /**
      * 对象池模式用来代替__construct
      * @param $redisAsynPool
@@ -43,10 +44,10 @@ class RedisCoroutine extends CoroutineBase
         });
         return $this;
     }
+
     public function send($callback)
     {
-        $this->arguments[] = $callback;
-        $this->token = $this->redisAsynPool->__call($this->name, $this->arguments);
+        $this->token = $this->redisAsynPool->call($this->name, $this->arguments, $callback);
     }
 
     public function destroy()
