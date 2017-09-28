@@ -29,6 +29,9 @@ copy_dir(__DIR__."/test",$path."/src/test");
 
 print_r("bin目录下start_swoole_serverphp是启动文件，define.php可以自定义目录配置，祝君使用愉快。\n");
 
+/* 
+ * web不需要consul
+ * 
 print_r("即将安装consul(不使用微服务可以不安装)，是否确定(y/n)？\n");
 if ($argv[1] != '-y') {
     $read = read();
@@ -43,7 +46,7 @@ chmod("$path/bin/exec/download.sh",0777);
 exec("$path/bin/exec/download.sh");
 
 print_r("consul安装结束\n");
-
+ */
 exit();
 
 function read(){

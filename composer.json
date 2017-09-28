@@ -9,14 +9,26 @@
     }
   },
  "autoload": {
-	 "files": [
-		"src/app/Helpers/Funcs/Common.php"
-	 ],
+    "files": [
+        "src/app/Helpers/Funcs/Common.php"
+    ],
     "psr-4": {
       "SwooleDistributedWeb\\Server\\": "src/Server",
       "SwooleDistributedWeb\\app\\": "src/app",
       "app\\": "src/app",
       "test\\": "src/test"
     }
-  }
+  },
+  "authors": [
+    {
+      "name": "jianghua",
+      "email": "380688162@qq.com",
+      "homepage": "https://github.com/jianghua"
+    }
+  ],
+  "name": "jianghua/swooledistributedweb",
+  "type": "library",
+  "keywords": ["server", "swoole", "distributed", "web"],
+  "description": "swooledistributed web",
+  "license": "MIT"
 }
