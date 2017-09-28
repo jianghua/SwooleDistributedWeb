@@ -1,3 +1,9 @@
+# SwooleDistributedWeb v2.5.1
+版本号与swooledistributed保持一致 
+swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水平有限，欢迎指正。  
+内置demo，包含用户注册、登录、修改信息
+SwooleDistributedWeb 文档 
+https://www.gitbook.com/book/jianghua/swooledistributedweb/details
 # SwooleDistributed
 
 High performance, high concurrency, PHP asynchronous distributed framework,power by ext-swoole

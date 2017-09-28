@@ -1,9 +1,9 @@
 <?php
-namespace app;
+namespace SwooleDistributedWeb\app;
 
 use Server\CoreBase\HttpInput;
 use Server\CoreBase\Loader;
-use Server\SwooleDistributedServer;
+use SwooleDistributedWeb\Server\SwooleDistributedServer;
 
 /**
  * Created by PhpStorm.

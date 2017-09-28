@@ -1,0 +1,23 @@
+<?php
+$config['mimes']['normal'] = 'application/octet-stream';
+$config['mimes']['bmp'] = 'image/bmp';
+$config['mimes']['jpg'] = 'image/jpeg';
+$config['mimes']['jpeg'] = 'image/jpeg';
+$config['mimes']['png'] = 'image/png';
+$config['mimes']['gif'] = 'image/gif';
+$config['mimes']['txt'] = 'text/plain';
+$config['mimes']['pdf'] = 'application/pdf';
+$config['mimes']['html'] = 'text/html';
+$config['mimes']['zip'] = 'application/zip';
+$config['mimes']['mp3'] = 'audio/mpeg';
+$config['mimes']['mp4'] = 'audio/mpeg';
+$config['mimes']['swf'] = 'application/x-shockwave-flash';
+$config['mimes']['css'] = 'text/css';
+$config['mimes']['js'] = 'application/javascript';
+$config['mimes']['ico'] = 'image/x-icon';
+$config['mimes']['xml'] = 'text/xml';
+$config['mimes']['ppt'] = 'application/vnd.ms-powerpoint';
+$config['mimes']['gzip'] = 'application/gzip';
+$config['mimes']['woff'] = 'application/x-woff';
+$config['mimes']['svg'] = 'image/svg+xml';
+return $config;

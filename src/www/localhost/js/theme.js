@@ -1,0 +1,10 @@
+var onShowHtml = "";
+var onFocusHtml = "";
+var onErrorHtml = "<span class='input-check input-error'><span class='input-check' style='color:red;'>$data$</span></span>";
+var onLoadHtml = "<span class='input-check' style='color:#A9A9A9;'>$data$</span>";
+var onCorrectHtml = "<span class='input-check input-correct'></span>";
+var onShowClass = "input_show";
+var onFocusClass = "input_focus";
+var onErrorClass = "input_error";
+var onCorrectClass = "input_correct";
+var regexEnum="";
