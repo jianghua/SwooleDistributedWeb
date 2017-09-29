@@ -16,6 +16,11 @@ use Server\CoreBase\ControllerFactory;
 abstract class SwooleDistributedServer extends _SwooleDistributedServer
 {
     /**
+     * 版本
+     */
+    const version = "2.5.5";
+    
+    /**
      * 缓存
      * @var ICache
      */

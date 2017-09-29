@@ -1,7 +1,30 @@
-# SwooleDistributedWeb v2.5.1
+# SwooleDistributedWeb v2.5.5
 版本号与swooledistributed保持一致 
 swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水平有限，欢迎指正。  
 内置demo，包含用户注册、登录、修改信息
+## Install
+You can install via composer
+
+Autoload must specify `app` and `test`.
+```
+{
+  "require": {
+    "jianghua/swooledistributedweb":">2.5.0"
+  },
+ "autoload": {
+    "psr-4": {
+      "app\\": "src/app",
+      "test\\": "src/test"
+    }
+  }
+}
+```
+Then execute the following code in the root directory (the vendor higher directory)
+```
+php vendor/jianghua/swooledistributedweb/src/Install.php
+```
+The server can be executed in the bin at the end of the installation.
+
 SwooleDistributedWeb 文档 
 https://www.gitbook.com/book/jianghua/swooledistributedweb/details
 # SwooleDistributed
@@ -81,10 +104,8 @@ The server can be executed in the bin at the end of the installation.
  
 ### Cluster structure
  ![image](https://raw.githubusercontent.com/tmtbe/SwooleDistributed/v2/screenshots/k3.png)
-## Donation
-If you like the project, I hope you donate this project so that the project will get better development, 
-Thank you.
 
-Alipay：
-
- ![image](https://raw.githubusercontent.com/tmtbe/SwooleDistributed/v2/screenshots/pay.png)
+## web 
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/v2/screenshots/login.jpg)
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/v2/screenshots/reg.png)
+![image](https://github.com/jianghua/SwooleDistributedWeb/blob/v2/screenshots/profile.jpg)
