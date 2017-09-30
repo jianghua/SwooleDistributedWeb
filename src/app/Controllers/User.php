@@ -3,7 +3,6 @@ namespace app\Controllers;
 
 use Web\Helpers\Libs\RandomKey;
 use Web\Helpers\Libs\Filter;
-use Web\BaseController;
 /**
  * 用户控制器
  * @author weihan

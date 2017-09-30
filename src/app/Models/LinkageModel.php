@@ -8,7 +8,6 @@
 namespace app\Models;
 
 use Server\Asyn\Mysql\Miner;
-use Web\BaseModel;
 class LinkageModel extends BaseModel
 {
     public $tbl_name = 'linkage';

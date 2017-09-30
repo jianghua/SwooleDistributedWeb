@@ -11,7 +11,7 @@ use Web\Helpers\Libs\Lib;
 
 /**
  * app中控制器基类
- * 此类中的方法，必须设为protected，防止url直接访问
+ * 此类中的方法，建议设为protected，防止url直接访问
  * @author weihan
  * @datetime 2016年11月15日上午11:23:06
  *

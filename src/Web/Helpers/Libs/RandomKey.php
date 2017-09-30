@@ -1,5 +1,5 @@
 <?php
-namespace Web\Helpers\Libs;;
+namespace Web\Helpers\Libs;
 
 class RandomKey
 {

@@ -2,8 +2,6 @@
 namespace app\Controllers;
 
 use Web\Helpers\Libs\Upload;
-use Web\Helpers\Libs\RandomKey;
-use Web\BaseController;
 /**
  * ajax
  * 所有的验证方法，1：表示通过，0：表示验证不通过

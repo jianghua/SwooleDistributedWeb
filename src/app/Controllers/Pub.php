@@ -1,7 +1,6 @@
 <?php
 namespace app\Controllers;
 
-use Web\BaseController;
 use Web\Helpers\Libs\Checkcode;
 /**
  * 公共控制器

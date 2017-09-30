@@ -4,6 +4,7 @@ use Monolog\Logger;
 use Server\Asyn\Mysql\Miner;
 use Server\CoreBase\XssClean;
 use Web\Models\BaseModel;
+use Web\Helpers\Libs\Xml;
 /**
  * 通用函数库
  */
@@ -17,7 +18,7 @@ function ismobile($mobile) {
 } 
 
 function xml_unserialize($xml, $isnormal = FALSE) {
-    $xml_cls = new app\Helpers\Libs\Xml();
+    $xml_cls = Xml();
     $data = $xml_cls->xml_unserialize($xml);
     return $data['root']['item'];
 }
