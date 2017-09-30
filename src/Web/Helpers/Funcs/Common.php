@@ -18,7 +18,7 @@ function ismobile($mobile) {
 } 
 
 function xml_unserialize($xml, $isnormal = FALSE) {
-    $xml_cls = Xml();
+    $xml_cls = new Xml();
     $data = $xml_cls->xml_unserialize($xml);
     return $data['root']['item'];
 }

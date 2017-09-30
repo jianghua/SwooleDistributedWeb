@@ -149,7 +149,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
                 $method_name = $this->http_method_prefix . $route->getMethodName();
                 //非public方法，不调用
                 if (!method_exists($controller_instance, $method_name) || !is_callable([$controller_instance, $method_name])) {
-                    $method_name = 'defaultMethod';
+                    $method_name = get_instance()->config->get('http.default_method');
                 }
                 //debug模式，把信息直接打印到浏览器
                 if ($this->config->get('server.debug')){

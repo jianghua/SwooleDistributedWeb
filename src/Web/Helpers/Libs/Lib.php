@@ -5,7 +5,7 @@
  * @datetime 2017年1月5日上午9:26:59
  */
 namespace Web\Helpers\Libs;
-use Web\Controllers\User;
+use app\Controllers\User;
 class Lib{
     static function getTypeName($typeId){
         switch ($typeId){
