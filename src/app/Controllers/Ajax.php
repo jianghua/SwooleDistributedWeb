@@ -1,8 +1,9 @@
 <?php
 namespace app\Controllers;
 
-use app\Helpers\Libs\Upload;
-use app\Helpers\Libs\RandomKey;
+use Web\Helpers\Libs\Upload;
+use Web\Helpers\Libs\RandomKey;
+use Web\BaseController;
 /**
  * ajax
  * 所有的验证方法，1：表示通过，0：表示验证不通过
@@ -12,7 +13,7 @@ use app\Helpers\Libs\RandomKey;
  */
 class Ajax extends BaseController
 {
-    protected function initialization($controller_name, $method_name){
+    public function initialization($controller_name, $method_name){
         parent::initialization($controller_name, $method_name);
     }
     

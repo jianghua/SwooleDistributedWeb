@@ -1,13 +1,13 @@
 <?php
-namespace app\Controllers;
+namespace Web;
 
 use Server\CoreBase\Controller as SController;
-use app\Models\BaseModel;
-use app\Helpers\Libs\RandomKey;
-use app\Helpers\Libs\Form;
-use app\Helpers\Libs\Validate;
+use Web\BaseModel;
+use Web\Helpers\Libs\RandomKey;
+use Web\Helpers\Libs\Form;
+use Web\Helpers\Libs\Validate;
 use Server\CoreBase\XssClean;
-use app\Helpers\Libs\Lib;
+use Web\Helpers\Libs\Lib;
 
 /**
  * app中控制器基类
@@ -35,11 +35,11 @@ class BaseController extends SController
     public $cookie_userinfo = 'userinfo';
     protected $auth_str;
     public $data;
+    
     /**
-     * 不能有yield
      * 初始化每次执行方法之前都会执行initialization
      */
-    protected function initialization($controller_name, $method_name)
+    public function initialization($controller_name, $method_name)
     {
         parent::initialization($controller_name, $method_name);
         $this->controller_name = $controller_name;

@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 use Server\CoreBase\XssClean;
 use Server\CoreBase\SwooleException;
 /**

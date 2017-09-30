@@ -1,8 +1,9 @@
 <?php
 namespace app\Controllers;
 
-use app\Helpers\Libs\RandomKey;
-use app\Helpers\Libs\Filter;
+use Web\Helpers\Libs\RandomKey;
+use Web\Helpers\Libs\Filter;
+use Web\BaseController;
 /**
  * 用户控制器
  * @author weihan
@@ -22,7 +23,7 @@ class User extends BaseController
      * @author weihan
      * @datetime 2016年11月21日下午3:29:34
      */
-    protected function initialization($controller_name, $method_name){
+    public function initialization($controller_name, $method_name){
         parent::initialization($controller_name, $method_name);
         
         $this->model = $this->model('UserModel');

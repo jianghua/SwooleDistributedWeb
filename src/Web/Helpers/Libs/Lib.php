@@ -4,8 +4,8 @@
  * @author weihan
  * @datetime 2017年1月5日上午9:26:59
  */
-namespace app\Helpers\Libs;
-use app\Controllers\User;
+namespace Web\Helpers\Libs;
+use Web\Controllers\User;
 class Lib{
     static function getTypeName($typeId){
         switch ($typeId){

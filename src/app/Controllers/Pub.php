@@ -1,8 +1,8 @@
 <?php
 namespace app\Controllers;
 
-use app\Helpers\Libs\Checkcode;
-use app\Helpers\Libs\Upload;
+use Web\BaseController;
+use Web\Helpers\Libs\Checkcode;
 /**
  * 公共控制器
  * @author weihan
@@ -11,7 +11,7 @@ use app\Helpers\Libs\Upload;
  */
 class Pub extends BaseController
 {
-    protected function initialization($controller_name, $method_name){
+    public function initialization($controller_name, $method_name){
         parent::initialization($controller_name, $method_name);
     }
     
@@ -47,11 +47,7 @@ class Pub extends BaseController
         
         $this->http_output->setHeader("content-type", "image/png");        
         $checkcode->doimage();
-        //debug模式，把信息直接打印到浏览器
-        $data = '';
-        if (! get_instance()->config->get('server.debug')){
-            $data = ob_get_clean();
-        }
+        $data = ob_get_clean();
         $checkcode = $checkcode->get_code();
         $this->setSession('checkcode', $checkcode, 120);
         $this->output($data);

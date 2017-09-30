@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 /**
  * 数组相关
  * @author weihan

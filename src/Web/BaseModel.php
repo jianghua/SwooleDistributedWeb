@@ -4,7 +4,7 @@
  * @author weihan
  * @datetime 2016年11月15日上午11:32:06
  */
-namespace app\Models;
+namespace Web;
 
 use Server\CoreBase\Model;
 use Server\Asyn\Mysql\Miner;

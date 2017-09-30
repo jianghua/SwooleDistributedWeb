@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 /**
  * 过滤类
  * 用于过滤过外部输入的数据，过滤数组或者变量中的不安全字符，以及HTML标签

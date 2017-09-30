@@ -10,11 +10,12 @@
   },
  "autoload": {
     "files": [
-        "src/app/Helpers/Funcs/Common.php"
+        "src/Web/Helpers/Funcs/Common.php"
     ],
     "psr-4": {
       "SwooleDistributedWeb\\Server\\": "src/Server",
       "SwooleDistributedWeb\\app\\": "src/app",
+      "Web\\": "src/Web",
       "app\\": "src/app",
       "test\\": "src/test"
     }

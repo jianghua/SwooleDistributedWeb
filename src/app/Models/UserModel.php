@@ -6,6 +6,7 @@
  */
 namespace app\Models;
 
+use Web\BaseModel;
 class UserModel extends BaseModel
 {
     public $tbl_name = 'user';

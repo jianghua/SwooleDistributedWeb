@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 /**
  * 图像处理类
  * @author Tianfeng.Han

@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 /**
  * 生成验证码
  * @author weihan
@@ -138,10 +138,7 @@ class Checkcode {
 	 */
 	private function output() {
 // 		header("content-type:image/png\r\n");
-	    //debug模式，把信息直接打印到浏览器
-	    if (! get_instance()->config->get('server.debug')){
-	        ob_start();
-	    }
+        ob_start();
 		\imagepng($this->img);
 		\imagedestroy($this->img);
 	}

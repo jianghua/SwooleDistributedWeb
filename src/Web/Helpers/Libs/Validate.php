@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 
 /**
  * 数值验证类，类中的方法都是静态的，用于检测一个变量是否符合某种规则，不符合返回false，符合返回原值

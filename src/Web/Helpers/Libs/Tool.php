@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 /**
  * 附加工具集合
  * @author Tianfeng.Han

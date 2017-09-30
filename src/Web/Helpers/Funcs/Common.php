@@ -1,9 +1,9 @@
 <?php
-use app\Helpers\Libs\Validate;
+use Web\Helpers\Libs\Validate;
 use Monolog\Logger;
 use Server\Asyn\Mysql\Miner;
 use Server\CoreBase\XssClean;
-use app\Models\BaseModel;
+use Web\Models\BaseModel;
 /**
  * 通用函数库
  */
@@ -114,11 +114,14 @@ function url($uri, $params=[]){
  * @datetime 2016年11月22日下午3:55:06
  */
 function execControllerMethod($controller_name, $method_name, $params, \swoole_http_request $request) {
+    $response = null;
     $controller_instance = Server\CoreBase\ControllerFactory::getInstance()->getController($controller_name);
     if ($controller_instance != null) {
         if (method_exists($controller_instance, $method_name)) {
             try {
-                $controller_instance->setRequestResponse($request, null, $controller_name, $method_name);
+                $controller_instance->initialization($controller_name, $method_name);
+                $controller_instance->http_input->set($request);
+                $controller_instance->http_output->set($request, $response);
                 return yield $controller_instance->$method_name($params);
             }catch (\Exception $e) {
                 call_user_func([$controller_instance, 'onExceptionHandle'], $e);

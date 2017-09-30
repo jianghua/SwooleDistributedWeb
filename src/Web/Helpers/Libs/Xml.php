@@ -1,5 +1,5 @@
 <?php
-namespace app\Helpers\Libs;
+namespace Web\Helpers\Libs;
 /**
  * @author				wangtiecheng(jim_@live.cn)
  * @link				http://www.phpcms.cn http://www.ku6.cn
