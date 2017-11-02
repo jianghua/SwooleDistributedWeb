@@ -11,7 +11,7 @@
 $path = getcwd();
 print_r("将在当前位置创建项目，是否确定(y/n)？\n");
 
-if ($argv[1] != '-y') {
+if (count($argv) < 2 || $argv[1] != '-y') {
     $read = read();
     if (strtolower($read) != 'y') {
         exit();
@@ -33,7 +33,7 @@ print_r("bin目录下start_swoole_serverphp是启动文件，define.php可以自
  * web不需要consul
  * 
 print_r("即将安装consul(不使用微服务可以不安装)，是否确定(y/n)？\n");
-if ($argv[1] != '-y') {
+if (count($argv) < 2 || $argv[1] != '-y') {
     $read = read();
     if (strtolower($read) != 'y') {
         print_r("安装结束\n");
@@ -49,7 +49,8 @@ print_r("consul安装结束\n");
  */
 exit();
 
-function read(){
+function read()
+{
     $fp = fopen('php://stdin', 'r');
     $input = fgets($fp, 255);
     fclose($fp);
@@ -71,8 +72,7 @@ function copy_dir($src, $dst, $force = false)
             if ( is_dir($src . '/' . $file) ) {
                 copy_dir($src . '/' . $file,$dst . '/' . $file);
                 continue;
-            }
-            else {
+            } else {
                 copy($src . '/' . $file,$dst . '/' . $file);
             }
         }

@@ -84,7 +84,7 @@ class AppServer extends SwooleDistributedServer
      */
     public function getEventControllerName()
     {
-        return 'AppController';
+        return get_instance()->config->get('http.default_controller');
     }
     
     /**

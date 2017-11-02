@@ -5,19 +5,6 @@
  * Date: 16-7-14
  * Time: 下午1:58
  */
-/**
- * tcp访问时方法的前缀
- */
-$config['tcp']['method_prefix'] = 'tcp_';
-/**
- * http访问时方法的前缀
- */
-$config['http']['method_prefix'] = '';
-/**
- * websocket访问时方法的前缀
- */
-$config['websocket']['method_prefix'] = 'tcp_';
-
 //强制关闭gzip
 $config['http']['gzip_off'] = false;
 

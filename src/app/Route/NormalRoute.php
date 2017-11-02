@@ -94,8 +94,21 @@ class NormalRoute implements IRoute
         return $this->client_data->params??null;
     }
     
-    public function errorHandle($e, $fd)
+    public function errorHandle(\Exception $e, $fd)
     {
         //get_instance()->close($fd);
     }
+    /**
+     * {@inheritDoc}
+     * @see \Server\Route\IRoute::errorHttpHandle()
+     * 
+     * @author weihan
+     * @datetime 2017年11月2日下午3:56:56
+     */
+    public function errorHttpHandle(\Exception $e, $request, $response)
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

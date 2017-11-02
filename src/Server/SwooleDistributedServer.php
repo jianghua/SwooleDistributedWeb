@@ -6,6 +6,8 @@ use Server\SwooleDistributedServer as _SwooleDistributedServer;
 use SwooleDistributedWeb\Server\Cache\CacheFactory;
 use Server\Start;
 use Server\CoreBase\ControllerFactory;
+use Server\Coroutine\Coroutine;
+use Server\Components\Consul\ConsulHelp;
 
 /**
  * 
@@ -18,7 +20,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
     /**
      * 版本
      */
-    const version = "2.5.5";
+    const version = "2.6.5";
     
     /**
      * 缓存
@@ -86,92 +88,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
         $this->templateEngine->registerFunction('url', 'url');
     }
     
-    /**
-     * 重写
-     * http服务器发来消息
-     * @param \swoole_http_request $request
-     * @param \swoole_http_response $response
-     *
-     * @author weihan
-     * @datetime 2017年9月22日下午12:53:54
-     */
-    public function onSwooleRequest($request, $response){
-        //设置响应头中的server
-        $response->header('Server', get_instance()->config->get('server.set.server_name'));
-        if (Start::$testUnity) {
-            $server_port = $request->server_port;
-        } else {
-            $fdinfo = $this->server->connection_info($request->fd);
-            $server_port = $fdinfo['server_port'];
-        }
-        $route = $this->portManager->getRoute($server_port);
-        $error_404 = false;
-        $controller_instance = null;
-        $route->handleClientRequest($request);
-        list($host) = explode(':', $request->header['host']??'');
-        $path = $route->getPath();
-        if($path=='/404'){
-            $response->header('HTTP/1.1', '404 Not Found');
-            if (!isset($this->cache404)) {//内存缓存404页面
-                $template = $this->loader->view('server::error_404');
-                $this->cache404 = $template->render();
-            }
-            $response->end($this->cache404);
-            return;
-        }
-        $extension = pathinfo($path, PATHINFO_EXTENSION);
-        /* 主页如果是静态页面，把注释去掉
-         if ($path=="/") {//寻找主页
-         $www_path = $this->getHostRoot($host) . $this->getHostIndex($host);
-         $result = httpEndFile($www_path, $request, $response);
-         if (!$result) {
-         $error_404 = true;
-         } else {
-         return;
-         }
-         }else */
-        if(!empty($extension)){//有后缀
-            $www_path = $this->getHostRoot($host) . $path;
-            $result = httpEndFile($www_path, $request, $response);
-            if (!$result) {
-                $error_404 = true;
-            }
-        }
-        else {
-            $controller_name = $route->getControllerName();
-            $controller_instance = ControllerFactory::getInstance()->getController($controller_name);
-            if ($controller_instance != null) {
-                if ($route->getMethodName() == '_consul_health') {//健康检查
-                    $response->end('ok');
-                    $controller_instance->destroy();
-                    return;
-                }
-                $method_name = $this->http_method_prefix . $route->getMethodName();
-                //非public方法，不调用
-                if (!method_exists($controller_instance, $method_name) || !is_callable([$controller_instance, $method_name])) {
-                    $method_name = get_instance()->config->get('http.default_method');
-                }
-                //debug模式，把信息直接打印到浏览器
-                if ($this->config->get('server.debug')){
-                    ob_start();
-                }
-                $controller_instance->setRequestResponse($request, $response, $controller_name, $method_name, $route->getParams());
-                return;
-            } else {
-                $error_404 = true;
-            }
-        }
-        if ($error_404) {
-            if ($controller_instance != null) {
-                $controller_instance->destroy();
-            }
-            //重定向到404
-            $response->status(302);
-            $location = $this->config->get('http.domain')."/".'404';
-            $response->header('Location',$location);
-            $response->end('');
-        }
-    }
+    
     /**<-------------------------------------------------------*/
     
     /**---------------SwooleServer.php--------------------->*/
@@ -180,12 +97,12 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
      * @param $msg
      * @param $log
      */
-    public function onErrorHandel($msg, $log)
+    /* public function onErrorHandel($msg, $log)
     {
         if ($this->config->get('server.debug')){
-            print_r($msg . "\n");
-            print_r($log . "\n");
+            secho("ERROR", $msg);
+            secho("ERROR", $log);
         }
-    }
+    } */
     /**<-------------------------------------------------------*/
 }

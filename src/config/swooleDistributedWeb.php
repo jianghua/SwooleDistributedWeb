@@ -15,6 +15,7 @@ $config['server']['set'] = [
 $config['http']['domain'] = 'http://10.16.198.131/sdw';
 $config['http']['default_controller'] = 'User';  //默认控制器
 $config['http']['default_method'] = 'index';          //默认方法
+$config['http']['index_isfile'] = '0';         //首页是否使用静态页面，1：静态页面，0：非静态页面
 
 //编码
 $config['charset'] = 'utf-8';

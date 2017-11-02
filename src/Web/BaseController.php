@@ -8,6 +8,7 @@ use Web\Helpers\Libs\Form;
 use Web\Helpers\Libs\Validate;
 use Server\CoreBase\XssClean;
 use Web\Helpers\Libs\Lib;
+use Server\CoreBase\ChildProxy;
 
 /**
  * app中控制器基类
@@ -48,6 +49,19 @@ class BaseController extends SController
         $this->session_handler = get_instance()->session_handler;
         
         $this->data = ['title'=>'首页'];
+    }
+    
+    /**
+     * 默认方法
+     * {@inheritDoc}
+     * @see \Server\CoreBase\Controller::defaultMethod()
+     *
+     * @author weihan
+     * @datetime 2017年10月10日上午9:39:40
+     */
+    public function defaultMethod() {
+        $this->redirect($this->controller_name. '/'. get_instance()->config->get('http.default_method'));
+        return ;
     }
     
     /**
@@ -334,7 +348,7 @@ class BaseController extends SController
      * @author weihan
      * @datetime 2016年12月9日上午10:51:52
      */
-    protected function getForm(BaseModel $modelObj, $form_name, $data=[])
+    protected function getForm(ChildProxy $modelObj, $form_name, $data=[])
     {
         $form = $modelObj->form($form_name);
         if ($modelObj->_form_secret)
@@ -358,7 +372,7 @@ class BaseController extends SController
      * @author weihan
      * @datetime 2016年11月22日下午2:29:51
      */
-    protected function checkForm(BaseModel $modelObj, $form_name, $input, &$error, &$data_arr=[])
+    protected function checkForm(ChildProxy $modelObj, $form_name, $input, &$error, &$data_arr=[])
     {
         if($modelObj->_form_secret)
         {
