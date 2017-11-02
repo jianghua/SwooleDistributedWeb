@@ -116,9 +116,9 @@ function url($uri, $params=[]){
  */
 function execControllerMethod($controller_name, $method_name, $params, \swoole_http_request $request) {
     $response = null;
-    $controller_instance = Server\CoreBase\ControllerFactory::getInstance()->getController($controller_name);
+    $controller_instance = Server\CoreBase\ControllerFactory::getInstance()->getController($controller_name)->getProxy();
     if ($controller_instance != null) {
-        if (method_exists($controller_instance, $method_name)) {
+        if (is_callable([$controller_instance, $method_name])) {
             try {
                 $controller_instance->initialization($controller_name, $method_name);
                 $controller_instance->http_input->set($request);
