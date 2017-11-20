@@ -20,7 +20,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
     /**
      * 版本
      */
-    const version = "2.6.5";
+    const version = "2.7.0.4";
     
     /**
      * 缓存
@@ -87,22 +87,5 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
         $this->templateEngine->registerFunction('get_www', 'get_www');
         $this->templateEngine->registerFunction('url', 'url');
     }
-    
-    
-    /**<-------------------------------------------------------*/
-    
-    /**---------------SwooleServer.php--------------------->*/
-    /**
-     * 错误处理函数
-     * @param $msg
-     * @param $log
-     */
-    /* public function onErrorHandel($msg, $log)
-    {
-        if ($this->config->get('server.debug')){
-            secho("ERROR", $msg);
-            secho("ERROR", $log);
-        }
-    } */
     /**<-------------------------------------------------------*/
 }

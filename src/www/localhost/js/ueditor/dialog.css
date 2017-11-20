@@ -1,0 +1,401 @@
+/* 弹出对话框按钮和对话框大小 */
+.edui-default .edui-dialog {
+    z-index: 2000;
+    position: absolute;
+}
+
+.edui-dialog div{
+    width:auto;
+}
+
+.edui-default .edui-dialog-wrap {
+    margin-right: 6px;
+    margin-bottom: 6px;
+}
+
+.edui-default .edui-dialog-fullscreen-flag {
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.edui-default .edui-dialog-body {
+    position: relative;
+	border:1px solid #b4b4b4;
+    _zoom: 1;
+}
+
+.edui-for-insertimage .edui-dialog-body {
+    position: relative;
+	border:1px solid #b4b4b4;
+    _zoom: 1;
+    padding: 0px 40px;
+    width: 740px !important;
+}
+
+.edui-default .edui-dialog-fullscreen-flag .edui-dialog-body {
+    padding: 0;
+}
+
+.edui-default .edui-dialog-shadow {
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ffffff;
+    -webkit-background-clip: padding-box;
+    -moz-background-clip: padding;
+    background-clip: padding-box;
+    border-radius: 5px;
+}
+
+.edui-default .edui-dialog-foot {
+    background-color: white;
+}
+
+.edui-default .edui-dialog-titlebar {
+    text-align: left;
+	color:#666;
+    background-color: #fff;
+    border-bottom: solid 1px #eaeaea;
+    height: 63px;
+}
+
+.edui-for-insertimage .edui-dialog-titlebar {
+    width: 740px;
+    border-bottom: solid 1px #eaeaea;
+    height: 63px;
+}
+
+.edui-default .edui-dialog-caption {
+    font-weight: normal;
+    font-size: 18px;
+    height: 63px;
+    line-height: 63px;
+    padding-left: 5px;
+    color: #333;
+}
+
+.edui-default .edui-dialog-draghandle {
+    height: 63px;
+}
+
+.edui-default .edui-dialog-closebutton {
+    display: block;
+    position: absolute !important;
+    right: 25px;
+    top: 21px;
+}
+
+.edui-default .edui-dialog-closebutton .edui-button-body {
+    display: block;
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    background: url("../images/close.png") no-repeat;
+}
+
+.edui-default .edui-dialog-closebutton .edui-state-hover .edui-button-body {
+    /*display: none;
+    background: url("../images/icons-all.gif") no-repeat 0 -89px;*/
+}
+
+.edui-for-insertimage .edui-dialog-foot {
+    height: 40px;
+	padding-bottom:20px;
+    width: 740px;
+}
+
+.edui-default .edui-dialog-buttons {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.edui-default .edui-dialog-buttons .edui-button .edui-button-body {
+    /*background: url("../images/icons-all.gif") no-repeat;*/
+    font-size: 16px;
+    width: 120px;
+    line-height: 40px;
+    text-align: center;
+    cursor: default;
+    color: #666;
+    border-radius: 3px;
+
+}
+
+/*确认按钮的样式*/
+.edui-dialog-buttons .edui-okbutton .edui-button-wrap .edui-button-body{
+    color:#fff;
+    width: 120px;
+    height: 40px;
+
+    border: none!important;
+    background-color: #fdb300;
+    color: #fff;
+    margin-left: 10px;
+}
+
+.edui-dialog-buttons .edui-cancelbutton .edui-button-wrap .edui-button-body{
+    margin-left: 40px;
+    border: solid 1px #ededed;
+}
+/* 确认button的样式结束 */
+
+.edui-default .edui-dialog-buttons .edui-button .edui-state-hover .edui-button-body {
+    /*background: url("../images/icons-all.gif") no-repeat 0 -30px;*/
+	background:#eaeaea;
+	cursor:pointer;
+}
+
+/* 确认button的hover */
+.edui-dialog-buttons .edui-button.edui-okbutton .edui-state-hover .edui-button-body {
+    background-color:#ffa800;
+}
+
+.edui-dialog-buttons .edui-button.edui-cancelbutton .edui-state-hover .edui-button-body {
+    background-color:#ececec;
+}
+
+
+/* button不可点击 */
+.edui-default .edui-dialog-buttons .edui-button .edui-button-disabled{
+	color:#fff !important;
+	background:#d0d0d0 !important;
+	cursor:not-allowed !important;
+}
+/* button不可点击结束 */
+
+.edui-default .edui-dialog iframe {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    vertical-align: top;
+}
+
+.edui-default .edui-dialog-modalmask {
+    opacity: 0.3;
+    filter: alpha(opacity = 30);
+    background-color: #000;
+    position: absolute;
+    /*z-index: 1999;*/
+}
+
+.edui-default .edui-dialog-dragmask {
+    position: absolute;
+    /*z-index: 2001;*/
+    background-color: transparent;
+    cursor: move;
+}
+
+.edui-default .edui-dialog-content {
+    position: relative;
+}
+
+.edui-default .dialogcontmask {
+    cursor: move;
+    visibility: hidden;
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    filter: alpha(opacity = 0);
+}
+
+/*background-dialog*/
+.edui-default .edui-for-background .edui-dialog-content {
+    width: 440px;
+    height: 280px;
+    overflow: hidden;
+}
+
+/*template-dialog*/
+.edui-default .edui-for-template .edui-dialog-content {
+    width: 630px;
+    height: 390px;
+    overflow: hidden;
+}
+
+/*scrawl-dialog*/
+.edui-default .edui-for-scrawl .edui-dialog-content {
+    width: 515px;
+    *width: 506px;
+    height: 360px;
+}
+
+/*spechars-dialog*/
+.edui-default .edui-for-spechars .edui-dialog-content {
+    width: 620px;
+    height: 500px;
+    *width: 630px;
+    *height: 570px;
+}
+
+/*image-dialog*/
+.edui-default .edui-for-insertimage .edui-dialog-content {
+    width: 740px;
+    height: 470px;
+    overflow: hidden;
+}
+/*webapp-dialog*/
+.edui-default .edui-for-webapp .edui-dialog-content {
+    width: 560px;
+    _width: 565px;
+    height: 450px;
+    overflow: hidden;
+}
+
+/*image-insertframe*/
+.edui-default .edui-for-insertframe .edui-dialog-content {
+    width: 350px;
+    height: 200px;
+    overflow: hidden;
+}
+
+/*wordImage-dialog*/
+.edui-default .edui-for-wordimage .edui-dialog-content {
+    width: 620px;
+    height: 400px;
+    overflow: hidden;
+}
+
+/*attachment-dialog*/
+.edui-default .edui-for-attachment .edui-dialog-content {
+    width: 650px;
+    height: 400px;
+    overflow: hidden;
+}
+
+
+/*map-dialog*/
+.edui-default .edui-for-map .edui-dialog-content {
+    width: 550px;
+    height: 400px;
+}
+
+/*gmap-dialog*/
+.edui-default .edui-for-gmap .edui-dialog-content {
+    width: 550px;
+    height: 400px;
+}
+
+/*video-dialog*/
+.edui-default .edui-for-insertvideo .edui-dialog-content {
+    width: 640px;
+    height: 420px;
+}
+
+/*anchor-dialog*/
+.edui-default .edui-for-anchor .edui-dialog-content {
+    width: 320px;
+    height: 60px;
+    overflow: hidden;
+}
+
+/*searchreplace-dialog*/
+.edui-default .edui-for-searchreplace .edui-dialog-content {
+    width: 400px;
+    height: 220px;
+}
+
+/*help-dialog*/
+.edui-default .edui-for-help .edui-dialog-content {
+    width: 400px;
+    height: 420px;
+}
+
+/*edittable-dialog*/
+.edui-default .edui-for-edittable .edui-dialog-content {
+    width: 540px;
+    _width:590px;
+    height: 335px;
+}
+
+/*edittip-dialog*/
+.edui-default .edui-for-edittip .edui-dialog-content {
+    width: 225px;
+    height: 60px;
+}
+
+/*edittd-dialog*/
+.edui-default .edui-for-edittd .edui-dialog-content {
+    width: 240px;
+    height: 50px;
+}
+/*snapscreen-dialog*/
+.edui-default .edui-for-snapscreen .edui-dialog-content {
+    width: 400px;
+    height: 220px;
+}
+
+/*music-dialog*/
+.edui-default .edui-for-music .edui-dialog-content {
+    width: 515px;
+    height: 360px;
+}
+
+
+/*
+wzz 
+add 2016-8-16
+*/
+.edui-dialog.edui-for-link.edui-default .edui-dialog-body.edui-default,.edui-dialog.edui-for-link.edui-default .edui-default.edui-dialog-titlebar{
+    width: 534px!important;
+}
+
+.edui-dialog.edui-for-link.edui-default .edui-default.edui-dialog-foot{
+    position: relative;
+    top: -10px;
+    width: 400px;
+    left: 70px;
+}
+
+.edui-dialog.edui-for-link.edui-default .edui-default.edui-dialog-foot .edui-button-body.edui-default{
+    border: 1px solid #d7d7d7;
+}
+
+.edui-dialog.edui-for-link.edui-default .edui-default.edui-dialog-content{
+    margin: 0px 0 0px 0px;
+    width: 534px;
+}
+
+
+.edui-dialog.edui-for-link.edui-default{
+    position: absolute;
+    left: 70px;
+    top: 30px;
+}
+
+.edui-dialog.edui-for-link.edui-default  .edui-dialog-body.edui-default{
+    height: 258px!important;
+}
+
+.edui-dialog.edui-for-link.edui-default .edui-default.edui-dialog-titlebar {
+    text-align: left;
+    color: #666;
+    background-color: #fff;
+    border-bottom: solid 1px #eaeaea;
+    height: 53px;
+    width: 450px!important;
+    margin-left: 40px;
+}
+
+/* 上传视频 */
+.edui-dialog.edui-for-insertvideo .edui-dialog-body {
+    height: 540px !important;
+    width: 600px !important;
+}
+.edui-dialog.edui-for-insertvideo .edui-dialog-titlebar {
+    height: 60px;
+    width: 510px;
+    margin: 0 auto;
+}
+.edui-default .edui-dialog.edui-for-insertvideo .edui-dialog-content {
+    height: 390px;
+    width: 100%;
+}
+
+.edui-default .edui-dialog.edui-for-insertvideo .edui-dialog-buttons {
+    margin-top: 10px;
+}

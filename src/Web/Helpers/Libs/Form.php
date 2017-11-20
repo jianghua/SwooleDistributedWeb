@@ -63,9 +63,9 @@ class Form
 	        $value = $v['value'] ?? '';
 	        unset($v['type'],$v['value']);
 	    
-	        if(in_array($func, ['input', 'password', 'text', 'checkcode', 'upload', 'multi_upload', 'cascade_select', 'editor']))
+	        if(in_array($func, ['input', 'password', 'text', 'checkcode', 'upload', 'multi_upload', 'cascade_select', 'editor', 'ueditor']))
 	        {
-	            $forms[$k] = self::$func($k,$value,$v, $data);
+	            $forms[$k] = self::$func($k, $value,$v, $data);
 	        }
 	        else
 	        {
@@ -178,13 +178,14 @@ class Form
     	            //检查值的类型 -regx，自定义正则检查
     	            if($validate == 'regx')
     	            {
-    	                $qs = explode('|',$rule);
-    	                $regx = $qs[0];
-    	                $regx = substr($regx, 1, strrpos($regx, '/'));
+    	                $pos = strrpos($rule, '|');
+    	                $regx = substr($rule, 0, $pos);
+    	                $msg = substr($rule, $pos+1);
+    	                $regx = substr($regx, 1, strrpos($regx, '/')-1);
     	                $regx = addslashes($regx);
     	                $validates_str .= ".regexValidator({
         	                regExp: \"{$regx}\",
-        	                onError: \"{$qs[1]}\"
+        	                onError: \"{$msg}\"
     	                })";
     	            }
     	            
@@ -312,14 +313,27 @@ class Form
 	        $value = $input[$name]??'';
 	        $f = $v['validates'];
         	// 为空的情况 -required
-        	if(isset($f['required']) and empty($value))
+        	if(isset($f['required']) && empty($value))
         	{
         	    $error = $f['required'];
         	    return false;
         	}
         	//为空的情况，并且允许为空，不再往下判断
-        	if(!isset($f['required']) and empty($value))
+        	if(!isset($f['required']) && empty($value))
         	{
+        	    //整型、浮点型，转换空字符串
+        	    if(isset($f['ctype']))
+        	    {
+        	        $qs = explode('|',$f['ctype']);
+        	        $func = '';
+        	        switch ($qs[0]){
+        	            case 'int': $func = 'intval'; break;
+        	            case 'float': $func = 'floatval'; break;
+        	        }
+        	        if ($func){
+            	        $value = $func($value);
+        	        }
+        	    }
         	    $form_val[$name] = $value;
         	    continue;
         	}
@@ -430,7 +444,7 @@ class Form
         	    $uri = $f['ajax']['url'];
         	    $uri = trim($uri, '/');
         	    $uri_arr = explode('/', $uri);
-        	    $params = ['email'=>$value, 'is_return'=>true];
+        	    $params = ['is_return'=>true];
         	    //
         	    $result = yield execControllerMethod($uri_arr[0], $uri_arr[1], $params, $request);
         	    if ($result == 0) {
@@ -448,7 +462,7 @@ class Form
 	 * @param $attr
 	 * @return unknown_type
 	 */
-	static function input_attr(&$attr)
+	static function input_attr($attr)
 	{
 	    $str = " ";
         if(!empty($attr) && is_array($attr))
@@ -543,22 +557,18 @@ class Form
      **/
     static function radio($name, $option, $default = null, $self = false, $attrArray = null, $label_class = '')
 	{
-		$htmlStr = "";
+		$html_arr = [];
 	    $attrStr = self::input_attr($attrArray);
 
-		foreach($option as $key => $value)
-		{
+		foreach($option as $key => $value) {
 			if($self) $key=$value;
-			if ($key == $default)
-			{
-				$htmlStr .= "<label class='$label_class'><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" checked=\"checked\" {$attrStr} />".$value."</label>";
-			}
-			else
-			{
-				$htmlStr .= "<label class='$label_class'><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\"  {$attrStr} />&nbsp;".$value."</label>";
+			if ($key == $default){
+				$html_arr[] = "<label class='{$label_class}'><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" checked=\"checked\" {$attrStr} />{$value}</label>";
+			}else{
+				$html_arr[] = "<label class='{$label_class}'><input type=\"radio\" name=\"$name\" id=\"{$name}_{$key}\" value=\"$key\" {$attrStr} />{$value}</label>";
 			}
 		}
-		return $htmlStr;
+		return ['options'=>$option, 'radios'=>$html_arr];
 	}
 	/**
 	 * 多选按钮
@@ -568,36 +578,25 @@ class Form
 	 * @param bool $self 设置为ture，option的值等于$value
 	 * @param array $attrArray html的属性 例如  class="x1"
 	 * @param string $label_class
-	 * @return string
+	 * @return array
 	 */
 	static function checkbox($name, $option, $default = null, $self = false, $attrArray = null, $label_class = '')
 	{
-		$htmlStr = "";
+		$html_arr = [];
 		$attrStr = self::input_attr($attrArray);
 		$default = array_flip(explode(self::$checkbox_value_split, $default));
 
-		foreach ($option as $key => $value)
-		{
-			if ($self)
-			{
+		foreach ($option as $key => $value){
+			if ($self){
 				$key = $value;
 			}
-			if (isset($default[$key]))
-			{
-				$htmlStr
-					.=
-					"<label class='$label_class'><input type=\"checkbox\" name=\"{$name}[]\" id=\"{$name}_$key\" value=\"$key\" checked=\"checked\" {$attrStr} />"
-					. $value . '</label>';
-			}
-			else
-			{
-				$htmlStr
-					.=
-					"<label class='$label_class'><input type=\"checkbox\" name=\"{$name}[]\" id=\"{$name}_$key\" value=\"$key\"  {$attrStr} />"
-					. $value . '</label>';
+			if (isset($default[$key])){
+				$html_arr[] = "<label class='{$label_class}'><input type=\"checkbox\" name=\"{$name}[]\" id=\"{$name}_$key\" value=\"$key\" checked=\"checked\" {$attrStr} />{$value}</label>";
+			}else{
+				$html_arr[] = "<label class='{$label_class}'><input type=\"checkbox\" name=\"{$name}[]\" id=\"{$name}_$key\" value=\"$key\" {$attrStr} />{$value}</label>";
 			}
 		}
-		return $htmlStr;
+		return ['options'=>$option, 'checkboxs'=>$html_arr];;
 	}
 
     /**
@@ -1006,5 +1005,33 @@ class Form
 // 		if(is_ie()) $ext_str .= "<div style='display:none'><OBJECT id='PC_Capture' classid='clsid:021E8C6F-52D4-42F2-9B36-BCFBAD3A0DE4'><PARAM NAME='_Version' VALUE='0'><PARAM NAME='_ExtentX' VALUE='0'><PARAM NAME='_ExtentY' VALUE='0'><PARAM NAME='_StockProps' VALUE='0'></OBJECT></div>";
 // 		$str .= $ext_str;
 		return $str;
+    }
+    
+    /**
+     * ueditor编辑器
+     * @param $name $name
+     * @param string $value
+     * @param array $attrArray
+     * @param array $data
+     *
+     * @author weihan
+     * @datetime 2017年6月20日上午10:40:39
+     */
+    static function ueditor($name, $value = '', $attrArray = null, $data=[]) {
+        $editor_config = $attrArray['editor'];
+    
+        $width = $editor_config['width'] ?? '500px';
+        $height = $editor_config['height'] ?? '500px';
+        $toolbar = "'bold', 'underline','blockquote', 'insertunorderedlist','insertorderedlist','horizontal','link','insertimage', 'removeformat', 'undo', 'redo'";
+    
+        $str = '';
+        $str .= '<script type="text/javascript" src="'.url('js/ueditor/ueditor.config.js').'"></script>';
+        $str .= '<script type="text/javascript" src="'.url('js/ueditor/ueditor.all.js').'"></script>';
+        $str .= '<script type="text/javascript" src="'.url('js/ueditor/lang/zh-cn/zh-cn.js').'"></script>';
+        $str .= '<textarea name="'.$name.'" id="'.$name.'" style="width:'.$width.';height:'.$height.';">'.$value.'</textarea>';
+        $str .= "<script type=\"text/javascript\">\r\n";
+        $str .= "var ueditor_{$name} = UE.getEditor('{$name}', {zIndex:1, enableAutoSave:true, autoHeightEnabled:false, toolbars:[[{$toolbar}]]});";
+        $str .= '</script>';
+        return $str;
     }
 }

@@ -116,7 +116,7 @@ function url($uri, $params=[]){
  */
 function execControllerMethod($controller_name, $method_name, $params, \swoole_http_request $request) {
     $response = null;
-    $controller_instance = Server\CoreBase\ControllerFactory::getInstance()->getController($controller_name)->getProxy();
+    $controller_instance = Server\CoreBase\ControllerFactory::getInstance()->getController($controller_name);
     if ($controller_instance != null) {
         if (is_callable([$controller_instance, $method_name])) {
             try {

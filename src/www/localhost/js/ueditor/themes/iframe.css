@@ -1,0 +1,10 @@
+/*可以在这里添加你自己的css*/
+img {
+    max-width: 700px !important;
+}
+blockquote{line-height:1.4;
+	padding:12px 8px;
+	color:#999;
+	background-color:#F3F4F5;
+	margin:10px 0
+}
