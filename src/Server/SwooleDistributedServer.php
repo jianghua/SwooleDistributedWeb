@@ -56,7 +56,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
                     if (isset($this->config[$_type]['cleaner_tick']) && $this->config[$_type]['cleaner_tick']){
                         //文件缓存，启动定时清理器
                         if ($this->config[$_type]['handler'] == 'file' && isset($this->config[$_type]['cache_path'])){
-                            $cache_path = SRC_DIR. $this->config[$_type]['cache_path'];
+                            $cache_path = APP_DIR. DIRECTORY_SEPARATOR. $this->config[$_type]['cache_path'];
                             swoole_timer_tick($this->config[$_type]['cleaner_tick'], function($timmerID) use ($cache_path){
                                 fileUnlink($cache_path);
                             });

@@ -6,8 +6,11 @@
  * 配置格式与session一样
  */
 
+//task，SD服务reload或重启失效
+$config['session']['handler'] = 'task';
+
 //redis
-$config['cache']['handler'] = 'redis';
+// $config['cache']['handler'] = 'redis';
 
 /* 
 //文件缓存

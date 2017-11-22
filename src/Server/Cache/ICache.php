@@ -14,6 +14,7 @@ interface ICache{
     
     function set($key, $value, $ttl=0);
     
+    //需要加yield
     function get($key);
     
     function delete($key);

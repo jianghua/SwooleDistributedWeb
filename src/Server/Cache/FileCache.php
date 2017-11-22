@@ -18,7 +18,7 @@ class FileCache implements ICache{
     
     public function __construct($setting) {
         $this->setting = array_merge($this->setting, $setting);
-        $this->setting['cache_path'] = SRC_DIR. trim($this->setting['cache_path'], DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR;
+        $this->setting['cache_path'] = APP_DIR. DIRECTORY_SEPARATOR. trim($this->setting['cache_path'], DIRECTORY_SEPARATOR). DIRECTORY_SEPARATOR;
     }
     
     /**

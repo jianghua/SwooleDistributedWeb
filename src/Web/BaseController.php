@@ -9,6 +9,7 @@ use Web\Helpers\Libs\Validate;
 use Server\CoreBase\XssClean;
 use Web\Helpers\Libs\Lib;
 use Server\CoreBase\ChildProxy;
+use SwooleDistributedWeb\Server\Cache\ICache;
 
 /**
  * app中控制器基类

@@ -6,6 +6,7 @@
  */
 namespace SwooleDistributedWeb\Server\Cache;
 
+use Server\Memory\Cache;
 class CacheFactory{
     
     /**
@@ -20,6 +21,7 @@ class CacheFactory{
         $setting = $setting ?? get_instance()->config['cache'];
         $handler = $setting['handler'];
         switch($handler){
+            case 'task': return new TaskCache($setting);
             case 'redis': return new RedisCache($setting, get_instance()->redis_pool);
             case 'file': return new FileCache($setting);
             case 'mysql': return new MysqlCache($setting, get_instance()->mysql_pool);
