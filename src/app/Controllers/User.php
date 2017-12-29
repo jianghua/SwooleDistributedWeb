@@ -3,6 +3,9 @@ namespace app\Controllers;
 
 use Web\Helpers\Libs\RandomKey;
 use Web\Helpers\Libs\Filter;
+use Server\Components\CatCache\CatCacheRpcProxy;
+use Server\Components\CatCache\TimerCallBack;
+use app\Models\CatCacheModel;
 /**
  * 用户控制器
  * @author weihan
@@ -225,12 +228,12 @@ class User extends BaseController
     }
     
     public function sessionSet() {
-        $this->setSession('sess_test', '1');
-        $this->output();
+        yield $this->setSession('sess_test', '1');
+        $this->output(1);
     }
     public function sessionGet() {
-        echo yield $this->getSession('sess_test');
-        $this->output();
+        $ret = yield $this->getSession('sess_test');
+        $this->output($ret);
     }
     
     /**

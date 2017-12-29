@@ -4,6 +4,7 @@ namespace SwooleDistributedWeb\app;
 use Server\CoreBase\HttpInput;
 use Server\CoreBase\Loader;
 use SwooleDistributedWeb\Server\SwooleDistributedServer;
+use Server\Components\Backstage\BackstageHelp;
 
 /**
  * Created by PhpStorm.
@@ -21,6 +22,15 @@ class AppServer extends SwooleDistributedServer
     {
         $this->setLoader(new Loader());
         parent::__construct();
+    }
+    
+    /**
+     * 可以在这修改配置
+     */
+    protected function setConfig()
+    {
+        parent::setConfig();
+        BackstageHelp::init("0.0.0.0", "18083");
     }
 
     /**

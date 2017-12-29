@@ -305,7 +305,7 @@ class BaseController extends SController
             $this->setCookie('PHPSESSID', $sessid, 3600);
         }
         $key = 'sess'. $sessid. $key;
-        $this->session_handler->set($key, $value, $ttl);
+        yield $this->session_handler->set($key, $value, $ttl);
     }
     
     /**

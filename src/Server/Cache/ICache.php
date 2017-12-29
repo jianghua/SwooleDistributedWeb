@@ -11,7 +11,7 @@ namespace SwooleDistributedWeb\Server\Cache;
 
 
 interface ICache{
-    
+    //需要加yield
     function set($key, $value, $ttl=0);
     
     //需要加yield
