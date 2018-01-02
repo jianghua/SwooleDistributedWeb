@@ -404,7 +404,7 @@ class BaseController extends SController
         $secret = Form::secret();
         $key = $this->_getFormSecretKey($model_name, $form_name);
         $this->setCookie($key, $secret);
-        $this->setSession($key, $secret);
+        yield $this->setSession($key, $secret);
     }
     
     /**
