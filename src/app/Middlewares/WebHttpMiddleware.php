@@ -31,6 +31,7 @@ class WebHttpMiddleware extends HttpMiddleware
         list($host) = explode(':', $this->request->header['host'] ?? '');
         $path = $this->request->server['path_info'];
         if ($path == '/404') {
+            $this->response->status(400);
             $this->response->header('HTTP/1.1', '404 Not Found');
             $this->response->end(WebHttpMiddleware::$cache404);
             $this->interrupt();

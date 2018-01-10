@@ -24,7 +24,11 @@ class NormalRoute implements IRoute
     public function handleClientData($data)
     {
         $this->client_data = $data;
-        return $this->client_data;
+        if (isset($this->client_data->controller_name) && isset($this->client_data->method_name)) {
+            return $this->client_data;
+        } else {
+            throw new SwooleException('route 数据缺少必要字段');
+        }
     }
 
     /**
@@ -96,19 +100,17 @@ class NormalRoute implements IRoute
     
     public function errorHandle(\Exception $e, $fd)
     {
-        //get_instance()->close($fd);
+        get_instance()->send($fd, "Error:" . $e->getMessage(), true);
+        get_instance()->close($fd);
     }
-    /**
-     * {@inheritDoc}
-     * @see \Server\Route\IRoute::errorHttpHandle()
-     * 
-     * @author weihan
-     * @datetime 2017年11月2日下午3:56:56
-     */
+
     public function errorHttpHandle(\Exception $e, $request, $response)
     {
-        // TODO Auto-generated method stub
-        
+        //重定向到404
+        $response->status(302);
+        $location = 'http://' . $request->header['host'] . "/" . '404';
+        $response->header('Location', $location);
+        $response->end('');
     }
 
 }
