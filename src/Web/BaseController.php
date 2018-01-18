@@ -349,12 +349,12 @@ class BaseController extends SController
      * @author weihan
      * @datetime 2016年12月9日上午10:51:52
      */
-    protected function getForm(ChildProxy $modelObj, $form_name, $data=[])
+    protected function getForm($modelObj, $form_name, $data=[])
     {
         $form = $modelObj->form($form_name);
         if ($modelObj->_form_secret)
         {
-            $this->setFormsecret(get_class($modelObj), $form_name);
+            yield $this->setFormsecret(get_class($modelObj->getOwn()), $form_name);
         }
         return Form::autoform($form, $data);
     }
@@ -373,11 +373,11 @@ class BaseController extends SController
      * @author weihan
      * @datetime 2016年11月22日下午2:29:51
      */
-    protected function checkForm(ChildProxy $modelObj, $form_name, $input, &$error, &$data_arr=[])
+    protected function checkForm($modelObj, $form_name, $input, &$error, &$data_arr=[])
     {
         if($modelObj->_form_secret)
         {
-            $is_pass = yield $this->checkFormsecret(get_class($modelObj), $form_name);
+            $is_pass = yield $this->checkFormsecret(get_class($modelObj->getOwn()), $form_name);
             if (! $is_pass){
                 $error = '错误的请求';
                 return false;

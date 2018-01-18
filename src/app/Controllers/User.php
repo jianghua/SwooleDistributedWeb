@@ -154,7 +154,7 @@ class User extends BaseController
         }
         
         //
-        $form = $this->getForm($this->model, $form_name);
+        $form = yield $this->getForm($this->model, $form_name);
         $this->view('User/reg', ['form'=>$form]);
     }
     
@@ -191,7 +191,7 @@ class User extends BaseController
         //获取用户信息
         $userinfo = yield $this->model->getOne(['id'=>$this->userid]);
         //把用户信息传入form，可回显
-        $form = $this->getForm($this->model, $form_name, $userinfo);
+        $form = yield $this->getForm($this->model, $form_name, $userinfo);
         $this->view('User/profile', ['form'=>$form, 'userid'=>$this->userid, 'userinfo'=>$userinfo]);
     }
     
