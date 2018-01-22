@@ -8,6 +8,7 @@ namespace Web;
 
 use Server\CoreBase\Model;
 use Server\Asyn\Mysql\Miner;
+use Server\Asyn\Mysql\MySqlCoroutine;
 
 class BaseModel extends Model
 {
@@ -141,10 +142,10 @@ class BaseModel extends Model
         
         //使用协程，发送sql
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine->row();
         if ($return_result){
             //等待查询结果，返回结果
-            $result = yield $mySqlCoroutine;
-            return isset($result['result'][0]) ? $result['result'][0] : [];
+            return yield $mySqlCoroutine;
         }
         //不等待查询结果，直接返回，通过yield获取结果
         return $mySqlCoroutine;
@@ -210,10 +211,10 @@ class BaseModel extends Model
         }
         //使用协程，发送sql
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql);
+        $mySqlCoroutine->result_array();
         if ($return_result){
             //等待查询结果，返回结果
-            $result = yield $mySqlCoroutine;
-            return $result['result'];
+            return yield $mySqlCoroutine;
         }
         //不等待查询结果，直接返回，通过yield获取结果
         return $mySqlCoroutine;
@@ -248,7 +249,7 @@ class BaseModel extends Model
      * @author weihan
      * @datetime 2016年11月15日下午1:52:39
      */
-    public function insert($data_arr) {
+    public function insert($data_arr, $return_result=true) {
         $data_arr = $this->filterFields($data_arr);
         //构造sql
         $this->mysql_pool->dbQueryBuilder
@@ -256,8 +257,14 @@ class BaseModel extends Model
             ->intoColumns(array_keys($data_arr))
             ->intoValues(array_values($data_arr));
         
-        $result = yield $this->mysql_pool->dbQueryBuilder->coroutineSend();
-        return $result['insert_id'];
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine->insert_id();
+        if ($return_result){
+            //等待查询结果，返回结果
+            return yield $mySqlCoroutine;
+        }
+        //不等待查询结果，直接返回，通过yield获取结果
+        return $mySqlCoroutine;
     }
     
     /**
@@ -270,7 +277,7 @@ class BaseModel extends Model
      * @author weihan
      * @datetime 2016年11月15日下午2:27:26
      */
-    public function update($data_arr, $contidions_arr) {
+    public function update($data_arr, $contidions_arr, $return_result=true) {
         $data_arr = $this->filterFields($data_arr);
         if (empty($data_arr)){
             return true;
@@ -280,8 +287,16 @@ class BaseModel extends Model
             $this->mysql_pool->dbQueryBuilder->set($_column, $_value);
         }
         $this->_setConditions($contidions_arr);
-        $result = yield $this->mysql_pool->dbQueryBuilder->coroutineSend();
-        return $result['affected_rows'] ? true : false;
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine->registResultFuc(function ($result){
+            return $result['affected_rows'] ? true : false;
+        });
+        if ($return_result){
+            //等待查询结果，返回结果
+            return yield $mySqlCoroutine;
+        }
+        //不等待查询结果，直接返回，通过yield获取结果
+        return $mySqlCoroutine;
     }
     
     /**
@@ -293,11 +308,19 @@ class BaseModel extends Model
      * @author weihan
      * @datetime 2016年11月15日下午2:28:49
      */
-    public function delete($contidions_arr) {
+    public function delete($contidions_arr, $return_result=true) {
         $this->mysql_pool->dbQueryBuilder->delete()->from($this->table());
         $this->_setConditions($contidions_arr);
-        $result = yield $this->mysql_pool->dbQueryBuilder->coroutineSend();
-        return $result['affected_rows'] ? true : false;
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine->registResultFuc(function ($result){
+            return $result['affected_rows'] ? true : false;
+        });
+        if ($return_result){
+            //等待查询结果，返回结果
+            return yield $mySqlCoroutine;
+        }
+        //不等待查询结果，直接返回，通过yield获取结果
+        return $mySqlCoroutine;
     }
     
     /**
@@ -317,10 +340,13 @@ class BaseModel extends Model
     
         //使用协程，发送sql
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine->registResultFuc(function ($result){
+            return $result['result'][0]['nums'] ?? 0;
+        });
         if ($return_result){
             //等待查询结果，返回结果
             $result = yield $mySqlCoroutine;
-            return $result['result'][0]['nums'];
+            return $result;
         }
         //不等待查询结果，直接返回，通过yield获取结果
         return $mySqlCoroutine;
