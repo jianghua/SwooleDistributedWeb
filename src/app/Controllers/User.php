@@ -237,6 +237,27 @@ class User extends BaseController
     }
     
     /**
+     * 事务例子
+     *
+     * @author weihan
+     * @datetime 2018年2月1日下午1:58:27
+     */
+    public function trans() {
+        $transaction_id = yield $this->mysql_pool->coroutineBegin($this);
+        $user = yield $this->model->getOne(['username'=>'weihan'], $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '', $transaction_id, true);
+        $is_succ = false;
+        if ($user) {
+            $is_succ = yield $this->model->update(['realname'=>'微寒2'], ['username'=>'weihan'], true, $transaction_id);
+        }
+        if ($is_succ) {
+            yield $this->mysql_pool->coroutineCommit($transaction_id);
+        }else{
+            yield $this->mysql_pool->coroutineRollback($transaction_id);
+        }
+        $this->output('done');
+    }
+    
+    /**
      * 设置用户cookie
      * @param string $username
      * @param string $randpass

@@ -104,14 +104,15 @@ class BaseModel extends Model
      * @param string $order_column
      * @param string $order_by
      * @param string $group
-     * @return string|null
+     * @param int $bind_id
+     * @return \Generator
      *
      * @author weihan
      * @datetime 2016年11月15日下午3:48:33
      */
-    public function getColumn($contidions_arr, $field, $order_column = '', $order_by='DESC', $group = '') {
+    public function getColumn($contidions_arr, $field, $order_column = '', $order_by='DESC', $group = '', $bind_id=null) {
         $return_result = true;
-        $result = yield $this->getOne($contidions_arr, $field, $return_result, $order_column, $order_by, $group);
+        $result = yield $this->getOne($contidions_arr, $field, $return_result, $order_column, $order_by, $group, $bind_id);
         return array_pop($result) ?? null;
     }
     
@@ -124,12 +125,14 @@ class BaseModel extends Model
      * @param string $order_column
      * @param string $order_by
      * @param string $group
-     * @return array|\Generator
+     * @param int $bind_id
+     * @param bool $add_for_udpate  是否在sql末尾加上FOR UPDATE，$bind_id非空才有效
+     * @return \Generator
      *
      * @author weihan
      * @datetime 2016年11月15日下午2:35:56
      */
-    public function getOne($contidions_arr, $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '') {
+    public function getOne($contidions_arr, $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '', $bind_id=null, $add_for_udpate=false) {
         $this->mysql_pool->dbQueryBuilder->select($fields)->from($this->table());
         $this->_setConditions($contidions_arr);
         $this->mysql_pool->dbQueryBuilder->limit(1);
@@ -139,9 +142,13 @@ class BaseModel extends Model
         if ($group) {
             $this->mysql_pool->dbQueryBuilder->groupBy($group, null);
         }
+        $sql = $this->mysql_pool->dbQueryBuilder->getStatement(false);
+        if ($bind_id && $add_for_udpate) {
+            $sql .= ' FOR UPDATE';
+        }
         
         //使用协程，发送sql
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql);
         $mySqlCoroutine->row();
         if ($return_result){
             //等待查询结果，返回结果
@@ -163,7 +170,7 @@ class BaseModel extends Model
      * @param string $order
      * @param string $group
      * @param int $bind_id
-     * @return array|\Generator
+     * @return \Generator
      *
      * @author weihan
      * @datetime 2016年11月15日下午1:52:39
@@ -199,6 +206,7 @@ class BaseModel extends Model
      * @param number $page
      * @param number $pagesize
      * @param int $bind_id
+     * @return \Generator
      *
      * @author weihan
      * @datetime 2016年12月13日下午2:13:20
@@ -244,12 +252,14 @@ class BaseModel extends Model
      * 插入
      * 需要yield
      * @param array $data_arr   要插入的数据
+     * @param bool $return_result
+     * @param int $bind_id
      * @return insert_id
      *
      * @author weihan
      * @datetime 2016年11月15日下午1:52:39
      */
-    public function insert($data_arr, $return_result=true) {
+    public function insert($data_arr, $return_result=true, $bind_id=null) {
         $data_arr = $this->filterFields($data_arr);
         //构造sql
         $this->mysql_pool->dbQueryBuilder
@@ -257,7 +267,7 @@ class BaseModel extends Model
             ->intoColumns(array_keys($data_arr))
             ->intoValues(array_values($data_arr));
         
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
         $mySqlCoroutine->insert_id();
         if ($return_result){
             //等待查询结果，返回结果
@@ -272,12 +282,14 @@ class BaseModel extends Model
      * 需要yield
      * @param array $data_arr
      * @param array $contidions_arr
+     * @param bool $return_result
+     * @param int $bind_id
      * @return bool 
      *
      * @author weihan
      * @datetime 2016年11月15日下午2:27:26
      */
-    public function update($data_arr, $contidions_arr, $return_result=true) {
+    public function update($data_arr, $contidions_arr, $return_result=true, $bind_id=null) {
         $data_arr = $this->filterFields($data_arr);
         if (empty($data_arr)){
             return true;
@@ -287,7 +299,7 @@ class BaseModel extends Model
             $this->mysql_pool->dbQueryBuilder->set($_column, $_value);
         }
         $this->_setConditions($contidions_arr);
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
         $mySqlCoroutine->registResultFuc(function ($result){
             return $result['affected_rows'] ? true : false;
         });
@@ -303,15 +315,17 @@ class BaseModel extends Model
      * 删除
      * 需要yield
      * @param array $contidions_arr
+     * @param bool $return_result
+     * @param int $bind_id
      * @return bool 
      *
      * @author weihan
      * @datetime 2016年11月15日下午2:28:49
      */
-    public function delete($contidions_arr, $return_result=true) {
+    public function delete($contidions_arr, $return_result=true, $bind_id=null) {
         $this->mysql_pool->dbQueryBuilder->delete()->from($this->table());
         $this->_setConditions($contidions_arr);
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
         $mySqlCoroutine->registResultFuc(function ($result){
             return $result['affected_rows'] ? true : false;
         });
@@ -328,18 +342,19 @@ class BaseModel extends Model
      * 需要加yield
      * @param array $contidions_arr 查询条件
      * @param string $return_result
-     * @return int|Generator
+     * @param int $bind_id
+     * @return int
      *
      * @author weihan
      * @datetime 2016年11月21日下午5:27:13
      */
-    public function count($contidions_arr, $return_result=true) {
+    public function count($contidions_arr, $return_result=true, $bind_id=null) {
         $this->mysql_pool->dbQueryBuilder->select('count(*) as nums')->from($this->table());
         $this->_setConditions($contidions_arr);
         $this->mysql_pool->dbQueryBuilder->limit(1);
     
         //使用协程，发送sql
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend();
+        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
         $mySqlCoroutine->registResultFuc(function ($result){
             return $result['result'][0]['nums'] ?? 0;
         });
