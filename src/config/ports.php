@@ -24,7 +24,8 @@ $config['ports'][] = [
     'socket_port' => 1883,
     'pack_tool' => 'MqttPack',
     'route_tool' => 'NormalRoute',
-    'middlewares' => ['MonitorMiddleware']
+    'middlewares' => ['MonitorMiddleware'],
+    'method_prefix' => 'tcp_'
 ];
 
 $config['ports'][] = [
@@ -40,10 +41,12 @@ $config['ports'][] = [
     'socket_type' => PortManager::SOCK_WS,
     'socket_name' => '0.0.0.0',
     'socket_port' => 8083,
-    'route_tool' => 'NormalRoute',
+    'route_tool' => 'WebSocketRoute',
     'pack_tool' => 'NonJsonPack',
     'opcode' => PortManager::WEBSOCKET_OPCODE_TEXT,
-    'middlewares' => ['MonitorMiddleware']
+    'middlewares' => ['MonitorMiddleware'],
+    'method_prefix' => 'tcp_',
+    'event_controller_name' => 'Im',
 ];
 
 return $config;

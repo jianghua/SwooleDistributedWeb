@@ -13,6 +13,7 @@ Autoload must specify `app` and `test`.
   },
  "autoload": {
     "psr-4": {
+      "SwooleDistributedWeb\\app\\": "src/app",
       "app\\": "src/app",
       "test\\": "src/test"
     }
