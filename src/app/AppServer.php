@@ -1,10 +1,9 @@
 <?php
-namespace SwooleDistributedWeb\app;
+namespace app;
 
 use Server\CoreBase\HttpInput;
 use Server\CoreBase\Loader;
 use SwooleDistributedWeb\Server\SwooleDistributedServer;
-use Server\Components\Backstage\BackstageHelp;
 
 /**
  * Created by PhpStorm.
@@ -23,15 +22,6 @@ class AppServer extends SwooleDistributedServer
         $this->setLoader(new Loader());
         parent::__construct();
     }
-    
-    /**
-     * 可以在这修改配置
-     */
-    protected function setConfig()
-    {
-        parent::setConfig();
-        BackstageHelp::init("0.0.0.0", "18083");
-    }
 
     /**
      * 开服初始化(支持协程)
@@ -40,16 +30,6 @@ class AppServer extends SwooleDistributedServer
     public function onOpenServiceInitialization()
     {
         yield parent::onOpenServiceInitialization();
-    }
-
-    /**
-     * 当一个绑定uid的连接close后的清理
-     * 支持协程
-     * @param $uid
-     */
-    public function onUidCloseClear($uid)
-    {
-        // TODO: Implement onUidCloseClear() method.
     }
 
     /**
@@ -68,7 +48,6 @@ class AppServer extends SwooleDistributedServer
     public function startProcess()
     {
         parent::startProcess();
-        //ProcessManager::getInstance()->addProcess(MyProcess::class);
     }
 
     /**
@@ -80,7 +59,7 @@ class AppServer extends SwooleDistributedServer
     {
         return true;
     }
-    
+
     /**
      * @return string
      */
@@ -88,7 +67,7 @@ class AppServer extends SwooleDistributedServer
     {
         return 'onClose';
     }
-    
+
     /**
      * @return string
      */
@@ -96,7 +75,7 @@ class AppServer extends SwooleDistributedServer
     {
         return get_instance()->config->get('http.default_controller');
     }
-    
+
     /**
      * @return string
      */
