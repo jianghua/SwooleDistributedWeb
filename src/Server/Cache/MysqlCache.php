@@ -66,7 +66,7 @@ class MysqlCache implements ICache{
      * @datetime 2016年11月17日下午3:25:10
      */
     function get($key){
-        $result = yield $this->mysql_pool->dbQueryBuilder
+        $result = $this->mysql_pool->dbQueryBuilder
             ->select('val')->from($this->setting['tbl_name'])
             ->where('name', $key)->where('expire', time(), Miner::GREATER_THAN_OR_EQUAL)
             ->coroutineSend();

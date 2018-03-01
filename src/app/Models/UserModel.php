@@ -255,7 +255,7 @@ class UserModel extends BaseModel
         $contidions_arr = [
             'userid' => $userid,
         ];
-        return yield $this->getOne($contidions_arr, '*', $return_result);
+        return $this->getOne($contidions_arr, '*', $return_result);
     }    
     
     /**
@@ -270,7 +270,7 @@ class UserModel extends BaseModel
         $contidions_arr = [
             'username' => $username,
         ];
-        $nums = yield $this->count($contidions_arr);
+        $nums = $this->count($contidions_arr);
         return $nums ? 1 : 0;
     }
 }

@@ -50,7 +50,7 @@ class RedisCache implements ICache{
      * @datetime 2016年11月17日下午3:25:10
      */
     function get($key){
-        $result = yield $this->redis_pool->coroutineSend('get', $key);
+        $result = $this->redis_pool->coroutineSend('get', $key);
         if ($result){
             return unserialize($result);
         }

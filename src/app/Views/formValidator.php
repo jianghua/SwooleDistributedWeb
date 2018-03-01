@@ -15,7 +15,7 @@ $(function() {
 		onShowClass: "",
 		onFocusClass: "",
 		onCorrectClass: "",
-		onSuccess: function() {$("#modifyPass").attr("disabled","disabled");$("#modifyPass").addClass("disable")},
+		/* onSuccess: function() {$("#modifyPass").attr("disabled","disabled");$("#modifyPass").addClass("disable")}, */
 		wideWord: false	//一个汉字当做1个长
 	});
 	

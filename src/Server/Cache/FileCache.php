@@ -65,8 +65,6 @@ class FileCache implements ICache{
      */
     public function get($key){
         $filename = $this->_getFileFullName($key);
-        //加yield是为了和其他缓存类型保持一致
-        yield $filename;
         if(file_exists($filename)){
             if(($time=@filemtime($filename))>time()){
                 $content = unserialize(file_get_contents($filename));

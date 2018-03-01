@@ -79,7 +79,7 @@ class User extends BaseController
             $error = '';
             $this->model->_form_secret = false;
             $data_arr = [];
-            $is_pass = yield $this->checkForm($this->model, $form_name, $this->get(), $error, $data_arr);
+            $is_pass = $this->checkForm($this->model, $form_name, $this->get(), $error, $data_arr);
             if ($is_pass !== true){
                 $data['msg'] = $error;
                 $this->ajaxOutput($data);
@@ -90,7 +90,7 @@ class User extends BaseController
             $password = $data_arr['password'];
             
             //读取密码
-            $info = yield $this->model->getOne(['username'=>$username], 'id,password,salt');
+            $info = $this->model->getOne(['username'=>$username], 'id,password,salt');
             if (empty($info)){
                 $data['msg'] = '用户不存在';
                 $this->ajaxOutput($data);
@@ -129,7 +129,7 @@ class User extends BaseController
             //表单验证
             $error = '';
             $data_arr = [];
-            $is_pass = yield $this->checkForm($this->model, $form_name, $this->post(), $error, $data_arr);
+            $is_pass = $this->checkForm($this->model, $form_name, $this->post(), $error, $data_arr);
             if ($is_pass !== true){
                 $this->showmessage($error);
                 return ;
@@ -140,7 +140,7 @@ class User extends BaseController
             $insert_data['salt'] = $salt = RandomKey::string(4);
             $insert_data['password'] = $this->_create_pass($data_arr['password'], $salt);
             $insert_data['ip'] = $this->ip();
-            $userid = yield $this->model->insert($insert_data);
+            $userid = $this->model->insert($insert_data);
             if ($userid <= 0){
                 $this->showmessage('注册失败，请稍后重试。');
                 return;
@@ -154,7 +154,7 @@ class User extends BaseController
         }
         
         //
-        $form = yield $this->getForm($this->model, $form_name);
+        $form = $this->getForm($this->model, $form_name);
         $this->view('User/reg', ['form'=>$form]);
     }
     
@@ -172,13 +172,13 @@ class User extends BaseController
             //表单验证
             $error = '';
             $data_arr = [];
-            $is_pass = yield $this->checkForm($this->model, $form_name, $this->post(), $error, $data_arr);
+            $is_pass = $this->checkForm($this->model, $form_name, $this->post(), $error, $data_arr);
             if ($is_pass !== true){
                 $this->showmessage($error);
                 return ;
             }
     
-            $is_updated = yield $this->model->update($data_arr, ['id'=>$this->userid]);
+            $is_updated = $this->model->update($data_arr, ['id'=>$this->userid]);
             if ($is_updated <= 0){
                 $this->showmessage('更新失败，请稍后重试。');
                 return;
@@ -189,9 +189,9 @@ class User extends BaseController
         }
     
         //获取用户信息
-        $userinfo = yield $this->model->getOne(['id'=>$this->userid]);
+        $userinfo = $this->model->getOne(['id'=>$this->userid]);
         //把用户信息传入form，可回显
-        $form = yield $this->getForm($this->model, $form_name, $userinfo);
+        $form = $this->getForm($this->model, $form_name, $userinfo);
         $this->view('User/profile', ['form'=>$form, 'userid'=>$this->userid, 'userinfo'=>$userinfo]);
     }
     
@@ -228,11 +228,11 @@ class User extends BaseController
     }
     
     public function sessionSet() {
-        yield $this->setSession('sess_test', '1');
+        $this->setSession('sess_test', '1');
         $this->output(1);
     }
     public function sessionGet() {
-        $ret = yield $this->getSession('sess_test');
+        $ret = $this->getSession('sess_test');
         $this->output($ret);
     }
     
@@ -243,16 +243,16 @@ class User extends BaseController
      * @datetime 2018年2月1日下午1:58:27
      */
     public function trans() {
-        $transaction_id = yield $this->mysql_pool->coroutineBegin($this);
-        $user = yield $this->model->getOne(['username'=>'weihan'], $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '', $transaction_id, true);
+        $transaction_id = $this->mysql_pool->coroutineBegin($this);
+        $user = $this->model->getOne(['username'=>'weihan'], $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '', $transaction_id, true);
         $is_succ = false;
         if ($user) {
-            $is_succ = yield $this->model->update(['realname'=>'微寒2'], ['username'=>'weihan'], true, $transaction_id);
+            $is_succ = $this->model->update(['realname'=>'微寒2'], ['username'=>'weihan'], true, $transaction_id);
         }
         if ($is_succ) {
-            yield $this->mysql_pool->coroutineCommit($transaction_id);
+            $this->mysql_pool->coroutineCommit($transaction_id);
         }else{
-            yield $this->mysql_pool->coroutineRollback($transaction_id);
+            $this->mysql_pool->coroutineRollback($transaction_id);
         }
         $this->output('done');
     }

@@ -52,7 +52,7 @@ function get_class_name($classname)
  * @datetime 2016年11月17日下午3:25:10
  */
 function redisGet($key) {
-    $result = yield get_instance()->redis_pool->coroutineSend('get', $key);
+    $result = get_instance()->redis_pool->coroutineSend('get', $key);
     return unserialize($result);
 }
 
@@ -123,7 +123,7 @@ function execControllerMethod($controller_name, $method_name, $params, \swoole_h
                 $controller_instance->initialization($controller_name, $method_name);
                 $controller_instance->http_input->set($request);
                 $controller_instance->http_output->set($request, $response);
-                return yield $controller_instance->$method_name($params);
+                return $controller_instance->$method_name($params);
             }catch (\Exception $e) {
                 call_user_func([$controller_instance, 'onExceptionHandle'], $e);
             }

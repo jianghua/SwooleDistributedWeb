@@ -26,7 +26,7 @@ class Ajax extends BaseController
         $username = $this->request('username_reg');
         if ($username){
             $userModel = $this->model('UserModel');
-            $resonse = yield $userModel->isUsernameExist($username);
+            $resonse = $userModel->isUsernameExist($username);
             $resonse = $resonse ? 0 : 1;
         }
         if ($is_return){
@@ -46,7 +46,7 @@ class Ajax extends BaseController
         $checkcode = $this->request('checkcode');
         if ($checkcode){
             $checkcode = strtolower($checkcode);
-            $result = yield $this->getSession('checkcode');
+            $result = $this->getSession('checkcode');
             $checkcode == $result && $resonse = 1;
         }
         if ($is_return){
@@ -116,7 +116,7 @@ class Ajax extends BaseController
         $linkage_id = intval($linkage_id);
         
         $model = $this->model('LinkageModel');
-        $data = yield $model->getSubs($linkage_id);
+        $data = $model->getSubs($linkage_id);
         
         $this->ajaxOutput($data);
         return;

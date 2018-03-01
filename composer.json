@@ -1,6 +1,6 @@
 {
   "require": {
-    "tmtbe/swooledistributed":"2.7.*"
+    "tmtbe/swooledistributed":"3.0.1-beta"
   },
   "repositories": {
     "packagist": {

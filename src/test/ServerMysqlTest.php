@@ -24,7 +24,7 @@ class ServerMysqlTest extends TestCase
      */
     public function setUpBeforeClass()
     {
-        yield $this->mysql_pool->dbQueryBuilder->coroutineSend(null, "
+        $this->mysql_pool->dbQueryBuilder->coroutineSend(null, "
             CREATE TABLE IF NOT EXISTS `MysqlTest` (
               `peopleid` smallint(6) NOT NULL AUTO_INCREMENT,
               `firstname` char(50) NOT NULL,
@@ -43,7 +43,7 @@ class ServerMysqlTest extends TestCase
      */
     public function tearDownAfterClass()
     {
-        yield $this->mysql_pool->dbQueryBuilder->coroutineSend(null, "
+        $this->mysql_pool->dbQueryBuilder->coroutineSend(null, "
             DROP TABLE  `MysqlTest`;
         ");
     }
@@ -70,7 +70,7 @@ class ServerMysqlTest extends TestCase
      */
     public function testMysqlInsert()
     {
-        $value = yield $this->mysql_pool->dbQueryBuilder->insert('MysqlTest')
+        $value = $this->mysql_pool->dbQueryBuilder->insert('MysqlTest')
             ->option('HIGH_PRIORITY')
             ->set('firstname', 'White')
             ->set('lastname', 'Cat')
@@ -87,7 +87,7 @@ class ServerMysqlTest extends TestCase
      */
     public function testMysqlReplace()
     {
-        $value = yield $this->mysql_pool->dbQueryBuilder->replace('MysqlTest')
+        $value = $this->mysql_pool->dbQueryBuilder->replace('MysqlTest')
             ->set('firstname', 'White')
             ->set('lastname', 'Cat')
             ->set('age', '26')
@@ -103,7 +103,7 @@ class ServerMysqlTest extends TestCase
      */
     public function testMysqlUpdate()
     {
-        $value = yield $this->mysql_pool->dbQueryBuilder->update('MysqlTest')
+        $value = $this->mysql_pool->dbQueryBuilder->update('MysqlTest')
             ->set('age', '20')
             ->where('townid', 10000)->coroutineSend();
         $this->assertEquals($value['result'], 1, 'Update 失败');
@@ -117,7 +117,7 @@ class ServerMysqlTest extends TestCase
      */
     public function testMysqlSelect()
     {
-        $value = yield $this->mysql_pool->dbQueryBuilder->Select('*')
+        $value = $this->mysql_pool->dbQueryBuilder->Select('*')
             ->from('MysqlTest')
             ->where('townid', 10000)->coroutineSend();
         $this->assertEquals($value['result'][0]['age'], 20, 'Update 失败');
@@ -131,7 +131,7 @@ class ServerMysqlTest extends TestCase
      */
     public function testMysqlDelete()
     {
-        $value = yield $this->mysql_pool->dbQueryBuilder->delete()
+        $value = $this->mysql_pool->dbQueryBuilder->delete()
             ->from('MysqlTest')
             ->where('townid', 10000)->coroutineSend();
         $this->assertEquals($value['result'], 1, 'Delete 失败');

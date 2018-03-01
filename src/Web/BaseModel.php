@@ -8,7 +8,6 @@ namespace Web;
 
 use Server\CoreBase\Model;
 use Server\Asyn\Mysql\Miner;
-use Server\Asyn\Mysql\MySqlCoroutine;
 
 class BaseModel extends Model
 {
@@ -112,7 +111,7 @@ class BaseModel extends Model
      */
     public function getColumn($contidions_arr, $field, $order_column = '', $order_by='DESC', $group = '', $bind_id=null) {
         $return_result = true;
-        $result = yield $this->getOne($contidions_arr, $field, $return_result, $order_column, $order_by, $group, $bind_id);
+        $result = $this->getOne($contidions_arr, $field, $return_result, $order_column, $order_by, $group, $bind_id);
         return array_pop($result) ?? null;
     }
     
@@ -149,13 +148,7 @@ class BaseModel extends Model
         
         //使用协程，发送sql
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql);
-        $mySqlCoroutine->row();
-        if ($return_result){
-            //等待查询结果，返回结果
-            return yield $mySqlCoroutine;
-        }
-        //不等待查询结果，直接返回，通过yield获取结果
-        return $mySqlCoroutine;
+        return $mySqlCoroutine['result'][0] ?? null;
     }
     
     /**
@@ -195,7 +188,7 @@ class BaseModel extends Model
         $sql = $this->mysql_pool->dbQueryBuilder->getStatement(false);
         //必须有clear，否则sql会紊乱
         $this->mysql_pool->dbQueryBuilder->clear();
-        return yield $this->query($sql, $return_result, $page, $pagesize, $bind_id);
+        return $this->query($sql, $return_result, $page, $pagesize, $bind_id);
     }
     
     /**
@@ -219,13 +212,7 @@ class BaseModel extends Model
         }
         //使用协程，发送sql
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql);
-        $mySqlCoroutine->result_array();
-        if ($return_result){
-            //等待查询结果，返回结果
-            return yield $mySqlCoroutine;
-        }
-        //不等待查询结果，直接返回，通过yield获取结果
-        return $mySqlCoroutine;
+        return $mySqlCoroutine['result'];
     }
     
     /**
@@ -268,13 +255,7 @@ class BaseModel extends Model
             ->intoValues(array_values($data_arr));
         
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        $mySqlCoroutine->insert_id();
-        if ($return_result){
-            //等待查询结果，返回结果
-            return yield $mySqlCoroutine;
-        }
-        //不等待查询结果，直接返回，通过yield获取结果
-        return $mySqlCoroutine;
+        return $mySqlCoroutine['insert_id'];
     }
     
     /**
@@ -300,15 +281,7 @@ class BaseModel extends Model
         }
         $this->_setConditions($contidions_arr);
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        $mySqlCoroutine->registResultFuc(function ($result){
-            return $result['affected_rows'] ? true : false;
-        });
-        if ($return_result){
-            //等待查询结果，返回结果
-            return yield $mySqlCoroutine;
-        }
-        //不等待查询结果，直接返回，通过yield获取结果
-        return $mySqlCoroutine;
+        return $mySqlCoroutine['affected_rows'] ? true : false;
     }
     
     /**
@@ -326,15 +299,7 @@ class BaseModel extends Model
         $this->mysql_pool->dbQueryBuilder->delete()->from($this->table());
         $this->_setConditions($contidions_arr);
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        $mySqlCoroutine->registResultFuc(function ($result){
-            return $result['affected_rows'] ? true : false;
-        });
-        if ($return_result){
-            //等待查询结果，返回结果
-            return yield $mySqlCoroutine;
-        }
-        //不等待查询结果，直接返回，通过yield获取结果
-        return $mySqlCoroutine;
+        return $mySqlCoroutine['affected_rows'] ? true : false;
     }
     
     /**
@@ -355,16 +320,7 @@ class BaseModel extends Model
     
         //使用协程，发送sql
         $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        $mySqlCoroutine->registResultFuc(function ($result){
-            return $result['result'][0]['nums'] ?? 0;
-        });
-        if ($return_result){
-            //等待查询结果，返回结果
-            $result = yield $mySqlCoroutine;
-            return $result;
-        }
-        //不等待查询结果，直接返回，通过yield获取结果
-        return $mySqlCoroutine;
+        return $mySqlCoroutine['result'][0]['nums'] ?? 0;
     }
     
     /**

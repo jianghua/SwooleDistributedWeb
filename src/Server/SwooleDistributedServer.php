@@ -4,10 +4,6 @@ namespace SwooleDistributedWeb\Server;
 
 use Server\SwooleDistributedServer as _SwooleDistributedServer;
 use SwooleDistributedWeb\Server\Cache\CacheFactory;
-use Server\Start;
-use Server\CoreBase\ControllerFactory;
-use Server\Coroutine\Coroutine;
-use Server\Components\Consul\ConsulHelp;
 
 /**
  * 
@@ -20,7 +16,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
     /**
      * 版本
      */
-    const version = "2.7.6.1";
+    const version = "3.0.1-beta";
     
     /**
      * 缓存
@@ -42,8 +38,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
      * @datetime 2017年9月22日下午12:43:21
      */
     public function onSwooleWorkerStart($serv, $workerId){
-        parent::onSwooleWorkerStart($serv, $workerId);
-        if (!$serv->taskworker) {
+        if (!$this->isTaskWorker()) {
             //初始化缓存
             $this->cache = CacheFactory::getCache();
             //初始化缓存
@@ -71,6 +66,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
                 }
             }
         }
+        parent::onSwooleWorkerStart($serv, $workerId);
     }
     
     /**---------------SwooleHttpServer.php--------------------->*/

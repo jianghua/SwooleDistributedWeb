@@ -37,7 +37,7 @@ class CatCache implements ICache{
         }
         //定时清除
         if ($ttl) {
-            yield TimerCallBack::addTimer($ttl, CatCacheModel::class,'timerCall',[$key]);
+            TimerCallBack::addTimer($ttl, CatCacheModel::class,'timerCall',[$key]);
         }
     }
 
@@ -50,7 +50,7 @@ class CatCache implements ICache{
      * @datetime 2017年12月29日下午4:34:18
      */
     function get($key){
-        $result = yield CatCacheRpcProxy::getRpc()[$key];
+        $result = CatCacheRpcProxy::getRpc()[$key];
         return $result;
     }
     

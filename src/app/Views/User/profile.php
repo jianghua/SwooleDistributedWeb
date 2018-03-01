@@ -5,7 +5,7 @@
 </script>
 
 <div class="form-style2">
-	<form id="form1" name="form1" method="post" onSubmit='return submitCheck()'>
+	<form id="form1" name="form1" method="post">
     	<?php foreach ($form['input'] as $field=>$input):?>
         <div class="line" <?php if($input['type'] == 'cascade_select')echo "id='$field'";?>>
         	<span><?php if (isset($form['label'][$field]))echo $form['label'][$field]?></span>

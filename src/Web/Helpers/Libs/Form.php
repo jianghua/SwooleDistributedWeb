@@ -446,7 +446,7 @@ class Form
         	    $uri_arr = explode('/', $uri);
         	    $params = ['is_return'=>true];
         	    //
-        	    $result = yield execControllerMethod($uri_arr[0], $uri_arr[1], $params, $request);
+        	    $result = execControllerMethod($uri_arr[0], $uri_arr[1], $params, $request);
         	    if ($result == 0) {
         	        $error = $f['ajax']['onError'];
         	        return false;

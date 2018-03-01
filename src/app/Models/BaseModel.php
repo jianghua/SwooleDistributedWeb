@@ -13,6 +13,6 @@ class BaseModel extends _BaseModel
     /**
      * 表前缀
      */
-    public $tbl_prefix = '';
+    public $tbl_prefix = 'sdw_';
     
 }

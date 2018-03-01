@@ -1,4 +1,4 @@
-# SwooleDistributedWeb v2.7.6
+# SwooleDistributedWeb v3.0.1beta
 版本号与swooledistributed保持一致 
 swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水平有限，欢迎指正。  
 内置demo，包含用户注册、登录、修改信息

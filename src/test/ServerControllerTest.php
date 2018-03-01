@@ -58,7 +58,7 @@ class ServerControllerTest extends TestCase
     {
         $testRequest = new TestRequest('/TestController/test');
         $testRequest->get =['max'=>10];
-        $testResponse = yield $this->coroutineRequestHttpController($testRequest);
+        $testResponse = $this->coroutineRequestHttpController($testRequest);
         $this->assertEquals($testResponse->data, '45');
     }
 
@@ -69,7 +69,7 @@ class ServerControllerTest extends TestCase
     public function testTcpController()
     {
         $data = ['controller_name' => 'TestController', 'method_name' => 'testTcp', 'data' => 'helloWorld'];
-        $reusult = yield $this->coroutineRequestTcpController(9091, $data);
+        $reusult = $this->coroutineRequestTcpController(9091, $data);
         $this->assertCount(1, $reusult);
     }
 }

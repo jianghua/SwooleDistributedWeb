@@ -8,8 +8,8 @@ use Web\Helpers\Libs\Form;
 use Web\Helpers\Libs\Validate;
 use Server\CoreBase\XssClean;
 use Web\Helpers\Libs\Lib;
-use Server\CoreBase\ChildProxy;
 use SwooleDistributedWeb\Server\Cache\ICache;
+use SwooleDistributedWeb\Server\SwooleDistributedServer;
 
 /**
  * app中控制器基类
@@ -305,7 +305,7 @@ class BaseController extends SController
             $this->setCookie('PHPSESSID', $sessid, 3600);
         }
         $key = 'sess'. $sessid. $key;
-        yield $this->session_handler->set($key, $value, $ttl);
+        $this->session_handler->set($key, $value, $ttl);
     }
     
     /**
@@ -320,7 +320,7 @@ class BaseController extends SController
         $sessid = $this->getPhpsessid();
         if (!empty($sessid)) {
             $key = 'sess'. $sessid. $key;
-            return yield $this->session_handler->get($key);
+            return $this->session_handler->get($key);
         }
         return '';
     }
@@ -357,7 +357,7 @@ class BaseController extends SController
             if (method_exists($modelObj, 'getOwn')) {
                 $modelObj = $modelObj->getOwn();
             }
-            yield $this->setFormsecret(get_class($modelObj), $form_name);
+            $this->setFormsecret(get_class($modelObj), $form_name);
         }
         return Form::autoform($form, $data);
     }
@@ -383,7 +383,7 @@ class BaseController extends SController
             if (method_exists($modelObj, 'getOwn')) {
                 $modelObj = $modelObj->getOwn();
             }
-            $is_pass = yield $this->checkFormsecret(get_class($modelObj), $form_name);
+            $is_pass = $this->checkFormsecret(get_class($modelObj), $form_name);
             if (! $is_pass){
                 $error = '错误的请求';
                 return false;
@@ -391,7 +391,7 @@ class BaseController extends SController
             
         }
         $form = $modelObj->form($form_name);
-        return yield Form::checkInput($this->request, $input, $form, $error, $data_arr);
+        return Form::checkInput($this->request, $input, $form, $error, $data_arr);
     }
     
     private function _getFormSecretKey($model_name, $form_name) {
@@ -410,7 +410,7 @@ class BaseController extends SController
         $secret = Form::secret();
         $key = $this->_getFormSecretKey($model_name, $form_name);
         $this->setCookie($key, $secret);
-        yield $this->setSession($key, $secret);
+        $this->setSession($key, $secret);
     }
     
     /**
@@ -425,7 +425,7 @@ class BaseController extends SController
     protected function checkFormsecret($model_name, $form_name) {
         $key = $this->_getFormSecretKey($model_name, $form_name);
         $cookie_val = $this->getCookie($key);
-        $sess_val = yield $this->getSession($key);
+        $sess_val = $this->getSession($key);
         if (!empty($cookie_val) && $cookie_val == $sess_val) {
             //删掉已用的session
             $this->delSession($key);
@@ -646,8 +646,8 @@ class BaseController extends SController
         $params['auth'] = $cookie_userinfo;
         $params['userid'] = $this->getUserid();
         
-        $httpClient = yield $this->client->coroutineGetHttpClient($api_domain);
-        return yield $httpClient->coroutinePost($api_uri, $params);
+        $httpClient = $this->client->coroutineGetHttpClient($api_domain);
+        return $httpClient->coroutinePost($api_uri, $params);
     }
     
     /**

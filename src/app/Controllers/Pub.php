@@ -48,7 +48,7 @@ class Pub extends BaseController
         $checkcode->doimage();
         $data = ob_get_clean();
         $checkcode = $checkcode->get_code();
-        yield $this->setSession('checkcode', $checkcode, 120);
+        $this->setSession('checkcode', $checkcode, 120);
         $this->output($data);
     }
     
