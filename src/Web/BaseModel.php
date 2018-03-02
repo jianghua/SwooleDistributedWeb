@@ -8,6 +8,7 @@ namespace Web;
 
 use Server\CoreBase\Model;
 use Server\Asyn\Mysql\Miner;
+use Server\Asyn\Mysql\MySqlCoroutine;
 
 class BaseModel extends Model
 {
@@ -97,14 +98,13 @@ class BaseModel extends Model
     
     /**
      * 获取某一列的值，
-     * 需要加yield
      * @param array $contidions_arr 查询条件
      * @param string $fields    sql列名
      * @param string $order_column
      * @param string $order_by
      * @param string $group
      * @param int $bind_id
-     * @return \Generator
+     * @return []
      *
      * @author weihan
      * @datetime 2016年11月15日下午3:48:33
@@ -117,16 +117,15 @@ class BaseModel extends Model
     
     /**
      * 查询一条结果
-     * 需要加yield
      * @param array $contidions_arr 查询条件
      * @param string $fields    sql列名
-     * @param string $return_result true:返回查询结果；false:返回coroutine，需要额外获取结果
+     * @param string $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
      * @param string $order_column
      * @param string $order_by
      * @param string $group
      * @param int $bind_id
      * @param bool $add_for_udpate  是否在sql末尾加上FOR UPDATE，$bind_id非空才有效
-     * @return \Generator
+     * @return [] | MySqlCoroutine
      *
      * @author weihan
      * @datetime 2016年11月15日下午2:35:56
@@ -146,24 +145,31 @@ class BaseModel extends Model
             $sql .= ' FOR UPDATE';
         }
         
-        //使用协程，发送sql
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql);
-        return $mySqlCoroutine['result'][0] ?? null;
+        if ($return_result) {
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->row();
+            };
+        }else{
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->row();
+                $mySqlCoroutine->setDelayRecv();
+            };
+        }
+        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql, $set);
     }
     
     /**
      * 查询
      * 返回多条结果
-     * 需要加yield
      * @param array $contidions_arr     查询条件
      * @param string $fields   sql列名
-     * @param bool $return_result   true:返回查询结果；false:返回coroutine，需要额外获取结果
+     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
      * @param int $page
      * @param int $pagesize
      * @param string $order
      * @param string $group
      * @param int $bind_id
-     * @return \Generator
+     * @return [] | MySqlCoroutine
      *
      * @author weihan
      * @datetime 2016年11月15日下午1:52:39
@@ -193,13 +199,12 @@ class BaseModel extends Model
     
     /**
      * 执行sql
-     * 需要yield
      * @param string $sql
-     * @param string $return_result
+     * @param string $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
      * @param number $page
      * @param number $pagesize
      * @param int $bind_id
-     * @return \Generator
+     * @return [] | MySqlCoroutine
      *
      * @author weihan
      * @datetime 2016年12月13日下午2:13:20
@@ -210,9 +215,18 @@ class BaseModel extends Model
             $offset = ($page-1)* $pagesize;
             $sql .= " limit {$offset},{$pagesize}";
         }
-        //使用协程，发送sql
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql);
-        return $mySqlCoroutine['result'];
+        
+        if ($return_result) {
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->result_array();
+            };
+        }else{
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->result_array();
+                $mySqlCoroutine->setDelayRecv();
+            };
+        }
+        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql, $set);
     }
     
     /**
@@ -237,9 +251,8 @@ class BaseModel extends Model
     
     /**
      * 插入
-     * 需要yield
      * @param array $data_arr   要插入的数据
-     * @param bool $return_result
+     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
      * @param int $bind_id
      * @return insert_id
      *
@@ -254,16 +267,24 @@ class BaseModel extends Model
             ->intoColumns(array_keys($data_arr))
             ->intoValues(array_values($data_arr));
         
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        return $mySqlCoroutine['insert_id'];
+        if ($return_result) {
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->insert_id();
+            };
+        }else{
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->insert_id();
+                $mySqlCoroutine->setDelayRecv();
+            };
+        }
+        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
     }
     
     /**
      * 更新
-     * 需要yield
      * @param array $data_arr
      * @param array $contidions_arr
-     * @param bool $return_result
+     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
      * @param int $bind_id
      * @return bool 
      *
@@ -280,15 +301,32 @@ class BaseModel extends Model
             $this->mysql_pool->dbQueryBuilder->set($_column, $_value);
         }
         $this->_setConditions($contidions_arr);
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        return $mySqlCoroutine['affected_rows'] ? true : false;
+        
+        if ($return_result) {
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->registResultFuc(
+                    function ($result) {
+                        return $result['affected_rows'] ? true : false;
+                    }
+               );
+            };
+        }else{
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->registResultFuc(
+                    function ($result) {
+                        return $result['affected_rows'] ? true : false;
+                    }
+               );
+                $mySqlCoroutine->setDelayRecv();
+            };
+        }
+        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
     }
     
     /**
      * 删除
-     * 需要yield
      * @param array $contidions_arr
-     * @param bool $return_result
+     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
      * @param int $bind_id
      * @return bool 
      *
@@ -298,15 +336,32 @@ class BaseModel extends Model
     public function delete($contidions_arr, $return_result=true, $bind_id=null) {
         $this->mysql_pool->dbQueryBuilder->delete()->from($this->table());
         $this->_setConditions($contidions_arr);
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        return $mySqlCoroutine['affected_rows'] ? true : false;
+        
+        if ($return_result) {
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->registResultFuc(
+                    function ($result) {
+                        return $result['affected_rows'] ? true : false;
+                    }
+                    );
+            };
+        }else{
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->registResultFuc(
+                    function ($result) {
+                        return $result['affected_rows'] ? true : false;
+                    }
+                    );
+                $mySqlCoroutine->setDelayRecv();
+            };
+        }
+        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
     }
     
     /**
      * 统计数量
-     * 需要加yield
      * @param array $contidions_arr 查询条件
-     * @param string $return_result
+     * @param string $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
      * @param int $bind_id
      * @return int
      *
@@ -318,9 +373,25 @@ class BaseModel extends Model
         $this->_setConditions($contidions_arr);
         $this->mysql_pool->dbQueryBuilder->limit(1);
     
-        //使用协程，发送sql
-        $mySqlCoroutine = $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id);
-        return $mySqlCoroutine['result'][0]['nums'] ?? 0;
+        if ($return_result) {
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->registResultFuc(
+                    function ($result) {
+                        return $result['result'][0]['nums'] ?? 0;
+                    }
+                    );
+            };
+        }else{
+            $set = function (MySqlCoroutine $mySqlCoroutine) {
+                $mySqlCoroutine->registResultFuc(
+                    function ($result) {
+                        return $result['result'][0]['nums'] ?? 0;
+                    }
+                    );
+                $mySqlCoroutine->setDelayRecv();
+            };
+        }
+        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
     }
     
     /**

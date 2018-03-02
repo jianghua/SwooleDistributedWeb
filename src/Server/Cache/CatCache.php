@@ -22,7 +22,6 @@ class CatCache implements ICache{
     
     /**
      * 设置key、value
-     * 需要加yield
      * @param string $key
      * @param mixed $value
      * @param number $ttl   过期时间，单位秒
@@ -42,7 +41,7 @@ class CatCache implements ICache{
     }
 
     /**
-     * redis 获取key值，使用时需要加yield
+     * redis 获取key值
      * @param string $key
      * @return mixed
      *

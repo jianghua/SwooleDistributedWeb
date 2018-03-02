@@ -1,9 +1,7 @@
-1. 不要在if中写yield
-2. 用到协程的地方，记得写yield，基本是所有的get类方法，都需要写yield
-3. 控制器中，如果不继续往下执行，需要写return
-4. 简单的key=>value缓存，建议使用cache，扩展性更好些
-5. 生产环境，建议把config/config.php中server.debug关掉
-6. 如果redis宕机，可修改config/redis.php中enable为false，并把cache.php/session.php改为其他保存方式
-7. 任何地方不能写exit
-8. 修改/src/app/Helpers/Funcs/Common.php要重启服务
-9. 在控制器、model等中使用echo/var_dump等会输出到浏览器
+1. 控制器中，如果不继续往下执行，需要写return
+2. 简单的key=>value缓存，建议使用cache，扩展性更好些
+3. 如果redis宕机，可修改config/redis.php中enable为false，并把cache.php/session.php改为其他保存方式
+4. 任何地方不能写exit
+5. 修改/src/app/Helpers/Funcs/Common.php要重启服务
+6. 原生的call_user_func和call_user_func_array中无法使用协程client，请使用\Swoole\Coroutine::call_user_func和\Swoole\Coroutine::call_user_func_array代替
+7. 编程须知https://wiki.swoole.com/wiki/page/851.html

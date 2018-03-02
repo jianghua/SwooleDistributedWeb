@@ -35,5 +35,6 @@ $data = EventDispatcher::getInstance()->addOnceCoroutine('unlock', function (Eve
             $e->setTimeout(10000);
         });
 ```
-
 请注意这是一个测试版本，并没达到线上运行水平，已知框架问题和swoole2.0扩展问题还在积极修复。
+# 3.0.2
+model中如果$return_result=false，需要通过调用recv()方法获取结果

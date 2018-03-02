@@ -2,7 +2,6 @@
 
 namespace SwooleDistributedWeb\Server\Cache;
 
-use Server\CoreBase\Task;
 use SwooleDistributedWeb\Server\Cache\ICache;
 use Server\Memory\Cache;
 

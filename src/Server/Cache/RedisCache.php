@@ -24,7 +24,6 @@ class RedisCache implements ICache{
     
     /**
      * redis 设置key、value
-     * 不需要加yield，采用的异步
      * @param string $key
      * @param mixed $value
      * @param number $ttl   过期时间，单位秒
@@ -42,7 +41,7 @@ class RedisCache implements ICache{
     }
 
     /**
-     * redis 获取key值，使用时需要加yield
+     * redis 获取key值
      * @param string $key
      * @return mixed
      *
