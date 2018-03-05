@@ -49,7 +49,7 @@ class CatCache implements ICache{
      * @datetime 2017年12月29日下午4:34:18
      */
     function get($key){
-        $result = CatCacheRpcProxy::getRpc()[$key];
+        $result = CatCacheRpcProxy::getRpc()->offsetGet($key);
         return $result;
     }
     

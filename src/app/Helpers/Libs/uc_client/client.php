@@ -258,12 +258,12 @@ function uc_fopen($url, $limit = 0, $post = '', $cookie = '', $bysocket = FALSE,
 }
 
 function uc_app_ls() {
-	$return = call_user_func(UC_API_FUNC, 'app', 'ls', array());
+	$return = \co::call_user_func(UC_API_FUNC, 'app', 'ls', array());
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
 function uc_feed_add($icon, $uid, $username, $title_template='', $title_data='', $body_template='', $body_data='', $body_general='', $target_ids='', $images = array()) {
-	return call_user_func(UC_API_FUNC, 'feed', 'add',
+	return \co::call_user_func(UC_API_FUNC, 'feed', 'add',
 		array(  'icon'=>$icon,
 			'appid'=>UC_APPID,
 			'uid'=>$uid,
@@ -287,41 +287,41 @@ function uc_feed_add($icon, $uid, $username, $title_template='', $title_data='',
 }
 
 function uc_feed_get($limit = 100, $delete = TRUE) {
-	$return = call_user_func(UC_API_FUNC, 'feed', 'get', array('limit'=>$limit, 'delete'=>$delete));
+	$return = \co::call_user_func(UC_API_FUNC, 'feed', 'get', array('limit'=>$limit, 'delete'=>$delete));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
 function uc_friend_add($uid, $friendid, $comment='') {
-	return call_user_func(UC_API_FUNC, 'friend', 'add', array('uid'=>$uid, 'friendid'=>$friendid, 'comment'=>$comment));
+	return \co::call_user_func(UC_API_FUNC, 'friend', 'add', array('uid'=>$uid, 'friendid'=>$friendid, 'comment'=>$comment));
 }
 
 function uc_friend_delete($uid, $friendids) {
-	return call_user_func(UC_API_FUNC, 'friend', 'delete', array('uid'=>$uid, 'friendids'=>$friendids));
+	return \co::call_user_func(UC_API_FUNC, 'friend', 'delete', array('uid'=>$uid, 'friendids'=>$friendids));
 }
 
 function uc_friend_totalnum($uid, $direction = 0) {
-	return call_user_func(UC_API_FUNC, 'friend', 'totalnum', array('uid'=>$uid, 'direction'=>$direction));
+	return \co::call_user_func(UC_API_FUNC, 'friend', 'totalnum', array('uid'=>$uid, 'direction'=>$direction));
 }
 
 function uc_friend_ls($uid, $page = 1, $pagesize = 10, $totalnum = 10, $direction = 0) {
-	$return = call_user_func(UC_API_FUNC, 'friend', 'ls', array('uid'=>$uid, 'page'=>$page, 'pagesize'=>$pagesize, 'totalnum'=>$totalnum, 'direction'=>$direction));
+	$return = \co::call_user_func(UC_API_FUNC, 'friend', 'ls', array('uid'=>$uid, 'page'=>$page, 'pagesize'=>$pagesize, 'totalnum'=>$totalnum, 'direction'=>$direction));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
 function uc_user_register($username, $password, $email, $questionid = '', $answer = '', $regip = '', $is_changed=0, $mobile='') {
-	return call_user_func(UC_API_FUNC, 'user', 'register', array('username'=>$username, 'password'=>$password, 'email'=>$email, 'questionid'=>$questionid, 'answer'=>$answer, 'regip'=>$regip, 'is_changed'=>$is_changed, 'mobile'=>$mobile));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'register', array('username'=>$username, 'password'=>$password, 'email'=>$email, 'questionid'=>$questionid, 'answer'=>$answer, 'regip'=>$regip, 'is_changed'=>$is_changed, 'mobile'=>$mobile));
 }
 
 /*
  *  
 function uc_user_register($username, $password, $email, $questionid = '', $answer = '', $regip = '', $is_changed=0) {
-	return call_user_func(UC_API_FUNC, 'user', 'register', array('username'=>$username, 'password'=>$password, 'email'=>$email, 'questionid'=>$questionid, 'answer'=>$answer, 'regip' => $regip, 'is_changed'=> $is_changed));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'register', array('username'=>$username, 'password'=>$password, 'email'=>$email, 'questionid'=>$questionid, 'answer'=>$answer, 'regip' => $regip, 'is_changed'=> $is_changed));
 }
 */
 
 function uc_user_login($username, $password, $isuid = 0, $checkques = 0, $questionid = '', $answer = '') {
 	$isuid = intval($isuid);
-	$return = call_user_func(UC_API_FUNC, 'user', 'login', array('username'=>$username, 'password'=>$password, 'isuid'=>$isuid, 'checkques'=>$checkques, 'questionid'=>$questionid, 'answer'=>$answer));
+	$return = \co::call_user_func(UC_API_FUNC, 'user', 'login', array('username'=>$username, 'password'=>$password, 'isuid'=>$isuid, 'checkques'=>$checkques, 'questionid'=>$questionid, 'answer'=>$answer));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
@@ -349,11 +349,11 @@ function uc_user_synlogout() {
 }
 
 function uc_user_edit($username, $oldpw, $newpw, $email, $ignoreoldpw = 0, $questionid = '', $answer = '') {
-	return call_user_func(UC_API_FUNC, 'user', 'edit', array('username'=>$username, 'oldpw'=>$oldpw, 'newpw'=>$newpw, 'email'=>$email, 'ignoreoldpw'=>$ignoreoldpw, 'questionid'=>$questionid, 'answer'=>$answer));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'edit', array('username'=>$username, 'oldpw'=>$oldpw, 'newpw'=>$newpw, 'email'=>$email, 'ignoreoldpw'=>$ignoreoldpw, 'questionid'=>$questionid, 'answer'=>$answer));
 }
 
 function uc_user_delete($uid) {
-	return call_user_func(UC_API_FUNC, 'user', 'delete', array('uid'=>$uid));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'delete', array('uid'=>$uid));
 }
 
 function uc_user_deleteavatar($uid) {
@@ -361,37 +361,37 @@ function uc_user_deleteavatar($uid) {
 }
 
 function uc_user_checkname($username) {
-	return call_user_func(UC_API_FUNC, 'user', 'check_username', array('username'=>$username));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'check_username', array('username'=>$username));
 }
 
 function uc_user_checkemail($email) {
-	return call_user_func(UC_API_FUNC, 'user', 'check_email', array('email'=>$email));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'check_email', array('email'=>$email));
 }
 
 function uc_user_addprotected($username, $admin='') {
-	return call_user_func(UC_API_FUNC, 'user', 'addprotected', array('username'=>$username, 'admin'=>$admin));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'addprotected', array('username'=>$username, 'admin'=>$admin));
 }
 
 function uc_user_deleteprotected($username) {
-	return call_user_func(UC_API_FUNC, 'user', 'deleteprotected', array('username'=>$username));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'deleteprotected', array('username'=>$username));
 }
 
 function uc_user_getprotected() {
-	$return = call_user_func(UC_API_FUNC, 'user', 'getprotected', array('1'=>1));
+	$return = \co::call_user_func(UC_API_FUNC, 'user', 'getprotected', array('1'=>1));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
 function uc_get_user($username, $isuid=0) {
-	$return = call_user_func(UC_API_FUNC, 'user', 'get_user', array('username'=>$username, 'isuid'=>$isuid));
+	$return = \co::call_user_func(UC_API_FUNC, 'user', 'get_user', array('username'=>$username, 'isuid'=>$isuid));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
 function uc_user_merge($oldusername, $newusername, $uid, $password, $email) {
-	return call_user_func(UC_API_FUNC, 'user', 'merge', array('oldusername'=>$oldusername, 'newusername'=>$newusername, 'uid'=>$uid, 'password'=>$password, 'email'=>$email));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'merge', array('oldusername'=>$oldusername, 'newusername'=>$newusername, 'uid'=>$uid, 'password'=>$password, 'email'=>$email));
 }
 
 function uc_user_merge_remove($username) {
-	return call_user_func(UC_API_FUNC, 'user', 'merge_remove', array('username'=>$username));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'merge_remove', array('username'=>$username));
 }
 
 function uc_user_getcredit($appid, $uid, $credit) {
@@ -407,14 +407,14 @@ function uc_pm_location($uid, $newpm = 0) {
 }
 
 function uc_pm_checknew($uid, $more = 0) {
-	$return = call_user_func(UC_API_FUNC, 'pm', 'check_newpm', array('uid'=>$uid, 'more'=>$more));
+	$return = \co::call_user_func(UC_API_FUNC, 'pm', 'check_newpm', array('uid'=>$uid, 'more'=>$more));
 	return (!$more || UC_CONNECT == 'mysql') ? $return : uc_unserialize($return);
 }
 
 function uc_pm_send($fromuid, $msgto, $subject, $message, $instantly = 1, $replypmid = 0, $isusername = 0, $type = 0) {
 	if($instantly) {
 		$replypmid = @is_numeric($replypmid) ? $replypmid : 0;
-		return call_user_func(UC_API_FUNC, 'pm', 'sendpm', array('fromuid'=>$fromuid, 'msgto'=>$msgto, 'subject'=>$subject, 'message'=>$message, 'replypmid'=>$replypmid, 'isusername'=>$isusername, 'type' => $type));
+		return \co::call_user_func(UC_API_FUNC, 'pm', 'sendpm', array('fromuid'=>$fromuid, 'msgto'=>$msgto, 'subject'=>$subject, 'message'=>$message, 'replypmid'=>$replypmid, 'isusername'=>$isusername, 'type' => $type));
 	} else {
 		$fromuid = intval($fromuid);
 		$subject = rawurlencode($subject);
@@ -431,32 +431,32 @@ function uc_pm_send($fromuid, $msgto, $subject, $message, $instantly = 1, $reply
 }
 
 function uc_pm_delete($uid, $folder, $pmids) {
-	return call_user_func(UC_API_FUNC, 'pm', 'delete', array('uid'=>$uid, 'pmids'=>$pmids));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'delete', array('uid'=>$uid, 'pmids'=>$pmids));
 }
 
 function uc_pm_deleteuser($uid, $touids) {
-	return call_user_func(UC_API_FUNC, 'pm', 'deleteuser', array('uid'=>$uid, 'touids'=>$touids));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'deleteuser', array('uid'=>$uid, 'touids'=>$touids));
 }
 
 function uc_pm_deletechat($uid, $plids, $type = 0) {
-	return call_user_func(UC_API_FUNC, 'pm', 'deletechat', array('uid'=>$uid, 'plids'=>$plids, 'type'=>$type));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'deletechat', array('uid'=>$uid, 'plids'=>$plids, 'type'=>$type));
 }
 
 function uc_pm_readstatus($uid, $uids, $plids = array(), $status = 0) {
-	return call_user_func(UC_API_FUNC, 'pm', 'readstatus', array('uid'=>$uid, 'uids'=>$uids, 'plids'=>$plids, 'status'=>$status));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'readstatus', array('uid'=>$uid, 'uids'=>$uids, 'plids'=>$plids, 'status'=>$status));
 }
 
 function uc_pm_list($uid, $page = 1, $pagesize = 10, $folder = 'inbox', $filter = 'newpm', $msglen = 0) {
 	$uid = intval($uid);
 	$page = intval($page);
 	$pagesize = intval($pagesize);
-	$return = call_user_func(UC_API_FUNC, 'pm', 'ls', array('uid'=>$uid, 'page'=>$page, 'pagesize'=>$pagesize, 'filter'=>$filter, 'msglen'=>$msglen));
+	$return = \co::call_user_func(UC_API_FUNC, 'pm', 'ls', array('uid'=>$uid, 'page'=>$page, 'pagesize'=>$pagesize, 'filter'=>$filter, 'msglen'=>$msglen));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
 function uc_pm_ignore($uid) {
 	$uid = intval($uid);
-	return call_user_func(UC_API_FUNC, 'pm', 'ignore', array('uid'=>$uid));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'ignore', array('uid'=>$uid));
 }
 
 function uc_pm_view($uid, $pmid = 0, $touid = 0, $daterange = 1, $page = 0, $pagesize = 10, $type = 0, $isplid = 0) {
@@ -465,7 +465,7 @@ function uc_pm_view($uid, $pmid = 0, $touid = 0, $daterange = 1, $page = 0, $pag
 	$page = intval($page);
 	$pagesize = intval($pagesize);
 	$pmid = @is_numeric($pmid) ? $pmid : 0;
-	$return = call_user_func(UC_API_FUNC, 'pm', 'view', array('uid'=>$uid, 'pmid'=>$pmid, 'touid'=>$touid, 'daterange'=>$daterange, 'page' => $page, 'pagesize' => $pagesize, 'type'=>$type, 'isplid'=>$isplid));
+	$return = \co::call_user_func(UC_API_FUNC, 'pm', 'view', array('uid'=>$uid, 'pmid'=>$pmid, 'touid'=>$touid, 'daterange'=>$daterange, 'page' => $page, 'pagesize' => $pagesize, 'type'=>$type, 'isplid'=>$isplid));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
@@ -473,21 +473,21 @@ function uc_pm_view_num($uid, $touid, $isplid) {
 	$uid = intval($uid);
 	$touid = intval($touid);
 	$isplid = intval($isplid);
-	return call_user_func(UC_API_FUNC, 'pm', 'viewnum', array('uid' => $uid, 'touid' => $touid, 'isplid' => $isplid));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'viewnum', array('uid' => $uid, 'touid' => $touid, 'isplid' => $isplid));
 }
 
 function uc_pm_viewnode($uid, $type, $pmid) {
 	$uid = intval($uid);
 	$type = intval($type);
 	$pmid = @is_numeric($pmid) ? $pmid : 0;
-	$return = call_user_func(UC_API_FUNC, 'pm', 'viewnode', array('uid'=>$uid, 'type'=>$type, 'pmid'=>$pmid));
+	$return = \co::call_user_func(UC_API_FUNC, 'pm', 'viewnode', array('uid'=>$uid, 'type'=>$type, 'pmid'=>$pmid));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
 function uc_pm_chatpmmemberlist($uid, $plid = 0) {
 	$uid = intval($uid);
 	$plid = intval($plid);
-	$return = call_user_func(UC_API_FUNC, 'pm', 'chatpmmemberlist', array('uid'=>$uid, 'plid'=>$plid));
+	$return = \co::call_user_func(UC_API_FUNC, 'pm', 'chatpmmemberlist', array('uid'=>$uid, 'plid'=>$plid));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
@@ -495,38 +495,38 @@ function uc_pm_kickchatpm($plid, $uid, $touid) {
 	$uid = intval($uid);
 	$plid = intval($plid);
 	$touid = intval($touid);
-	return call_user_func(UC_API_FUNC, 'pm', 'kickchatpm', array('uid'=>$uid, 'plid'=>$plid, 'touid'=>$touid));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'kickchatpm', array('uid'=>$uid, 'plid'=>$plid, 'touid'=>$touid));
 }
 
 function uc_pm_appendchatpm($plid, $uid, $touid) {
 	$uid = intval($uid);
 	$plid = intval($plid);
 	$touid = intval($touid);
-	return call_user_func(UC_API_FUNC, 'pm', 'appendchatpm', array('uid'=>$uid, 'plid'=>$plid, 'touid'=>$touid));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'appendchatpm', array('uid'=>$uid, 'plid'=>$plid, 'touid'=>$touid));
 }
 
 function uc_pm_blackls_get($uid) {
 	$uid = intval($uid);
-	return call_user_func(UC_API_FUNC, 'pm', 'blackls_get', array('uid'=>$uid));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'blackls_get', array('uid'=>$uid));
 }
 
 function uc_pm_blackls_set($uid, $blackls) {
 	$uid = intval($uid);
-	return call_user_func(UC_API_FUNC, 'pm', 'blackls_set', array('uid'=>$uid, 'blackls'=>$blackls));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'blackls_set', array('uid'=>$uid, 'blackls'=>$blackls));
 }
 
 function uc_pm_blackls_add($uid, $username) {
 	$uid = intval($uid);
-	return call_user_func(UC_API_FUNC, 'pm', 'blackls_add', array('uid'=>$uid, 'username'=>$username));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'blackls_add', array('uid'=>$uid, 'username'=>$username));
 }
 
 function uc_pm_blackls_delete($uid, $username) {
 	$uid = intval($uid);
-	return call_user_func(UC_API_FUNC, 'pm', 'blackls_delete', array('uid'=>$uid, 'username'=>$username));
+	return \co::call_user_func(UC_API_FUNC, 'pm', 'blackls_delete', array('uid'=>$uid, 'username'=>$username));
 }
 
 function uc_domain_ls() {
-	$return = call_user_func(UC_API_FUNC, 'domain', 'ls', array('1'=>1));
+	$return = \co::call_user_func(UC_API_FUNC, 'domain', 'ls', array('1'=>1));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
@@ -540,7 +540,7 @@ function uc_credit_exchange_request($uid, $from, $to, $toappid, $amount) {
 }
 
 function uc_tag_get($tagname, $nums = 0) {
-	$return = call_user_func(UC_API_FUNC, 'tag', 'gettag', array('tagname'=>$tagname, 'nums'=>$nums));
+	$return = \co::call_user_func(UC_API_FUNC, 'tag', 'gettag', array('tagname'=>$tagname, 'nums'=>$nums));
 	return UC_CONNECT == 'mysql' ? $return : uc_unserialize($return);
 }
 
@@ -577,7 +577,7 @@ function uc_avatar($uid, $type = 'virtual', $returnhtml = 1) {
 }
 
 function uc_mail_queue($uids, $emails, $subject, $message, $frommail = '', $charset = 'gbk', $htmlon = FALSE, $level = 1) {
-	return call_user_func(UC_API_FUNC, 'mail', 'add', array('uids' => $uids, 'emails' => $emails, 'subject' => $subject, 'message' => $message, 'frommail' => $frommail, 'charset' => $charset, 'htmlon' => $htmlon, 'level' => $level));
+	return \co::call_user_func(UC_API_FUNC, 'mail', 'add', array('uids' => $uids, 'emails' => $emails, 'subject' => $subject, 'message' => $message, 'frommail' => $frommail, 'charset' => $charset, 'htmlon' => $htmlon, 'level' => $level));
 }
 
 function uc_check_avatar($uid, $size = 'middle', $type = 'virtual') {
@@ -599,31 +599,31 @@ function uc_check_version() {
 //change username
 //liliang
 function uc_user_change_username($oldusername, $oldpw, $newusername,$ignore=true) {
-	return call_user_func(UC_API_FUNC, 'user', 'change_username', array('oldusername'=>$oldusername, 'oldpw'=>$oldpw,  'newusername'=>$newusername, 'ignore'=>$ignore));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'change_username', array('oldusername'=>$oldusername, 'oldpw'=>$oldpw,  'newusername'=>$newusername, 'ignore'=>$ignore));
 }
 
 //check change username
 //liliang
 function uc_user_check_change_username($username) {
-	return call_user_func(UC_API_FUNC, 'user', 'check_change_username', array('username'=>$username));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'check_change_username', array('username'=>$username));
 }
 
 //checkmobile
 //liliang
 function uc_user_check_mobile($mobile) {
-	return call_user_func(UC_API_FUNC, 'user', 'check_mobile', array('mobile'=>$mobile));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'check_mobile', array('mobile'=>$mobile));
 }
 
 //通过手机号获取用户名
 //liliang
 function uc_user_get_user_by_mobile($mobile) {
-    return call_user_func(UC_API_FUNC, 'user', 'get_user_by_mobile', array('mobile'=>$mobile));
+    return \co::call_user_func(UC_API_FUNC, 'user', 'get_user_by_mobile', array('mobile'=>$mobile));
 }
 
 //更新手机号
 //liliang
 function uc_user_change_mobile_by_uid($mobile,$uid,$is_mobile=1) {
-	return call_user_func(UC_API_FUNC, 'user', 'change_mobile_by_uid', array('mobile'=>$mobile,'uid'=>$uid,'is_mobile'=>$is_mobile));
+	return \co::call_user_func(UC_API_FUNC, 'user', 'change_mobile_by_uid', array('mobile'=>$mobile,'uid'=>$uid,'is_mobile'=>$is_mobile));
 }
 /**
  * 用户逻辑删除
@@ -632,6 +632,6 @@ function uc_user_change_mobile_by_uid($mobile,$uid,$is_mobile=1) {
  * @datetime 2016年3月30日下午4:53:20
  */
 function uc_user_delete_logical($uid) {
-    return call_user_func(UC_API_FUNC, 'user', 'delete_logical', array('uid'=>$uid));
+    return \co::call_user_func(UC_API_FUNC, 'user', 'delete_logical', array('uid'=>$uid));
 }
 ?>

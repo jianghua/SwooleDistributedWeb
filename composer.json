@@ -2,12 +2,6 @@
   "require": {
     "tmtbe/swooledistributed":"3.0.2"
   },
-  "repositories": {
-    "packagist": {
-      "type": "composer",
-      "url": "https://packagist.phpcomposer.com"
-    }
-  },
  "autoload": {
     "files": [
         "src/Web/Helpers/Funcs/Common.php"
