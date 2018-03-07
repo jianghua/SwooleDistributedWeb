@@ -146,7 +146,10 @@ class BaseController extends SController
      * @datetime 2016年11月15日下午1:43:23
      */
     protected function model($model_name) {
-        $model_name = ucfirst($model_name);
+        if (strpos($model_name, '/') === false && 
+            strpos($model_name, '\\') === false) {
+            $model_name = ucfirst($model_name);
+        }
         return $this->loader->model($model_name, $this);
     }
     

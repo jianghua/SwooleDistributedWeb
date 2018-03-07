@@ -16,7 +16,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
     /**
      * 版本
      */
-    const version = "3.0.2.1";
+    const version = "3.0.6";
     
     /**
      * 缓存
