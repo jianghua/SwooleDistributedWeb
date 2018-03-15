@@ -5,6 +5,7 @@
  * Date: 16-7-14
  * Time: 下午1:58
  */
+
 //强制关闭gzip
 $config['http']['gzip_off'] = false;
 
@@ -17,35 +18,9 @@ $config['http']['index'] = 'index.html';
 
 $config['http']['root'] = [
     'default' =>
-        [
-            'root' => 'localhost',
-            'index' => 'index.html'
-        ]
-    ,
-    'localhost' =>
-        [
-            'root' => 'www',
-            'index' => 'Index.html'
-        ],
-    'sder.xin' =>
-        [
-            'root' => 'www',
-            'index' => 'Index.html'
-        ],
-    'www.sder.xin' =>
-        [
-            'root' => 'www',
-            'index' => 'Index.html'
-        ],
-    '182.92.224.125' =>
-        [
-            'root' => 'docs',
-            'index' => 'index.html'
-        ],
-    'docs.sder.xin' =>
-        [
-            'root' => 'docs',
-            'index' => 'index.html'
+        [   'root' => 'localhost',
+            'index' => 'index.html',
+            'render' => "server::welcome" //转到模板
         ]
 ];
 

@@ -103,15 +103,14 @@ class BaseModel extends Model
      * @param string $order_column
      * @param string $order_by
      * @param string $group
-     * @param int $bind_id
      * @return []
      *
      * @author weihan
      * @datetime 2016年11月15日下午3:48:33
      */
-    public function getColumn($contidions_arr, $field, $order_column = '', $order_by='DESC', $group = '', $bind_id=null) {
+    public function getColumn($contidions_arr, $field, $order_column = '', $order_by='DESC', $group = '') {
         $return_result = true;
-        $result = $this->getOne($contidions_arr, $field, $return_result, $order_column, $order_by, $group, $bind_id);
+        $result = $this->getOne($contidions_arr, $field, $return_result, $order_column, $order_by, $group);
         return array_pop($result) ?? null;
     }
     
@@ -119,18 +118,17 @@ class BaseModel extends Model
      * 查询一条结果
      * @param array $contidions_arr 查询条件
      * @param string $fields    sql列名
-     * @param string $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
+     * @param string $return_result 此参数已无效
      * @param string $order_column
      * @param string $order_by
      * @param string $group
-     * @param int $bind_id
      * @param bool $add_for_udpate  是否在sql末尾加上FOR UPDATE，$bind_id非空才有效
      * @return [] | MySqlCoroutine
      *
      * @author weihan
      * @datetime 2016年11月15日下午2:35:56
      */
-    public function getOne($contidions_arr, $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '', $bind_id=null, $add_for_udpate=false) {
+    public function getOne($contidions_arr, $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '', $add_for_udpate=false) {
         $this->mysql_pool->dbQueryBuilder->select($fields)->from($this->table());
         $this->_setConditions($contidions_arr);
         $this->mysql_pool->dbQueryBuilder->limit(1);
@@ -140,22 +138,12 @@ class BaseModel extends Model
         if ($group) {
             $this->mysql_pool->dbQueryBuilder->groupBy($group, null);
         }
-        $sql = $this->mysql_pool->dbQueryBuilder->getStatement(false);
-        if ($bind_id && $add_for_udpate) {
+        $sql = null;
+        if ($add_for_udpate) {
+            $sql = $this->mysql_pool->dbQueryBuilder->getStatement(false);
             $sql .= ' FOR UPDATE';
         }
-        
-        if ($return_result) {
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->row();
-            };
-        }else{
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->row();
-                $mySqlCoroutine->setDelayRecv();
-            };
-        }
-        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql, $set);
+        return $this->mysql_pool->dbQueryBuilder->query($sql)->row();
     }
     
     /**
@@ -163,18 +151,17 @@ class BaseModel extends Model
      * 返回多条结果
      * @param array $contidions_arr     查询条件
      * @param string $fields   sql列名
-     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
+     * @param bool $return_result 此参数已无效
      * @param int $page
      * @param int $pagesize
      * @param string $order
      * @param string $group
-     * @param int $bind_id
      * @return [] | MySqlCoroutine
      *
      * @author weihan
      * @datetime 2016年11月15日下午1:52:39
      */
-    public function select($contidions_arr, $fields='*', $return_result=true, $page=1, $pagesize=0, $order = '', $group = '', $bind_id=null) {
+    public function select($contidions_arr, $fields='*', $return_result=true, $page=1, $pagesize=0, $order = '', $group = '') {
         $this->mysql_pool->dbQueryBuilder->select($fields)->from($this->table());
         $this->_setConditions($contidions_arr);
         
@@ -191,16 +178,14 @@ class BaseModel extends Model
             $this->mysql_pool->dbQueryBuilder->groupBy($group, null);
         }
         
-        $sql = $this->mysql_pool->dbQueryBuilder->getStatement(false);
-        //必须有clear，否则sql会紊乱
-        $this->mysql_pool->dbQueryBuilder->clear();
-        return $this->query($sql, $return_result, $page, $pagesize, $bind_id);
+        $sql = null;
+        return $this->query($sql, $return_result, $page, $pagesize);
     }
     
     /**
      * 执行sql
      * @param string $sql
-     * @param string $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
+     * @param string $return_result 此参数已无效
      * @param number $page
      * @param number $pagesize
      * @param int $bind_id
@@ -213,20 +198,10 @@ class BaseModel extends Model
         if ($pagesize){
             $page = max(1, $page);
             $offset = ($page-1)* $pagesize;
-            $sql .= " limit {$offset},{$pagesize}";
+            $this->mysql_pool->dbQueryBuilder->limit($pagesize, $offset);
         }
         
-        if ($return_result) {
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->result_array();
-            };
-        }else{
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->result_array();
-                $mySqlCoroutine->setDelayRecv();
-            };
-        }
-        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, $sql, $set);
+        return $this->mysql_pool->dbQueryBuilder->query($sql)->result_array();
     }
     
     /**
@@ -252,7 +227,7 @@ class BaseModel extends Model
     /**
      * 插入
      * @param array $data_arr   要插入的数据
-     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
+     * @param bool $return_result 此参数已无效
      * @param int $bind_id
      * @return insert_id
      *
@@ -267,31 +242,19 @@ class BaseModel extends Model
             ->intoColumns(array_keys($data_arr))
             ->intoValues(array_values($data_arr));
         
-        if ($return_result) {
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->insert_id();
-            };
-        }else{
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->insert_id();
-                $mySqlCoroutine->setDelayRecv();
-            };
-        }
-        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
+        return $this->mysql_pool->dbQueryBuilder->query()->insert_id();
     }
     
     /**
      * 更新
      * @param array $data_arr
      * @param array $contidions_arr
-     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
-     * @param int $bind_id
      * @return bool 
      *
      * @author weihan
      * @datetime 2016年11月15日下午2:27:26
      */
-    public function update($data_arr, $contidions_arr, $return_result=true, $bind_id=null) {
+    public function update($data_arr, $contidions_arr) {
         $data_arr = $this->filterFields($data_arr);
         if (empty($data_arr)){
             return true;
@@ -302,96 +265,38 @@ class BaseModel extends Model
         }
         $this->_setConditions($contidions_arr);
         
-        if ($return_result) {
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->registResultFuc(
-                    function ($result) {
-                        return $result['affected_rows'] ? true : false;
-                    }
-               );
-            };
-        }else{
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->registResultFuc(
-                    function ($result) {
-                        return $result['affected_rows'] ? true : false;
-                    }
-               );
-                $mySqlCoroutine->setDelayRecv();
-            };
-        }
-        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
+        return $this->mysql_pool->dbQueryBuilder->query()->affected_rows() ? true : false;
     }
     
     /**
      * 删除
      * @param array $contidions_arr
-     * @param bool $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
-     * @param int $bind_id
      * @return bool 
      *
      * @author weihan
      * @datetime 2016年11月15日下午2:28:49
      */
-    public function delete($contidions_arr, $return_result=true, $bind_id=null) {
+    public function delete($contidions_arr) {
         $this->mysql_pool->dbQueryBuilder->delete()->from($this->table());
         $this->_setConditions($contidions_arr);
         
-        if ($return_result) {
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->registResultFuc(
-                    function ($result) {
-                        return $result['affected_rows'] ? true : false;
-                    }
-                    );
-            };
-        }else{
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->registResultFuc(
-                    function ($result) {
-                        return $result['affected_rows'] ? true : false;
-                    }
-                    );
-                $mySqlCoroutine->setDelayRecv();
-            };
-        }
-        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
+        return $this->mysql_pool->dbQueryBuilder->query()->affected_rows() ? true : false;
     }
     
     /**
      * 统计数量
      * @param array $contidions_arr 查询条件
-     * @param string $return_result true:返回查询结果；false:返回MySqlCoroutine，需要额外通过recv()获取结果
-     * @param int $bind_id
      * @return int
      *
      * @author weihan
      * @datetime 2016年11月21日下午5:27:13
      */
-    public function count($contidions_arr, $return_result=true, $bind_id=null) {
+    public function count($contidions_arr) {
         $this->mysql_pool->dbQueryBuilder->select('count(*) as nums')->from($this->table());
         $this->_setConditions($contidions_arr);
         $this->mysql_pool->dbQueryBuilder->limit(1);
     
-        if ($return_result) {
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->registResultFuc(
-                    function ($result) {
-                        return $result['result'][0]['nums'] ?? 0;
-                    }
-                    );
-            };
-        }else{
-            $set = function (MySqlCoroutine $mySqlCoroutine) {
-                $mySqlCoroutine->registResultFuc(
-                    function ($result) {
-                        return $result['result'][0]['nums'] ?? 0;
-                    }
-                    );
-                $mySqlCoroutine->setDelayRecv();
-            };
-        }
-        return $this->mysql_pool->dbQueryBuilder->coroutineSend($bind_id, null, $set);
+        return $this->mysql_pool->dbQueryBuilder->query()->row()['nums'] ?? 0;
     }
     
     /**
@@ -410,5 +315,21 @@ class BaseModel extends Model
             }
         }
         return $data_arr;
+    }
+    
+    /**
+     * 获取一个model
+     * @param string $model_name
+     * @return BaseModel
+     *
+     * @author weihan
+     * @datetime 2018年3月8日下午2:32:21
+     */
+    public function model($model_name) {
+        if (strpos($model_name, '/') === false &&
+            strpos($model_name, '\\') === false) {
+                $model_name = ucfirst($model_name);
+            }
+            return $this->loader->model($model_name, $this);
     }
 }

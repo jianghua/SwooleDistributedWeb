@@ -38,3 +38,9 @@ $data = EventDispatcher::getInstance()->addOnceCoroutine('unlock', function (Eve
 请注意这是一个测试版本，并没达到线上运行水平，已知框架问题和swoole2.0扩展问题还在积极修复。
 # 3.0.2
 model中如果$return_result=false，需要通过调用recv()方法获取结果
+# 3.1.2
+##模板引擎
+默认模板依旧是plates引擎，如果使用blade注释AppServer.php中的setTemplateEngine方法
+##mysql
+coroutineSend已经被弃用，更换为query。query的第一个参数为sql，第二个参数为超时时间（单位ms）
+事务已改版

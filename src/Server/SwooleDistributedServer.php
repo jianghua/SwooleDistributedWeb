@@ -16,7 +16,7 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
     /**
      * 版本
      */
-    const version = "3.0.6";
+    const version = "3.1.2";
     
     /**
      * 缓存
@@ -68,20 +68,4 @@ abstract class SwooleDistributedServer extends _SwooleDistributedServer
         }
         parent::onSwooleWorkerStart($serv, $workerId);
     }
-    
-    /**---------------SwooleHttpServer.php--------------------->*/
-    /**
-     * 设置模板引擎
-     * {@inheritDoc}
-     * @see \Server\SwooleHttpServer::setTemplateEngine()
-     *
-     * @author weihan
-     * @datetime 2017年9月22日下午12:53:30
-     */
-    public function setTemplateEngine(){
-        parent::setTemplateEngine();
-        $this->templateEngine->registerFunction('get_www', 'get_www');
-        $this->templateEngine->registerFunction('url', 'url');
-    }
-    /**<-------------------------------------------------------*/
 }

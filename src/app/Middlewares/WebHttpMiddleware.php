@@ -18,8 +18,8 @@ class WebHttpMiddleware extends HttpMiddleware
     {
         parent::__construct();
         if (WebHttpMiddleware::$cache404 == null) {
-            $template = get_instance()->loader->view('server::error_404');
-            WebHttpMiddleware::$cache404 = $template->render();
+            $template = get_instance()->loader->view('app::error_404');
+            WebHttpMiddleware::$cache404 = $template;
         }
         $this->index_isfile = boolval(get_instance()->config->get('http.index_isfile'));
     }

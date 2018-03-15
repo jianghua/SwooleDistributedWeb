@@ -1,6 +1,7 @@
-# SwooleDistributedWeb v3.0.2
+# SwooleDistributedWeb v3.1.2
 版本号与swooledistributed保持一致 
-升级注意：model中如果$return_result=false，需要通过调用recv()方法获取结果 
+升级注意：model中如果$return_result已失效，之前的事务也不支持！  
+默认模板依旧是plates引擎，如果使用blade注释AppServer.php中的setTemplateEngine方法  
 swoole 分布式全栈框架 web开发增强版，基于SwooleDistributed，水平有限，欢迎指正。  
 内置demo，包含用户注册、登录、修改信息
 ## Install

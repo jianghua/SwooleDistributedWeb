@@ -163,8 +163,8 @@ class BaseController extends SController
      */
     protected function view($template, $data=[]) {
         $data = array_merge($this->data, $data);
-        $template = $this->loader->view('app::'. $template);
-        $this->http_output->end($template->render($data));
+        $template = $this->loader->view('app::'. $template, $data);
+        $this->http_output->end($template);
     }
     
     /**

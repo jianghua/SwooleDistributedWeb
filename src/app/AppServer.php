@@ -4,6 +4,7 @@ namespace app;
 use Server\CoreBase\HttpInput;
 use Server\CoreBase\Loader;
 use SwooleDistributedWeb\Server\SwooleDistributedServer;
+use League\Plates\Engine;
 
 /**
  * Created by PhpStorm.
@@ -82,5 +83,21 @@ class AppServer extends SwooleDistributedServer
     public function getConnectMethodName()
     {
         return 'onConnect';
+    }
+    
+    /**
+     * 使用plates引擎，如果使用blade注释此方法
+     * {@inheritDoc}
+     * @see \Server\SwooleHttpServer::setTemplateEngine()
+     * 
+     * @author weihan
+     * @datetime 2018年3月15日下午4:22:18
+     */
+    public function setTemplateEngine(){
+        $this->templateEngine = new Engine();
+        $this->templateEngine->addFolder('server', __DIR__ . '/Views');
+        $this->templateEngine->addFolder('app', __DIR__ . '/../app/Views');
+        $this->templateEngine->registerFunction('get_www', 'get_www');
+        $this->templateEngine->registerFunction('url', 'url');
     }
 }
