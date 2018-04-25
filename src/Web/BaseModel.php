@@ -9,6 +9,7 @@ namespace Web;
 use Server\CoreBase\Model;
 use Server\Asyn\Mysql\Miner;
 use Server\Asyn\Mysql\MySqlCoroutine;
+use Web\Helpers\Libs\Arr;
 
 class BaseModel extends Model
 {
@@ -75,7 +76,7 @@ class BaseModel extends Model
                     $form[$field] = $this->_form[$field];
                     if ($_label){
                         if (is_array($_label)){
-                            $form[$field] = array_merge($form[$field],$_label);
+                            $form[$field] = Arr::arrayMergeDimensional($form[$field],$_label);
                         }else
                             $form[$field]['label'] = $_label;
                     }
@@ -122,7 +123,7 @@ class BaseModel extends Model
      * @param string $order_column
      * @param string $order_by
      * @param string $group
-     * @param bool $add_for_udpate  是否在sql末尾加上FOR UPDATE，$bind_id非空才有效
+     * @param bool $add_for_udpate  是否在sql末尾加上FOR UPDATE
      * @return [] | MySqlCoroutine
      *
      * @author weihan
@@ -188,13 +189,12 @@ class BaseModel extends Model
      * @param string $return_result 此参数已无效
      * @param number $page
      * @param number $pagesize
-     * @param int $bind_id
      * @return [] | MySqlCoroutine
      *
      * @author weihan
      * @datetime 2016年12月13日下午2:13:20
      */
-    public function query($sql, $return_result=true, $page=1, $pagesize=0, $bind_id=null) {
+    public function query($sql, $return_result=true, $page=1, $pagesize=0) {
         if ($pagesize){
             $page = max(1, $page);
             $offset = ($page-1)* $pagesize;
@@ -228,13 +228,12 @@ class BaseModel extends Model
      * 插入
      * @param array $data_arr   要插入的数据
      * @param bool $return_result 此参数已无效
-     * @param int $bind_id
      * @return insert_id
      *
      * @author weihan
      * @datetime 2016年11月15日下午1:52:39
      */
-    public function insert($data_arr, $return_result=true, $bind_id=null) {
+    public function insert($data_arr, $return_result=true) {
         $data_arr = $this->filterFields($data_arr);
         //构造sql
         $this->mysql_pool->dbQueryBuilder

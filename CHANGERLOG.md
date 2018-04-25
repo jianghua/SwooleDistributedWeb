@@ -44,3 +44,6 @@ model中如果$return_result=false，需要通过调用recv()方法获取结果
 ##mysql
 coroutineSend已经被弃用，更换为query。query的第一个参数为sql，第二个参数为超时时间（单位ms）
 事务已改版
+# 3.1.12
+SD中TimerCallBack::addTimer过期时间有bug，需手动调整CatCacheRpcProxy.php 38行$time = time() * 1000;改为$time = time();
+model中目前不支持recv()

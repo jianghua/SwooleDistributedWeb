@@ -116,16 +116,21 @@ function url($uri, $params=[]){
  */
 function execControllerMethod($controller_name, $method_name, $params, \swoole_http_request $request) {
     $response = null;
+    $controller_name = ucfirst($controller_name);
     $controller_instance = Server\CoreBase\ControllerFactory::getInstance()->getController($controller_name);
     if ($controller_instance != null) {
         if (is_callable([$controller_instance, $method_name])) {
             try {
-                $controller_instance->initialization($controller_name, $method_name);
                 $controller_instance->http_input->set($request);
                 $controller_instance->http_output->set($request, $response);
-                return $controller_instance->$method_name($params);
+                $controller_instance->initialization($controller_name, $method_name);
+                if ($params == null) {
+                    return $controller_instance->$method_name($params);
+                }else {
+                    return \co::call_user_func_array([$controller_instance, $method_name], $params);
+                }
             }catch (\Exception $e) {
-                call_user_func([$controller_instance, 'onExceptionHandle'], $e);
+                \co::call_user_func([$controller_instance, 'onExceptionHandle'], $e);
             }
         }
     }

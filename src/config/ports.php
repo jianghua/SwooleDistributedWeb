@@ -17,17 +17,6 @@ $config['ports'][] = [
     'middlewares' => ['MonitorMiddleware'],
     'method_prefix' => 'tcp_'
 ];
-
-$config['ports'][] = [
-    'socket_type' => PortManager::SOCK_TCP,
-    'socket_name' => '0.0.0.0',
-    'socket_port' => 1883,
-    'pack_tool' => 'MqttPack',
-    'route_tool' => 'NormalRoute',
-    'middlewares' => ['MonitorMiddleware'],
-    'method_prefix' => 'tcp_'
-];
-
 $config['ports'][] = [
     'socket_type' => PortManager::SOCK_HTTP,
     'socket_name' => '0.0.0.0',

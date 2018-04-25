@@ -592,7 +592,7 @@ class BaseController extends SController
             $replaceme[] = $v;
         }
         $url = str_replace($findme, $replaceme, $urlrule);
-        $url = str_replace(array('http://','//','~'), array('~','/','http://'), $url);
+        $url = str_replace(array('://','//','~'), array('~','/','://'), $url);
         return $url;
     }
     
@@ -711,5 +711,26 @@ class BaseController extends SController
             $root_path = WWW_DIR . "/";
         }
         return $root_path;
+    }
+    
+    /**
+     * 获取根域名
+     *
+     * @author weihan
+     * @datetime 2018年3月20日下午4:10:55
+     */
+    protected function httpBaseHost() {
+        $base_host = $host = $this->httpHost();
+        if (strpos($host, ':')) {
+            $base_host = $host = explode(':', $host)[0];
+        }
+        if (! filter_var($host, FILTER_VALIDATE_IP)) {
+            $arr = explode('.', $host);
+            $nums = count($arr);
+            if ($nums > 1) {
+                $base_host = implode('.', [$arr[$nums-2], $arr[$nums-1]]);
+            }
+        }
+        return $base_host;
     }
 }

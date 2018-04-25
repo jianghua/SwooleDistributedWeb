@@ -17,7 +17,7 @@ $config['redis']['active'] = 'local';
  */
 $config['redis']['local']['ip'] = 'localhost';
 $config['redis']['local']['port'] = 6379;
-$config['redis']['local']['select'] = 1;
+$config['redis']['local']['select'] = 0;
 $config['redis']['local']['password'] = 'weihan';
 
 /**
