@@ -420,7 +420,6 @@ class BaseController extends SController
      * 验证form secret
      * 需要加yield
      * @param string $form_name
-     * @return Generator
      *
      * @author weihan
      * @datetime 2016年11月18日下午5:38:56
@@ -638,7 +637,6 @@ class BaseController extends SController
      * @param string $api_domain  域名，必须带端口
      * @param string $api_uri   
      * @param array $params 参数
-     * @return Generator
      *
      * @author weihan
      * @datetime 2016年12月21日上午11:01:51

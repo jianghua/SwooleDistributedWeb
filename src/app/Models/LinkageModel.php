@@ -15,7 +15,6 @@ class LinkageModel extends BaseModel
     /**
      * 获取子菜单
      * @param int $parent_id
-     * @return Generator
      *
      * @author weihan
      * @datetime 2016年12月2日下午5:14:41

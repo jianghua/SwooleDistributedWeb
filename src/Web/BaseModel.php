@@ -130,21 +130,21 @@ class BaseModel extends Model
      * @datetime 2016年11月15日下午2:35:56
      */
     public function getOne($contidions_arr, $fields='*', $return_result=true, $order_column = '', $order_by='DESC', $group = '', $add_for_udpate=false) {
-        $this->mysql_pool->dbQueryBuilder->select($fields)->from($this->table());
+        $this->db->select($fields)->from($this->table());
         $this->_setConditions($contidions_arr);
-        $this->mysql_pool->dbQueryBuilder->limit(1);
+        $this->db->limit(1);
         if ($order_column) {
-            $this->mysql_pool->dbQueryBuilder->orderBy($order_column, $order_by);
+            $this->db->orderBy($order_column, $order_by);
         }
         if ($group) {
-            $this->mysql_pool->dbQueryBuilder->groupBy($group, null);
+            $this->db->groupBy($group, null);
         }
         $sql = null;
         if ($add_for_udpate) {
-            $sql = $this->mysql_pool->dbQueryBuilder->getStatement(false);
+            $sql = $this->db->getStatement(false);
             $sql .= ' FOR UPDATE';
         }
-        return $this->mysql_pool->dbQueryBuilder->query($sql)->row();
+        return $this->db->query($sql)->row();
     }
     
     /**
@@ -163,7 +163,7 @@ class BaseModel extends Model
      * @datetime 2016年11月15日下午1:52:39
      */
     public function select($contidions_arr, $fields='*', $return_result=true, $page=1, $pagesize=0, $order = '', $group = '') {
-        $this->mysql_pool->dbQueryBuilder->select($fields)->from($this->table());
+        $this->db->select($fields)->from($this->table());
         $this->_setConditions($contidions_arr);
         
         if ($order) {
@@ -172,11 +172,11 @@ class BaseModel extends Model
                 $_arr2 = array_filter(explode(' ', trim($v), 2));
                 $_column = trim($_arr2[0]);
                 $_order_by = isset($_arr2[1]) ? trim($_arr2[1]) : Miner::ORDER_BY_ASC;
-                $this->mysql_pool->dbQueryBuilder->orderBy($_column, $_order_by);
+                $this->db->orderBy($_column, $_order_by);
             }
         }
         if ($group) {
-            $this->mysql_pool->dbQueryBuilder->groupBy($group, null);
+            $this->db->groupBy($group, null);
         }
         
         $sql = null;
@@ -198,10 +198,10 @@ class BaseModel extends Model
         if ($pagesize){
             $page = max(1, $page);
             $offset = ($page-1)* $pagesize;
-            $this->mysql_pool->dbQueryBuilder->limit($pagesize, $offset);
+            $this->db->limit($pagesize, $offset);
         }
         
-        return $this->mysql_pool->dbQueryBuilder->query($sql)->result_array();
+        return $this->db->query($sql)->result_array();
     }
     
     /**
@@ -215,9 +215,9 @@ class BaseModel extends Model
         if ($contidions_arr){
             foreach ($contidions_arr as $_column=>$_value){
                 if (is_array($_value)) {
-                    $this->mysql_pool->dbQueryBuilder->where($_column, $_value[1], $_value[0], $_value[2]??Miner::LOGICAL_AND);
+                    $this->db->where($_column, $_value[1], $_value[0], $_value[2]??Miner::LOGICAL_AND);
                 }else {
-                    $this->mysql_pool->dbQueryBuilder->where($_column, $_value);
+                    $this->db->where($_column, $_value);
                 }
                 
             }
@@ -236,12 +236,12 @@ class BaseModel extends Model
     public function insert($data_arr, $return_result=true) {
         $data_arr = $this->filterFields($data_arr);
         //构造sql
-        $this->mysql_pool->dbQueryBuilder
+        $this->db
             ->insertInto($this->table())
             ->intoColumns(array_keys($data_arr))
             ->intoValues(array_values($data_arr));
         
-        return $this->mysql_pool->dbQueryBuilder->query()->insert_id();
+        return $this->db->query()->insert_id();
     }
     
     /**
@@ -258,13 +258,13 @@ class BaseModel extends Model
         if (empty($data_arr)){
             return true;
         }
-        $this->mysql_pool->dbQueryBuilder->update($this->table());
+        $this->db->update($this->table());
         foreach ($data_arr as $_column=>$_value){
-            $this->mysql_pool->dbQueryBuilder->set($_column, $_value);
+            $this->db->set($_column, $_value);
         }
         $this->_setConditions($contidions_arr);
         
-        return $this->mysql_pool->dbQueryBuilder->query()->affected_rows() ? true : false;
+        return $this->db->query()->affected_rows() ? true : false;
     }
     
     /**
@@ -276,10 +276,10 @@ class BaseModel extends Model
      * @datetime 2016年11月15日下午2:28:49
      */
     public function delete($contidions_arr) {
-        $this->mysql_pool->dbQueryBuilder->delete()->from($this->table());
+        $this->db->delete()->from($this->table());
         $this->_setConditions($contidions_arr);
         
-        return $this->mysql_pool->dbQueryBuilder->query()->affected_rows() ? true : false;
+        return $this->db->query()->affected_rows() ? true : false;
     }
     
     /**
@@ -291,11 +291,11 @@ class BaseModel extends Model
      * @datetime 2016年11月21日下午5:27:13
      */
     public function count($contidions_arr) {
-        $this->mysql_pool->dbQueryBuilder->select('count(*) as nums')->from($this->table());
+        $this->db->select('count(*) as nums')->from($this->table());
         $this->_setConditions($contidions_arr);
-        $this->mysql_pool->dbQueryBuilder->limit(1);
+        $this->db->limit(1);
     
-        return $this->mysql_pool->dbQueryBuilder->query()->row()['nums'] ?? 0;
+        return $this->db->query()->row()['nums'] ?? 0;
     }
     
     /**
