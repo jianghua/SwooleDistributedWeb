@@ -1,30 +1,35 @@
 {
-  "require": {
-    "tmtbe/swooledistributed":"3.2.*",
-    "league/plates": "@stable"
-  },
- "autoload": {
-    "files": [
-        "src/Web/Helpers/Funcs/Common.php"
-    ],
-    "psr-4": {
-      "SwooleDistributedWeb\\Server\\": "src/Server",
-      "SwooleDistributedWeb\\app\\": "src/app",
-      "Web\\": "src/Web",
-      "app\\": "src/app",
-      "test\\": "src/test"
-    }
-  },
-  "authors": [
-    {
-      "name": "jianghua",
-      "email": "380688162@qq.com",
-      "homepage": "https://github.com/jianghua"
-    }
-  ],
-  "name": "jianghua/swooledistributedweb",
-  "type": "library",
-  "keywords": ["server", "swoole", "distributed", "web"],
-  "description": "swooledistributed web",
-  "license": "MIT"
+	"require" : {
+		"tmtbe/swooledistributed" : "3.3.*",
+		"league/plates" : "@stable",
+		"eaglewu/swoole-ide-helper": "dev-master"
+	},
+	"autoload" : {
+		"files" : [
+			"src/Web/Helpers/Funcs/Common.php"
+		],
+		"psr-4" : {
+			"SwooleDistributedWeb\\Server\\" : "src/Server",
+			"SwooleDistributedWeb\\app\\" : "src/app",
+			"Web\\" : "src/Web",
+			"app\\" : "src/app",
+			"test\\" : "src/test"
+		}
+	},
+	"authors" : [{
+			"name" : "jianghua",
+			"email" : "380688162@qq.com",
+			"homepage" : "https://github.com/jianghua"
+		}
+	],
+	"name" : "jianghua/swooledistributedweb",
+	"type" : "library",
+	"keywords" : [
+		"server",
+		"swoole",
+		"distributed",
+		"web"
+	],
+	"description" : "swooledistributed web",
+	"license" : "MIT"
 }

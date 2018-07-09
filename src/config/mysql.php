@@ -7,7 +7,7 @@
  */
 $config['mysql']['enable'] = true;
 $config['mysql']['active'] = 'test';
-$config['mysql']['test']['host'] = '10.16.198.131';
+$config['mysql']['test']['host'] = '10.19.1.131';
 $config['mysql']['test']['port'] = '3306';
 $config['mysql']['test']['user'] = 'weihan';
 $config['mysql']['test']['password'] = 'jiang';

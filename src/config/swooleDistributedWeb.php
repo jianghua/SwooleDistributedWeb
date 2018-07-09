@@ -12,7 +12,7 @@ $config['server']['set'] = [
 ];
 
 //http服务器绑定的真实的域名或者ip:port，一定要填对,否则获取不到文件的绝对路径
-$config['http']['domain'] = 'http://10.16.198.131/sdw';
+$config['http']['domain'] = 'http://10.19.1.131/sdw';
 $config['http']['default_controller'] = 'User';  //默认控制器
 $config['http']['default_method'] = 'index';          //默认方法
 $config['http']['index_isfile'] = '0';         //首页是否使用静态页面，1：静态页面，0：非静态页面
