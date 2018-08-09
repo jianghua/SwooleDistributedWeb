@@ -1,6 +1,6 @@
 {
 	"require" : {
-		"tmtbe/swooledistributed" : "3.3.*",
+		"tmtbe/swooledistributed" : "3.5.*",
 		"league/plates" : "@stable",
 		"eaglewu/swoole-ide-helper": "dev-master"
 	},
