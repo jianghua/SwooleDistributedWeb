@@ -1,4 +1,4 @@
-# SwooleDistributedWeb v3.5.0.9 
+# SwooleDistributedWeb v6.2 
 版本号与swooledistributed保持一致 
 升级注意：model中如果$return_result已失效，之前的事务也不支持！  
 model中目前不支持recv()  
@@ -12,7 +12,7 @@ Autoload must specify `app` and `test`.
 ```
 {
   "require": {
-    "jianghua/swooledistributedweb":">2.5.0"
+    "jianghua/swooledistributedweb":">3.6.0"
   },
  "autoload": {
     "psr-4": {
