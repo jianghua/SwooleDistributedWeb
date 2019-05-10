@@ -1,0 +1,6 @@
+1.更新版本至2.7.3.3
+2.之前版本需要在AppServer中设置setConfig，现在可以删除了。
+3.修改backstage.php的使能，或者修改参数，可以修改二进制的位置
+4.将backstage二进制文件放在bin/exec下（或者自行修改位置）。
+5.启动游览器访问http://localhost（域名或者IP）:18000（配置中的端口）/
+6.如果是localhost那么需要自行配置，不是那么将自动获取。

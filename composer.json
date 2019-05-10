@@ -1,6 +1,6 @@
 {
 	"require" : {
-		"tmtbe/swooledistributed" : "3.6.*",
+		"tmtbe/swooledistributed" : "3.7.*",
 		"league/plates" : "@stable"
 	},
 	"autoload" : {
