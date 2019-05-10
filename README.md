@@ -1,4 +1,5 @@
 # SwooleDistributedWeb v3.7.4 
+内置了监控平台，详见“监控平台说明.txt” ，感谢白猫分享 
 版本号与swooledistributed保持一致 
 升级注意：model中如果$return_result已失效，之前的事务也不支持！  
 model中目前不支持recv()  
